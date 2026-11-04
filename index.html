@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>漂流瓶</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:linear-gradient(180deg,#e5f4ff,#f5f7ff);color:#263650}
+header{text-align:center;padding:25px 15px 15px}
+header h1{font-size:27px;margin:8px}
+header p{color:#8096b2;font-size:13px}
+.page{display:none;padding:15px 20px 100px}
+.page.active{display:block}
+.hero{height:260px;border-radius:25px;background:linear-gradient(160deg,#6dc8ef,#287dc1 65%,#174e91);display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;box-shadow:0 12px 30px #8ab9d855}
+.hero .bottle{font-size:75px;filter:drop-shadow(0 8px 8px #174e9177)}
+.hero h2{margin:8px}
+.hero p{font-size:13px;opacity:.9}
+.actions{display:flex;gap:15px;margin:20px 0}
+button{border:0;border-radius:18px;padding:15px;background:#fff;color:#347dbb;font-size:16px;font-weight:600;box-shadow:0 5px 15px #8daac522}
+.actions button{flex:1}
+.section-title{font-size:19px;font-weight:bold;margin:25px 0 15px}
+.card{background:#fff;border-radius:18px;padding:17px;margin-bottom:13px;box-shadow:0 5px 20px #9cb4d522}
+.card p{line-height:1.7;color:#536781}
+.meta{font-size:12px;color:#9aabc0}
+nav{position:fixed;bottom:0;left:0;right:0;height:75px;background:#ffffffed;display:flex;justify-content:space-around;align-items:center;box-shadow:0 -5px 20px #a8bdd522}
+nav button{background:none;box-shadow:none;padding:8px 12px;font-size:12px;color:#8292a8}
+nav button span{display:block;font-size:23px;margin-bottom:3px}
+nav button.selected{color:#287dd0}
+input,textarea{width:100%;padding:14px;border:1px solid #dce7f1;border-radius:13px;font-size:16px;margin:10px 0;background:#f9fcff}
+textarea{height:130px;resize:none}
+.primary{background:#388bd4;color:white;width:100%;margin-top:12px}
+.modal{display:none;position:fixed;inset:0;background:#142d4966;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-box{background:white;border-radius:22px;padding:22px;width:100%;max-width:400px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:17px 0;border-bottom:1px solid #edf1f5}
+.avatar{width:65px;height:65px;border-radius:50%;background:#c6e9ff;display:grid;place-items:center;font-size:32px;margin:auto}
+</style>
+</head>
+<body>
+<header>
+<h1>🌊 漂流瓶</h1>
+<p>让每一份心事，都能遇见远方</p>
+</header>
+
+<section class="page active" id="home">
+<div class="hero">
+<div class="bottle">🍾</div>
+<h2>大海正在等待你的故事</h2>
+<p>把心情交给海风，让缘分带你相遇</p>
+</div>
+<div class="actions">
+<button onclick="openModal()">📝 投递漂流瓶</button>
+<button onclick="pickBottle()">🌊 捡一个瓶子</button>
+</div>
+<div class="section-title">今日海洋</div>
+<div class="card">
+<p>🐚 每一个陌生人的故事，都值得被温柔对待。</p>
+<div class="meta">漂流瓶 · 与陌生人分享心情</div>
+</div>
+</section>
+
+<section class="page" id="discover">
+<div class="section-title">🌅 发现故事</div>
+<div id="stories">
+<div class="card"><p>今天的晚霞很美，希望你也能看到。</p><div class="meta">来自远方的漂流瓶</div></div>
+<div class="card"><p>生活偶尔有风浪，但请相信明天。</p><div class="meta">来自海边的陌生人</div></div>
+<div class="card"><p>如果可以，愿你每天都开心。</p><div class="meta">一份温柔的祝福</div></div>
+</div>
+</section>
+
+<section class="page" id="messages">
+<div class="section-title">💌 消息</div>
+<div class="card"><p>暂时还没有新消息</p><div class="meta">当有人回应你的故事时，会在这里出现。</div></div>
+</section>
+
+<section class="page" id="profile">
+<div class="card" style="text-align:center;padding:25px">
+<div class="avatar">🌊</div>
+<h2>海边的风</h2>
+<div class="meta">ID：102948</div>
+</div>
+<div class="card">
+<div class="row">📮 我的瓶子 <span id="mycount">0　›</span></div>
+<div class="row">❤️ 我的收藏 <span>0　›</span></div>
+<div class="row">👥 我的关注 <span>0　›</span></div>
+<div class="row">⚙️ 设置 <span>›</span></div>
+</div>
+</section>
+
+<nav>
+<button class="selected" onclick="showPage('home',this)"><span>⌂</span>首页</button>
+<button onclick="showPage('discover',this)"><span>◉</span>发现</button>
+<button onclick="showPage('messages',this)"><span>♡</span>消息</button>
+<button onclick="showPage('profile',this)"><span>♙</span>我的</button>
+</nav>
+
+<div class="modal" id="writeModal">
+<div class="modal-box">
+<h2>🍾 投递一只漂流瓶</h2>
+<p>写下此刻想说的话</p>
+<textarea id="content" maxlength="300" placeholder="你好，远方的陌生人……"></textarea>
+<button class="primary" onclick="throwBottle()">投进大海</button>
+<button style="width:100%;margin-top:10px" onclick="closeModal()">取消</button>
+</div>
+</div>
+
+<script>
+let bottles=JSON.parse(localStorage.getItem('bottles')||'[]');
+function showPage(id,btn){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('selected'));
+btn.classList.add('selected');
+}
+function openModal(){document.getElementById('writeModal').classList.add('show')}
+function closeModal(){document.getElementById('writeModal').classList.remove('show')}
+function throwBottle(){
+let text=document.getElementById('content').value.trim();
+if(!text){alert('先写下一段心情吧');return}
+bottles.unshift({text:text,date:new Date().toLocaleDateString()});
+localStorage.setItem('bottles',JSON.stringify(bottles));
+document.getElementById('content').value='';
+document.getElementById('mycount').innerText=bottles.length+'　›';
+closeModal();
+alert('🍾 漂流瓶已经投进大海！');
+}
+function pickBottle(){
+let samples=[
+'愿你每天都有好心情。',
+'生活很美好，希望我们都能被温柔以待。',
+'如果你看到这只瓶子，记得今天也要开心。',
+'世界很大，希望我们都能遇见美好。'
+];
+let all=bottles.map(b=>b.text).concat(samples);
+alert('🌊 你捡到了一个漂流瓶：\n\n'+all[Math.floor(Math.random()*all.length)]);
+}
+document.getElementById('mycount').innerText=bottles.length+'　›';
+</script>
+</body>
+</html>
