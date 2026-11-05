@@ -10,6 +10,28 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
+.discover-heading{padding:4px 2px 12px}
+.discover-kicker{font-size:10px;letter-spacing:1.8px;color:#78a9c5;font-weight:750;margin-bottom:7px}
+.discover-heading .section-title{margin-bottom:5px}
+.discover-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:19px 17px;margin:8px 0 22px;border-radius:22px;background:linear-gradient(120deg,#e9f7fc,#d3ebf6 55%,#b7dced);overflow:hidden;position:relative}
+.discover-banner:after{content:"";position:absolute;width:150px;height:150px;border:1px solid rgba(255,255,255,.65);border-radius:50%;right:-50px;top:-65px}
+.discover-banner-copy{display:flex;flex-direction:column;gap:6px;position:relative;z-index:1}
+.discover-banner-copy span{font-size:10px;letter-spacing:1px;color:#5b91af}
+.discover-banner-copy strong{font-size:17px;color:#315a76}
+.discover-banner-copy small{font-size:11px;color:#6e8da3;line-height:1.6}
+.discover-wave{font-size:43px;filter:drop-shadow(0 5px 7px rgba(55,115,150,.16));position:relative;z-index:1}
+.discover-filter-title,.discover-list-title{display:flex;align-items:center;justify-content:space-between;margin:0 2px 9px}
+.discover-filter-title strong,.discover-list-title strong{font-size:14px;color:#40586d}
+.discover-filter-title span,.discover-list-title span{font-size:10px;color:#9aabba}
+#discover .tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;margin-bottom:15px}
+#discover .tabs button{white-space:nowrap;border:1px solid #e3edf4;border-radius:20px;background:#f7fafc;color:#71869a;padding:9px 13px;font-size:12px}
+#discover .tabs button.active{background:#e3f1f9;border-color:#bddbec;color:#397da6;font-weight:700}
+#discoverList .list-item{border:1px solid #e7eef4;border-radius:18px;padding:16px;margin-bottom:11px;background:linear-gradient(145deg,#fff,#fbfdff);box-shadow:0 5px 15px rgba(58,100,130,.045)}
+#discoverList .list-item p{line-height:1.8;color:#40566b;margin:0 0 11px}
+#discoverList .list-item .meta{color:#92a4b3;font-size:11px}
+.discover-footnote{text-align:center;color:#9aabba;font-size:11px;padding:16px 0 8px}
+
 :root{
 --blue:#347fbd;
 --blue2:#eaf4fc;
@@ -209,14 +231,24 @@ max-width:420px;max-height:85vh;overflow:auto;
 </section>
 
 <section class="page" id="discover">
+<div class="discover-heading">
+<div class="discover-kicker">DRIFTING STORIES</div>
 <div class="section-title">发现故事</div>
-<p class="sub">看看海面上正在漂流的心情。</p>
-<div class="tabs">
-<button class="active" data-filter="all">推荐</button>
-<button data-filter="warm">温暖</button>
-<button data-filter="thought">心事</button>
+<p class="sub">海面很大，总有一段心情，刚好与你相遇。</p>
 </div>
+<div class="discover-banner">
+<div class="discover-banner-copy"><span>远方来信 · 不期而遇</span><strong>今天，想听听谁的故事？</strong><small>轻轻点开一只漂流瓶，读一段陌生心事。</small></div>
+<div class="discover-wave">🌊</div>
+</div>
+<div class="discover-filter-title"><strong>故事分类</strong><span>选择一种心情</span></div>
+<div class="tabs">
+<button class="active" data-filter="all">✦ 全部推荐</button>
+<button data-filter="warm">☀️ 温暖</button>
+<button data-filter="thought">☁️ 心事</button>
+</div>
+<div class="discover-list-title"><strong>正在漂流</strong><span>每一段文字，都是一次相遇</span></div>
 <div id="discoverList"></div>
+<div class="discover-footnote">♡ 愿每一份真诚，都能被温柔接住</div>
 </section>
 
 <section class="page" id="messages">
