@@ -357,6 +357,15 @@ header p{letter-spacing:.4px}
 #messageThread .message-bubble{display:inline-block;width:fit-content;max-width:100%;min-width:0;box-sizing:border-box;white-space:normal;word-break:normal;overflow-wrap:anywhere}
 #messageThread .message-bubble>div{white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
 
+
+/* Chat layout: reserve avatar width only; let the text column use the remaining row width */
+#messageThread .chat-line{display:flex!important;align-items:flex-end;gap:9px;width:100%;min-width:0}
+#messageThread .chat-line .chat-content{display:flex!important;flex:1 1 0!important;width:auto!important;max-width:none!important;min-width:0!important}
+#messageThread .chat-line .message-bubble{display:block!important;flex:0 0 auto!important;width:max-content!important;max-width:min(88%,560px)!important;min-width:0!important;box-sizing:border-box;white-space:normal!important;word-break:keep-all!important;overflow-wrap:break-word!important}
+#messageThread .chat-line .message-bubble>div{white-space:pre-wrap!important;word-break:keep-all!important;overflow-wrap:break-word!important}
+#messageThread .chat-line.mine .chat-content{align-items:flex-end!important}
+#messageThread .chat-line.theirs .chat-content{align-items:flex-start!important}
+
 </style>
 </head>
 
