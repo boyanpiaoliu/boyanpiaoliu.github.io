@@ -337,6 +337,19 @@ header p{letter-spacing:.4px}
 #messageThread .chat-line.theirs.gender-female .message-bubble{background:linear-gradient(135deg,#ffe0ec,#f5bdd4);color:#78465b}
 #messageThread .chat-line.theirs.gender-male .message-bubble{background:linear-gradient(135deg,#cfeaff,#a9d6f5);color:#244f70}
 
+
+#messageThread .message-bubble time{display:none}
+.chat-meta-time{font-size:9px;color:#91a3b2;line-height:1.2;margin-top:4px;padding:0 4px;white-space:nowrap}
+.chat-actions{display:flex;gap:10px;align-items:center;margin-top:3px}
+.chat-action{border:0;background:transparent;color:#8b9eae;font-size:10px;padding:3px 2px}
+.chat-action.retract{color:#c47d88}
+.chat-quote{border-left:3px solid #9bbdd2;background:rgba(255,255,255,.55);padding:7px 9px;border-radius:8px;margin-bottom:6px;font-size:10px;color:#688397;max-width:100%;overflow-wrap:anywhere}
+.chat-line.mine.gender-female .chat-quote{border-left-color:#df9db7}
+.chat-line .message-bubble.retracted{opacity:.7;font-style:italic}
+.quote-compose{display:flex;align-items:center;gap:8px;background:#eef5f9;border-radius:11px;padding:8px 10px;margin:10px 0 0;font-size:11px;color:#617d91}
+.quote-compose span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quote-compose button{border:0;background:transparent;color:#8799a8}
+
 </style>
 </head>
 
@@ -580,6 +593,7 @@ let activeFilter='all';
 let messageReceiver=null;
 let friendSearchResult=null;
 let selectedGender=null;
+let replyTargetMessage=null;
 // 官方体验示例漂流瓶
 const demoBottles=[
 {
@@ -764,8 +778,8 @@ async function openConversation(peer){
  const peerProfile=(friendProfiles||[]).find(f=>f.id===peer)||null;
  $('messageList').style.display='none';const thread=$('messageThread');thread.style.display='block';thread.replaceChildren();
  const head=document.createElement('div');head.className='message-thread-head';
- const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',renderMessages);
- const title=document.createElement('strong');title.textContent='与漂流者 '+peer.slice(0,8)+' 的对话';head.append(back,title);thread.append(head);
+ const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',()=>{replyTargetMessage=null;renderMessages()});
+ const title=document.createElement('strong');title.textContent='与 '+(peerProfile?.nickname||'好友')+' 的对话';head.append(back,title);thread.append(head);
  items.forEach(m=>{
  const mine=m.sender_id===user.id;
  const line=document.createElement('div');line.className='chat-line '+(mine?'mine':'theirs');
@@ -773,23 +787,45 @@ async function openConversation(peer){
  const person=mine?profile:peerProfile;
  line.classList.add(person?.gender==='female'?'gender-female':'gender-male');
  if(person?.avatar_url){const image=document.createElement('img');image.src=person.avatar_url;image.alt=mine?'我的头像':'对方头像';avatar.append(image)}
- else avatar.textContent=(person?.nickname|| (mine?'我':'友')).slice(0,1);
+ else avatar.textContent=(person?.nickname||(mine?'我':'友')).slice(0,1);
  const content=document.createElement('div');content.className='chat-content';
- const bubble=document.createElement('div');bubble.className='message-bubble '+(mine?'mine':'theirs');bubble.textContent=m.content;
- const time=document.createElement('time');time.textContent=dateText(m.created_at);bubble.append(time);
+ const bubble=document.createElement('div');bubble.className='message-bubble '+(mine?'mine':'theirs')+(m.is_retracted?' retracted':'');
+ if(m.reply_to_id){
+  const quoted=items.find(x=>x.id===m.reply_to_id);
+  const q=document.createElement('div');q.className='chat-quote';q.textContent=quoted?(quoted.is_retracted?'引用：消息已撤回':'引用：'+quoted.content):'引用了一条消息';bubble.append(q);
+ }
+ const body=document.createElement('div');body.textContent=m.is_retracted?'这条消息已撤回':m.content;bubble.append(body);
  content.append(bubble);
- if(mine){const del=document.createElement('button');del.className='message-delete';del.textContent='删除这条消息';del.addEventListener('click',()=>deleteMessage(m.id,peer));content.append(del)}
+ const time=document.createElement('time');time.className='chat-meta-time';time.textContent=dateText(m.created_at);content.append(time);
+ if(!m.is_retracted){
+  const actions=document.createElement('div');actions.className='chat-actions';
+  const quote=document.createElement('button');quote.className='chat-action';quote.textContent='引用';quote.addEventListener('click',()=>{replyTargetMessage=m;$('quoteComposeText').textContent='引用：'+m.content;$('quoteCompose').style.display='flex';$('threadReply').focus()});actions.append(quote);
+  if(mine){
+   const canRetract=Date.now()-new Date(m.created_at).getTime()<=120000;
+   if(canRetract){const retract=document.createElement('button');retract.className='chat-action retract';retract.textContent='撤回';retract.addEventListener('click',()=>retractMessage(m.id,peer));actions.append(retract)}
+  }
+  content.append(actions);
+ }
  line.append(avatar,content);thread.append(line);
  });
+ const quoteBar=document.createElement('div');quoteBar.id='quoteCompose';quoteBar.className='quote-compose';quoteBar.style.display=replyTargetMessage?'flex':'none';
+ const quoteText=document.createElement('span');quoteText.id='quoteComposeText';quoteText.textContent=replyTargetMessage?'引用：'+replyTargetMessage.content:'';
+ const clearQuote=document.createElement('button');clearQuote.textContent='取消引用';clearQuote.addEventListener('click',()=>{replyTargetMessage=null;quoteBar.style.display='none'});
+ quoteBar.append(quoteText,clearQuote);thread.append(quoteBar);
  const composer=document.createElement('div');composer.className='message-composer';
  const input=document.createElement('input');input.maxLength=500;input.placeholder='写下你的回复…';input.id='threadReply';
  const send=document.createElement('button');send.textContent='发送';send.addEventListener('click',()=>sendThreadReply(peer));
  composer.append(input,send);thread.append(composer);thread.scrollIntoView({behavior:'smooth',block:'end'});updateUnreadBadge();
  }catch(e){showError(e)}
 }
+async function retractMessage(id,peer){
+ if(!confirm('确定撤回这条消息吗？发送后2分钟内可以撤回。'))return;
+ try{const {error}=await db.rpc('retract_message',{p_message_id:id});if(error)throw error;replyTargetMessage=null;await loadMessages();await openConversation(peer);notify('已撤回','这条消息已从双方对话中撤回。')}
+ catch(e){showError(e)}
+}
 async function sendThreadReply(peer){
  const input=$('threadReply'),content=input?.value.trim();if(!content)return;
- try{const {error}=await db.from('messages').insert({sender_id:user.id,receiver_id:peer,content,is_read:false});if(error)throw error;await loadMessages();await openConversation(peer)}
+ try{const payload={sender_id:user.id,receiver_id:peer,content,is_read:false};if(replyTargetMessage)payload.reply_to_id=replyTargetMessage.id;const {error}=await db.from('messages').insert(payload);if(error)throw error;replyTargetMessage=null;await loadMessages();await openConversation(peer)}
  catch(e){showError(e)}
 }
 async function deleteMessage(id,peer){
