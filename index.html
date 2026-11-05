@@ -214,6 +214,71 @@ max-width:420px;max-height:85vh;overflow:auto;
 .message-composer button{border:0;border-radius:13px;padding:13px 16px;background:var(--blue);color:white;font-weight:650}
 .message-nav{position:relative}
 .unread-badge{display:inline-grid;place-items:center;min-width:16px;height:16px;padding:0 4px;border-radius:10px;background:#e77e83;color:white;font-size:9px;position:absolute;top:0;right:5px}
+
+/* Premium ocean visual system */
+:root{--blue:#397fb4;--blue2:#eaf4fb;--ink:#23364c;--muted:#8799aa;--line:#e5edf3;--bg:#f2f6fb}
+body{background:linear-gradient(180deg,#f6f9fc 0%,#eef4f9 100%);color:var(--ink)}
+header{background:rgba(249,252,255,.88);border-bottom:1px solid rgba(218,231,241,.7);box-shadow:0 5px 22px rgba(47,91,124,.045)}
+header h1{font-size:22px;letter-spacing:1px;color:#315b7b}
+header p{letter-spacing:.4px}
+.page{padding-left:17px;padding-right:17px}
+.card,.list-item{box-shadow:0 9px 28px rgba(43,82,113,.065);border-color:rgba(222,234,243,.9)}
+.btn{border-radius:15px;box-shadow:0 5px 13px rgba(52,105,147,.08)}
+.btn.primary{background:linear-gradient(115deg,#397fb8,#6aa9ce)}
+.home-topline{display:flex;align-items:center;justify-content:space-between;margin:1px 2px 14px}
+.home-brand{font-size:20px;font-weight:800;letter-spacing:2px;color:#294e6c}
+.home-brand span{display:block;font-size:8px;letter-spacing:2.2px;color:#8ba9bd;font-weight:650;margin-top:2px}
+.home-tagline{font-size:11px;color:#8b9eaf;margin-top:5px}
+.home-date{font-size:9px;letter-spacing:1.2px;color:#9aafbf;text-align:right}
+.home-date strong{display:block;font-size:11px;letter-spacing:0;color:#6888a0;margin-top:4px}
+.hero-premium{height:360px;border-radius:27px;padding:27px 22px 18px;background:linear-gradient(155deg,#5e9ed0 0%,#548bbd 39%,#f1b9a7 72%,#f4d8c0 100%);color:#fff;box-shadow:0 18px 38px rgba(55,111,157,.24);isolation:isolate}
+.hero-premium:before{width:245px;height:245px;right:-75px;top:15px;border-color:rgba(255,255,255,.28)}
+.hero-premium:after{width:185px;height:185px;left:-65px;bottom:16px;border-color:rgba(255,255,255,.2)}
+.hero-sky{position:absolute;inset:0;overflow:hidden;z-index:-1;background:radial-gradient(circle at 78% 43%,rgba(255,232,192,.9) 0 5%,rgba(255,218,184,.2) 6% 17%,transparent 32%),linear-gradient(180deg,rgba(26,70,112,.06),rgba(22,71,112,.18))}
+.hero-star{position:absolute;color:#fff4dc;text-shadow:0 0 12px #fff;opacity:.9}
+.star-one{top:34px;right:27%;font-size:20px}.star-two{top:105px;right:13%;font-size:17px}
+.hero-moon{position:absolute;right:14%;top:75px;font-size:58px;color:#ffe9c6;text-shadow:0 0 28px rgba(255,233,198,.65)}
+.hero-bird{position:absolute;right:35%;top:44px;font-size:40px;color:#fff;transform:rotate(-12deg);opacity:.8}
+.hero-copy{position:relative;z-index:2;max-width:88%}
+.hero-kicker{font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.8);font-weight:700}
+.hero-premium h2{font-size:29px;line-height:1.35;letter-spacing:1px;margin:17px 0 9px;color:#fff;text-shadow:0 2px 12px rgba(30,67,99,.18)}
+.hero-premium p{font-size:12px;line-height:1.8;color:rgba(255,255,255,.9);margin:0;max-width:245px}
+.hero-cta{display:flex;align-items:center;gap:8px;margin-top:19px;padding:12px 15px;border:0;border-radius:24px;background:linear-gradient(100deg,#fff,#fff0e7);color:#365f85;font-size:12px;font-weight:750;box-shadow:0 7px 20px rgba(34,70,104,.17)}
+.hero-cta span{font-size:17px;color:#d49d76}.hero-cta b{font-size:17px;margin-left:3px}
+.hero-bottle{position:absolute;z-index:2;right:18px;bottom:77px;font-size:76px;transform:rotate(19deg);filter:drop-shadow(0 9px 9px rgba(22,57,89,.3));animation:floatBottle 4s ease-in-out infinite}
+.hero-wave{position:absolute;left:-8%;width:116%;height:100px;bottom:0;border-radius:50% 50% 0 0/28% 30% 0 0}
+.wave-back{bottom:16px;background:linear-gradient(180deg,rgba(125,190,219,.28),rgba(40,105,155,.45));transform:rotate(-3deg)}
+.wave-front{background:linear-gradient(180deg,rgba(48,121,171,.28),rgba(24,83,133,.72));clip-path:ellipse(70% 55% at 50% 100%)}
+.hero-caption{position:absolute;z-index:3;bottom:16px;left:22px;display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.84);font-size:9px;letter-spacing:.5px}
+.hero-caption span:first-child{font-size:10px;font-weight:800}.hero-caption i{width:25px;height:1px;background:#fff9}
+.home-quick-four{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:16px 0 19px}
+.home-quick-four .quick-card{padding:13px 3px 12px;border-radius:18px;background:rgba(255,255,255,.86);box-shadow:0 8px 22px rgba(48,91,124,.06);border-color:#e9f0f5}
+.home-quick-four .qicon{width:42px;height:42px;display:grid;place-items:center;margin:0 auto 8px;border-radius:50%;background:linear-gradient(145deg,#edf7ff,#dcecf9);font-size:21px}
+.home-quick-four .quick-card:nth-child(2) .qicon{background:linear-gradient(145deg,#fef1ef,#f8e2e7)}
+.home-quick-four .quick-card:nth-child(3) .qicon{background:linear-gradient(145deg,#fff6e7,#f9e9d4)}
+.home-quick-four .quick-card:nth-child(4) .qicon{background:linear-gradient(145deg,#e8f7fb,#d8eef4)}
+.home-quick-four .quick-card strong{font-size:11px;white-space:nowrap}
+.home-quick-four .quick-card span{font-size:9px;line-height:1.4}
+.home-quote{position:relative;overflow:hidden;padding:17px 18px 15px;border-radius:21px;margin:5px 0 22px;background:linear-gradient(115deg,#315f91,#659bc0 58%,#e8b7a1);color:#fff;box-shadow:0 10px 25px rgba(50,97,138,.17)}
+.home-quote:after{content:"☾";position:absolute;right:20px;top:8px;font-size:46px;color:#ffe8c3;opacity:.9}
+.quote-label{font-size:9px;letter-spacing:1.5px;color:#e5f0f7;font-weight:700}
+.quote-label span{display:none}
+.home-quote p{font-size:15px;line-height:1.85;letter-spacing:.5px;margin:13px 0 2px;position:relative;z-index:1}
+.quote-wave{font-size:15px;letter-spacing:2px;color:#d8ecf5;opacity:.65;white-space:nowrap}
+.home-section-head{margin:21px 2px 12px}
+.home-section-head .section-title{font-size:18px;letter-spacing:.4px;color:#2e4c66}
+.home-section-head button{font-weight:600}
+.home-tip{background:linear-gradient(110deg,#eaf3f9,#f6f9fc);border:1px solid #e5eef4}
+#homeFeed .list-item{border-radius:19px;background:rgba(255,255,255,.92);padding:16px}
+#discover,#messages,#profile{padding-top:20px}
+#discover .discover-banner{box-shadow:0 8px 22px rgba(50,100,137,.07)}
+#profile .profile-head{background:linear-gradient(155deg,#fff,#edf6fb);border-radius:25px}
+#mainNav{background:rgba(255,255,255,.9);backdrop-filter:blur(22px);border-top:1px solid rgba(221,233,242,.9);box-shadow:0 -8px 28px rgba(49,85,114,.055);padding-bottom:env(safe-area-inset-bottom)}
+.navbtn{font-size:11px;transition:color .2s ease}
+.navbtn.active{color:#356f9f}
+.modalbox{box-shadow:0 18px 55px rgba(24,53,79,.2);border:1px solid rgba(232,241,247,.9)}
+@media(max-width:380px){.hero-premium{height:345px;padding:23px 18px}.hero-premium h2{font-size:26px}.hero-bottle{right:10px;font-size:65px}.home-quick-four .quick-card span{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.hero-bottle,.hero .bottle{animation:none}}
 </style>
 </head>
 
@@ -227,35 +292,29 @@ max-width:420px;max-height:85vh;overflow:auto;
 <main>
 
 <section class="page active" id="home">
-<div class="home-intro">
-<div><div class="eyebrow">OCEAN OF STORIES</div><div class="sub">把心事交给大海，把温柔留给彼此</div></div>
-<div class="date">今日 · 随心漂流</div>
+<div class="home-topline"><div><div class="home-brand">漂流瓶<span>DRIFTING BOTTLE</span></div><div class="home-tagline">把心事交给大海，把温柔留给彼此</div></div><div class="home-date">TODAY <strong>随心漂流</strong></div></div>
+<div class="hero hero-premium">
+<div class="hero-sky"><span class="hero-star star-one">✦</span><span class="hero-star star-two">✧</span><span class="hero-moon">☼</span><span class="hero-bird">⌁</span></div>
+<div class="hero-copy"><span class="hero-kicker">A MESSAGE TO THE OCEAN</span><h2>大海正在<br>等待你的故事</h2><p>把心事装进漂流瓶，让它飘向未知的远方。</p>
+<button class="hero-cta" data-action="write"><span>✧</span> 立即投递一只漂流瓶 <b>→</b></button></div>
+<div class="hero-bottle" aria-hidden="true">🍾</div>
+<div class="hero-wave wave-back"></div><div class="hero-wave wave-front"></div>
+<div class="hero-caption"><span>01</span><i></i><span>每一段心事，都值得被听见</span></div>
 </div>
-<div class="hero">
-<div class="bottle">🍾</div>
-<h2>大海正在等待你的故事</h2>
-<p>每一次投递，都是一次温柔的相遇</p>
+<div class="home-quick home-quick-four">
+<div class="quick-card" data-action="write"><div class="qicon">🫧</div><strong>扔瓶子</strong><span>写下此刻心情</span></div>
+<div class="quick-card" data-action="pick"><div class="qicon">🌊</div><strong>收瓶子</strong><span>遇见陌生故事</span></div>
+<div class="quick-card" data-action="favorites"><div class="qicon">☆</div><strong>我的收藏</strong><span>珍藏温暖语语</span></div>
+<div class="quick-card" data-page="messages"><div class="qicon">✉</div><strong>海上来信</strong><span>查看回复消息</span></div>
 </div>
-<div class="actions">
-<button class="btn primary" data-action="write">✉️ 投递漂流瓶</button>
-<button class="btn" data-action="pick">🌊 捡一个瓶子</button>
+<div class="home-quote">
+<div class="quote-label">TODAY'S OCEAN NOTE <span>☾</span></div>
+<p>“有些心事，不必说给世界听，<br>但可以交给大海。”</p>
+<div class="quote-wave">～～～～～～～～～～</div>
 </div>
-<div class="home-quick">
-<div class="quick-card" data-page="discover"><div class="qicon">🫧</div><strong>发现故事</strong><span>听听远方的声音</span></div>
-<div class="quick-card" data-action="favorites"><div class="qicon">🤍</div><strong>珍藏心情</strong><span>收藏喜欢的故事</span></div>
-<div class="quick-card" data-page="messages"><div class="qicon">💌</div><strong>海上来信</strong><span>查看新的回应</span></div>
-</div>
-<div class="home-section-head"><div class="section-title">今日海洋</div><span class="meta">OCEAN NOTES</span></div>
-<div class="card ocean-note">
-<p style="line-height:1.8;margin:0 0 9px">🐚 每一个陌生人的故事，都值得被温柔对待。愿你今天也能收到一份不期而遇的善意。</p>
-<span class="meta">一只漂流瓶 · 一段陌生的心事</span>
-</div>
-<div class="home-section-head">
-<div class="section-title">海上来信</div>
-<button data-page="discover">探索更多 ›</button>
-</div>
+<div class="home-section-head"><div class="section-title">海上故事</div><button data-page="discover">探索更多 ›</button></div>
 <div id="homeFeed"></div>
-<div class="home-tip"><div class="tip-icon">🌙</div><div><strong>给远方的你</strong><span>不必认识，也可以认真倾听。</span></div></div>
+<div class="home-tip"><div class="tip-icon">☾</div><div><strong>给远方的你</strong><span>不必认识，也可以认真倾听。</span></div></div>
 </section>
 
 <section class="page" id="discover">
