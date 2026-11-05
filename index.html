@@ -348,6 +348,36 @@ let authMode='login';
 let authMethod='email';
 let activeFilter='all';
 let messageReceiver=null;
+// 官方体验示例漂流瓶
+const demoBottles=[
+{
+id:'demo-1',
+user_id:null,
+content:'今天下班路上看到晚霞，突然觉得生活里还是有很多值得期待的小事。希望看到这段话的你，也能遇见一点温柔。',
+created_at:'2026-11-05T10:00:00Z',
+is_public:true,
+mood:'warm',
+is_demo:true
+},
+{
+id:'demo-2',
+user_id:null,
+content:'有时候不是不开心，只是有些话不知道该对谁说。如果你也有这样的时刻，希望你知道，慢一点也没关系。',
+created_at:'2026-11-04T12:00:00Z',
+is_public:true,
+mood:'thought',
+is_demo:true
+},
+{
+id:'demo-3',
+user_id:null,
+content:'想对未来的自己说：别忘了当初为什么出发。即使走得慢，也要继续往前。',
+created_at:'2026-11-03T08:00:00Z',
+is_public:true,
+mood:'warm',
+is_demo:true
+}
+];
 
 function notify(title,body){
 $('modalTitle').textContent=title;
@@ -457,7 +487,7 @@ el.append(c);
 });
 }
 function renderDiscover(){
-let items=bottles.filter(b=>b.is_public);
+let items=[...demoBottles,...bottles.filter(b=>b.is_public)];
 if(activeFilter!=='all')items=items.filter(b=>b.mood===activeFilter);
 renderList('discoverList',items,'暂时还没有公开漂流瓶。');
 }
@@ -559,7 +589,7 @@ notify('投递成功','你的漂流瓶已经投进云端大海。');
 // 随机捡瓶
 async function pickBottle(){
 try{
-const pool=bottles.filter(b=>b.is_public&&b.user_id!==user?.id);
+const pool=[...demoBottles,...bottles.filter(b=>b.is_public&&b.user_id!==user?.id)];
 if(!pool.length){
 notify('海面暂时很安静','暂时没有其他用户公开投递的漂流瓶。');
 return;
