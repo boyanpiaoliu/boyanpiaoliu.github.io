@@ -1141,6 +1141,9 @@ await refreshAll();
 }
 });
 
+// 定时检查好友申请数量：不必先进入好友页面也能看到新申请
+setInterval(()=>{if(user)refreshFriendRequestCount()},20000);
+
 // 启动
 (async()=>{
 try{
