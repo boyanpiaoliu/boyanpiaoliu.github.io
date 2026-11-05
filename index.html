@@ -380,6 +380,27 @@ header p{letter-spacing:.4px}
 .chat-line.mine .chat-context-actions{align-self:flex-end}
 .chat-line.theirs .chat-context-actions{align-self:flex-start}
 
+
+.bubble-color-setting{margin:18px 0;padding-top:15px;border-top:1px solid #e8eef3}
+.bubble-color-note{font-size:11px;color:#91a2b1;margin:5px 0 12px}
+.bubble-color-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px 7px}
+.bubble-color-swatch{border:1px solid #e5ebf0;border-radius:12px;background:#fff;padding:7px 3px;display:flex;flex-direction:column;align-items:center;gap:5px;color:#74889a}
+.bubble-color-swatch>span{width:27px;height:27px;border-radius:50%;background:var(--swatch);border:2px solid rgba(30,55,75,.08)}
+.bubble-color-swatch small{font-size:9px;white-space:nowrap}
+.bubble-color-swatch.selected{border:2px solid #568db8;background:#f2f8fc}
+.chat-avatar{cursor:pointer}
+.profile-view-overlay{position:fixed;inset:0;z-index:1000;background:rgba(28,45,62,.38);backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:center;padding:24px}
+.profile-view-card{position:relative;width:min(100%,340px);border-radius:25px;background:#fff;padding:30px 22px 22px;text-align:center;box-shadow:0 18px 60px rgba(30,55,75,.2)}
+.profile-view-close{position:absolute;right:14px;top:12px;border:0;background:#f1f5f8;border-radius:50%;width:30px;height:30px;font-size:21px;color:#74899a}
+.profile-view-avatar{width:86px;height:86px;border-radius:50%;overflow:hidden;margin:0 auto 13px;background:#edf5fa;display:grid;place-items:center;font-size:32px;color:#63849c;border:3px solid white;box-shadow:0 4px 18px #34536a20}
+.profile-view-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-view-card h3{margin:0;color:#30485d;font-size:19px}
+.profile-view-card>p{font-size:11px;color:#94a4b1;margin:7px 0 18px}
+.profile-view-details{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #edf1f4;padding:15px 0;margin-bottom:14px}
+.profile-view-details div{display:flex;flex-direction:column;gap:7px}
+.profile-view-details span{font-size:10px;color:#9aabb8}
+.profile-view-details strong{font-size:13px;color:#536f85}
+
 </style>
 </head>
 
@@ -505,6 +526,9 @@ header p{letter-spacing:.4px}
 <label class="form-label">昵称</label>
 <input id="editNickname" maxlength="20" placeholder="请输入昵称">
 <div id="genderChoiceWrap" class="gender-choice-wrap"><label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div></div>
+<div class="bubble-color-setting"><label class="form-label">聊天气泡颜色</label><p class="bubble-color-note">选择你喜欢的颜色，保存后会应用到你发送的消息。</p><div class="bubble-color-options">
+<button type="button" class="bubble-color-swatch" data-bubble-color="#a9d6f5" title="海盐蓝" aria-label="海盐蓝" style="--swatch:#a9d6f5"><span></span><small>海盐蓝</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f5bdd4" title="樱花粉" aria-label="樱花粉" style="--swatch:#f5bdd4"><span></span><small>樱花粉</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#b9e4c9" title="薄荷绿" aria-label="薄荷绿" style="--swatch:#b9e4c9"><span></span><small>薄荷绿</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f6d59b" title="奶油黄" aria-label="奶油黄" style="--swatch:#f6d59b"><span></span><small>奶油黄</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#c9c4f5" title="薰衣草" aria-label="薰衣草" style="--swatch:#c9c4f5"><span></span><small>薰衣草</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#b9dce8" title="雾霾蓝" aria-label="雾霾蓝" style="--swatch:#b9dce8"><span></span><small>雾霾蓝</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f2b8a8" title="蜜桃橘" aria-label="蜜桃橘" style="--swatch:#f2b8a8"><span></span><small>蜜桃橘</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#d5dce5" title="月光灰" aria-label="月光灰" style="--swatch:#d5dce5"><span></span><small>月光灰</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#e7c6f3" title="梦幻紫" aria-label="梦幻紫" style="--swatch:#e7c6f3"><span></span><small>梦幻紫</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#c9d9a8" title="青柠绿" aria-label="青柠绿" style="--swatch:#c9d9a8"><span></span><small>青柠绿</small></button>
+</div></div>
 <button class="btn primary block" data-action="saveProfile">保存资料</button>
 </div>
 </section>
@@ -558,6 +582,7 @@ header p{letter-spacing:.4px}
 </div>
 </section>
 
+<div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>性别</span><strong id="profileViewGender">未设置</strong></div><div><span>气泡颜色</span><strong id="profileViewColor">默认</strong></div></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button></div></div>
 </main>
 
 <nav id="mainNav">
@@ -624,6 +649,7 @@ let messageReceiver=null;
 let friendSearchResult=null;
 let selectedGender=null;
 let replyTargetMessage=null;
+let selectedBubbleColor=null;
 // 官方体验示例漂流瓶
 const demoBottles=[
 {
@@ -698,6 +724,24 @@ if(e)throw e;
 profile=newProfile;
 }
 syncProfile();
+}
+
+async function showUserProfile(id){
+ try{
+  let person;
+  if(id===user?.id)person=profile;
+  else{const {data,error}=await db.rpc('view_friend_profile',{p_id:id});if(error)throw error;person=data?.[0]}
+  if(!person){notify('暂时无法查看','只能查看自己和已成为好友的用户资料。');return}
+  const av=$('profileViewAvatar');av.replaceChildren();
+  if(person.avatar_url){const img=document.createElement('img');img.src=person.avatar_url;img.alt='头像';av.append(img)}else av.textContent=(person.nickname||'漂').slice(0,1);
+  $('profileViewName').textContent=person.nickname||'漂流者';
+  $('profileViewId').textContent='好友 ID：'+(person.friend_code||'—');
+  $('profileViewGender').textContent=person.gender==='female'?'女生':person.gender==='male'?'男生':'未设置';
+  const colors={'#a9d6f5':'海盐蓝','#f5bdd4':'樱花粉','#b9e4c9':'薄荷绿','#f6d59b':'奶油黄','#c9c4f5':'薰衣草','#b9dce8':'雾霾蓝','#f2b8a8':'蜜桃橘','#d5dce5':'月光灰','#e7c6f3':'梦幻紫','#c9d9a8':'青柠绿'};
+  $('profileViewColor').textContent=colors[person.bubble_color]||'默认';
+  $('profileViewEdit').style.display=id===user?.id?'block':'none';
+  $('profileViewModal').style.display='flex';
+ }catch(e){showError(e)}
 }
 function syncProfile(){
 $('nickname').textContent=profile?.nickname||'海边的风';
@@ -822,6 +866,7 @@ async function openConversation(peer){
  const person=mine?profile:peerProfile;
  line.classList.add(person?.gender==='female'?'gender-female':'gender-male');
  if(person?.avatar_url){const image=document.createElement('img');image.src=person.avatar_url;image.alt=mine?'我的头像':'对方头像';avatar.append(image)}
+ avatar.dataset.profileId=person?.id|| (mine?user.id:peer);avatar.title='查看'+(mine?'我的':'对方')+'资料';
  else avatar.textContent=(person?.nickname||(mine?'我':'友')).slice(0,1);
  const content=document.createElement('div');content.className='chat-content';
  const bubble=document.createElement('div');bubble.className='message-bubble '+(mine?'mine':'theirs')+(m.is_retracted?' retracted':'');
@@ -830,6 +875,7 @@ async function openConversation(peer){
   const q=document.createElement('div');q.className='chat-quote';q.textContent=quoted?(quoted.is_retracted?'引用：消息已撤回':'引用：'+quoted.content):'引用了一条消息';bubble.append(q);
  }
  const body=document.createElement('div');body.textContent=m.is_retracted?'这条消息已撤回':m.content;bubble.append(body);
+ const bubbleColor=person?.bubble_color;if(bubbleColor){bubble.style.background=bubbleColor;bubble.style.color='#30485d'}
  content.append(bubble);
  const time=document.createElement('time');time.className='chat-meta-time';time.textContent=dateText(m.created_at);content.append(time);
  if(!m.is_retracted){
@@ -1177,6 +1223,7 @@ const genderWrap=$('genderChoiceWrap');
 if(profile?.gender){genderWrap.innerHTML='<label class="form-label">性别</label><div class="gender-choice-locked">'+(profile.gender==='female'?'女生':'男生')+' · 已确认，性别仅可选择一次</div>'}
 else{genderWrap.innerHTML='<label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div>'}
 const img=$('editAvatarPreview'),fallback=$('editAvatarFallback');if(profile?.avatar_url){img.src=profile.avatar_url;img.style.display='block';fallback.style.display='none'}else{img.style.display='none';fallback.style.display='block'}
+selectedBubbleColor=profile?.bubble_color||'#a9d6f5';document.querySelectorAll('[data-bubble-color]').forEach(b=>b.classList.toggle('selected',b.dataset.bubbleColor===selectedBubbleColor));
 showPage('editProfile');
 }
 async function saveProfile(){
@@ -1196,11 +1243,11 @@ if(file){
  const {data}=db.storage.from('avatars').getPublicUrl(path);
  avatar_url=data.publicUrl+'?v='+Date.now();
 }
-const profileUpdate={id:user.id,nickname,avatar_url};if(!profile?.gender)profileUpdate.gender=selectedGender;
+const profileUpdate={id:user.id,nickname,avatar_url,bubble_color:selectedBubbleColor||profile?.bubble_color||'#a9d6f5'};if(!profile?.gender)profileUpdate.gender=selectedGender;
 const {data,error}=await db.from('profiles').upsert(profileUpdate).select().single();
 if(error)throw error;
 profile=data;syncProfile();showPage('profile');
-notify('保存成功','昵称和头像已同步到云端。');
+notify('保存成功','昵称、头像和聊天气泡外观已同步到云端。');
 }catch(e){showError(e)}
 }
 
@@ -1242,6 +1289,11 @@ activeFilter=filter.dataset.filter;
 document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b===filter));
 renderDiscover();return;
 }
+const color=e.target.closest('[data-bubble-color]');
+if(color){selectedBubbleColor=color.dataset.bubbleColor;document.querySelectorAll('[data-bubble-color]').forEach(b=>b.classList.toggle('selected',b===color));return}
+const closeProfile=e.target.closest('[data-action="closeProfileView"]');if(closeProfile){$('profileViewModal').style.display='none';return}
+const avatarTarget=e.target.closest('.chat-avatar');if(avatarTarget?.dataset.profileId){await showUserProfile(avatarTarget.dataset.profileId);return}
+const ownAvatar=e.target.closest('#avatar');if(ownAvatar&&user){await showUserProfile(user.id);return}
 const gender=e.target.closest('[data-gender]');
 if(gender){if(profile?.gender){notify('性别已锁定','性别只能选择一次。');return}selectedGender=gender.dataset.gender;document.querySelectorAll('[data-gender]').forEach(b=>b.classList.toggle('selected',b.dataset.gender===selectedGender));return}
 const a=e.target.closest('[data-action]');
