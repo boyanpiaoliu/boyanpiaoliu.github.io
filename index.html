@@ -46,6 +46,30 @@ background:white;border:1px solid var(--line);
 border-radius:22px;padding:18px;margin-bottom:13px;
 box-shadow:0 8px 28px rgba(55,100,140,.06);
 }
+
+.home-intro{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 14px}
+.home-intro .eyebrow{font-size:11px;letter-spacing:1.5px;color:#6f9bb8;font-weight:700}
+.home-intro .date{font-size:12px;color:#9aaaba}
+.hero{position:relative;overflow:hidden;box-shadow:0 16px 34px rgba(43,112,155,.18)}
+.hero:before,.hero:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.22);border-radius:50%;pointer-events:none}
+.hero:before{width:220px;height:220px;right:-75px;top:-105px}
+.hero:after{width:170px;height:170px;left:-75px;bottom:-105px}
+.hero .bottle{filter:drop-shadow(0 8px 10px rgba(23,74,106,.25));animation:floatBottle 3.5s ease-in-out infinite}
+@keyframes floatBottle{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-7px) rotate(4deg)}}
+.home-quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:18px 0 22px}
+.quick-card{border:1px solid #e5eef5;background:linear-gradient(160deg,#fff,#f4f9fd);border-radius:18px;padding:14px 6px;text-align:center;cursor:pointer}
+.quick-card .qicon{font-size:22px;margin-bottom:7px}
+.quick-card strong{display:block;font-size:12px;color:#405b73}
+.quick-card span{display:block;font-size:10px;color:#9aaaba;margin-top:4px}
+.ocean-note{position:relative;overflow:hidden;background:linear-gradient(120deg,#fff,#eef8fd);border:1px solid #e1eff7}
+.home-section-head{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 12px}
+.home-section-head .section-title{margin:0}
+.home-section-head button{border:0;background:transparent;color:#6b9fc1;font-size:12px;padding:6px}
+.home-tip{display:flex;gap:12px;align-items:center;padding:14px 15px;border-radius:18px;background:#eaf4fa;margin:18px 0 4px}
+.home-tip .tip-icon{font-size:24px}
+.home-tip strong{display:block;font-size:13px;margin-bottom:3px}
+.home-tip span{font-size:11px;color:#8298aa}
+
 .hero{
 min-height:245px;border-radius:28px;padding:25px 18px;
 background:linear-gradient(145deg,#a9dff3,#5da9d4 48%,#286a9e);
@@ -153,25 +177,35 @@ max-width:420px;max-height:85vh;overflow:auto;
 <main>
 
 <section class="page active" id="home">
+<div class="home-intro">
+<div><div class="eyebrow">OCEAN OF STORIES</div><div class="sub">把心事交给大海，把温柔留给彼此</div></div>
+<div class="date">今日 · 随心漂流</div>
+</div>
 <div class="hero">
 <div class="bottle">🍾</div>
 <h2>大海正在等待你的故事</h2>
-<p>把心情交给海风，让缘分带你相遇</p>
+<p>每一次投递，都是一次温柔的相遇</p>
 </div>
-
 <div class="actions">
 <button class="btn primary" data-action="write">✉️ 投递漂流瓶</button>
 <button class="btn" data-action="pick">🌊 捡一个瓶子</button>
 </div>
-
-<div class="section-title">今日海洋</div>
-<div class="card">
-<p style="line-height:1.7">🐚 每一个陌生人的故事，都值得被温柔对待。</p>
-<span class="meta">漂流瓶 · 与陌生人分享心情</span>
+<div class="home-quick">
+<div class="quick-card" data-page="discover"><div class="qicon">🫧</div><strong>发现故事</strong><span>听听远方的声音</span></div>
+<div class="quick-card" data-action="favorites"><div class="qicon">🤍</div><strong>珍藏心情</strong><span>收藏喜欢的故事</span></div>
+<div class="quick-card" data-page="messages"><div class="qicon">💌</div><strong>海上来信</strong><span>查看新的回应</span></div>
 </div>
-
+<div class="home-section-head"><div class="section-title">今日海洋</div><span class="meta">OCEAN NOTES</span></div>
+<div class="card ocean-note">
+<p style="line-height:1.8;margin:0 0 9px">🐚 每一个陌生人的故事，都值得被温柔对待。愿你今天也能收到一份不期而遇的善意。</p>
+<span class="meta">一只漂流瓶 · 一段陌生的心事</span>
+</div>
+<div class="home-section-head">
 <div class="section-title">海上来信</div>
+<button data-page="discover">探索更多 ›</button>
+</div>
 <div id="homeFeed"></div>
+<div class="home-tip"><div class="tip-icon">🌙</div><div><strong>给远方的你</strong><span>不必认识，也可以认真倾听。</span></div></div>
 </section>
 
 <section class="page" id="discover">
