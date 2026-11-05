@@ -772,13 +772,18 @@ async function openConversation(peer){
  if(!user)return;
  try{
  const {error}=await db.rpc('mark_conversation_read',{p_peer:peer});if(error)throw error;
+ // 先同步本地状态，避免旧缓存继续显示红点
+ messages=messages.map(m=>m.sender_id===peer&&m.receiver_id===user.id?{...m,is_read:true}:m);
+ updateUnreadBadge();
  await loadMessages();
+ messages=messages.map(m=>m.sender_id===peer&&m.receiver_id===user.id?{...m,is_read:true}:m);
+ updateUnreadBadge();
  const items=messages.filter(m=>m.sender_id===peer||m.receiver_id===peer).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  const {data:friendProfiles}=await db.rpc('get_my_friends');
  const peerProfile=(friendProfiles||[]).find(f=>f.id===peer)||null;
  $('messageList').style.display='none';const thread=$('messageThread');thread.style.display='block';thread.replaceChildren();
  const head=document.createElement('div');head.className='message-thread-head';
- const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',()=>{replyTargetMessage=null;renderMessages()});
+ const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',async()=>{replyTargetMessage=null;await loadMessages();renderMessages()});
  const title=document.createElement('strong');title.textContent='与 '+(peerProfile?.nickname||'好友')+' 的对话';head.append(back,title);thread.append(head);
  items.forEach(m=>{
  const mine=m.sender_id===user.id;
