@@ -745,6 +745,8 @@ async function openConversation(peer){
  const {error}=await db.from('messages').update({is_read:true}).eq('sender_id',peer).eq('receiver_id',user.id).eq('is_read',false);if(error)throw error;
  await loadMessages();
  const items=messages.filter(m=>m.sender_id===peer||m.receiver_id===peer).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ const {data:friendProfiles}=await db.rpc('get_my_friends');
+ const peerProfile=(friendProfiles||[]).find(f=>f.id===peer)||null;
  $('messageList').style.display='none';const thread=$('messageThread');thread.style.display='block';thread.replaceChildren();
  const head=document.createElement('div');head.className='message-thread-head';
  const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',renderMessages);
@@ -753,9 +755,9 @@ async function openConversation(peer){
  const mine=m.sender_id===user.id;
  const line=document.createElement('div');line.className='chat-line '+(mine?'mine':'theirs');
  const avatar=document.createElement('div');avatar.className='chat-avatar';
- const person=mine?profile:null;
- if(person?.avatar_url){const image=document.createElement('img');image.src=person.avatar_url;image.alt='我的头像';avatar.append(image)}
- else avatar.textContent=(person?.nickname||'我').slice(0,1);
+ const person=mine?profile:peerProfile;
+ if(person?.avatar_url){const image=document.createElement('img');image.src=person.avatar_url;image.alt=mine?'我的头像':'对方头像';avatar.append(image)}
+ else avatar.textContent=(person?.nickname|| (mine?'我':'友')).slice(0,1);
  const content=document.createElement('div');content.className='chat-content';
  const bubble=document.createElement('div');bubble.className='message-bubble '+(mine?'mine':'theirs');bubble.textContent=m.content;
  const time=document.createElement('time');time.textContent=dateText(m.created_at);bubble.append(time);
@@ -810,7 +812,7 @@ async function loadFriends(){
  for(const req of requests||[]){
   const {data:people,error}=await db.rpc('search_profile_by_id',{p_id:req.sender_id});if(error)throw error;
   const person=people?.[0];const row=document.createElement('div');row.className='friend-request-row';
-  const av=document.createElement('div');av.className='friend-avatar';av.textContent=(person?.nickname||'漂').slice(0,1);
+  const av=document.createElement('div');av.className='friend-avatar';if(person?.avatar_url){const im=document.createElement('img');im.src=person.avatar_url;im.alt='头像';im.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';av.append(im)}else av.textContent=(person?.nickname||'漂').slice(0,1);
   const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person?.nickname||'漂流者';const id=document.createElement('span');id.textContent='ID：'+(person?.friend_code||'');info.append(name,id);
   const accept=document.createElement('button');accept.className='friend-action accept';accept.textContent='同意';accept.addEventListener('click',()=>respondFriendRequest(req.id,'accepted'));
   const reject=document.createElement('button');reject.className='friend-action';reject.textContent='拒绝';reject.addEventListener('click',()=>respondFriendRequest(req.id,'rejected'));
@@ -819,7 +821,7 @@ async function loadFriends(){
  const friendBox=$('friendList');friendBox.replaceChildren();
  if(!friends?.length){friendBox.innerHTML='<div class="empty">还没有好友，试着搜索一个 ID 吧。</div>';return}
  friends.forEach(f=>{
-  const row=document.createElement('div');row.className='friend-row';const av=document.createElement('div');av.className='friend-avatar';av.textContent=(f.nickname||'漂').slice(0,1);
+  const row=document.createElement('div');row.className='friend-row';const av=document.createElement('div');av.className='friend-avatar';if(f.avatar_url){const im=document.createElement('img');im.src=f.avatar_url;im.alt='头像';im.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';av.append(im)}else av.textContent=(f.nickname||'漂').slice(0,1);
   const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=f.nickname||'漂流者';const id=document.createElement('span');id.textContent='ID：'+(f.friend_code||'');info.append(name,id);
   const msg=document.createElement('button');msg.className='friend-action';msg.textContent='发消息';msg.addEventListener('click',()=>{messageReceiver=f.id;openMessage(f.id)});
   row.append(av,info,msg);friendBox.append(row);
