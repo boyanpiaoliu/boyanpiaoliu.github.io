@@ -82,13 +82,19 @@ textarea{height:130px;resize:none}
 <div class="meta">ID：102948</div>
 </div>
 <div class="card">
-<div class="row">📮 我的瓶子 <span id="mycount">0　›</span></div>
+<div class="row" onclick="openMyBottles()" style="cursor:pointer">
+📮 我的瓶子 <span id="mycount">0　›</span>
+</div>
 <div class="row">❤️ 我的收藏 <span>0　›</span></div>
 <div class="row">👥 我的关注 <span>0　›</span></div>
 <div class="row">⚙️ 设置 <span>›</span></div>
 </div>
 </section>
-
+<section class="page" id="myBottles">
+  <div class="section-title">📮 我的瓶子</div>
+  <button onclick="backToProfile()">← 返回我的</button>
+  <div id="bottleList"></div>
+</section>
 <nav>
 <button class="selected" onclick="showPage('home',this)"><span>⌂</span>首页</button>
 <button onclick="showPage('discover',this)"><span>◉</span>发现</button>
@@ -114,6 +120,45 @@ document.getElementById(id).classList.add('active');
 document.querySelectorAll('nav button').forEach(b=>b.classList.remove('selected'));
 btn.classList.add('selected');
 }
+
+function openMyBottles(){
+  const list=document.getElementById('bottleList');
+  list.innerHTML='';
+
+  if(bottles.length===0){
+    list.innerHTML='<div class="card">还没有投递漂流瓶</div>';
+  }else{
+    bottles.forEach((b)=>{
+      const card=document.createElement('div');
+      card.className='card';
+
+      const p=document.createElement('p');
+      p.textContent=b.text;
+      card.appendChild(p);
+
+      const meta=document.createElement('div');
+      meta.className='meta';
+      meta.textContent=b.date||'';
+      card.appendChild(meta);
+
+      list.appendChild(card);
+    });
+  }
+
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.remove('active');
+  });
+
+  document.getElementById('myBottles').classList.add('active');
+}
+
+function backToProfile(){
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.remove('active');
+  });
+  document.getElementById('profile').classList.add('active');
+}
+
 function openModal(){document.getElementById('writeModal').classList.add('show')}
 function closeModal(){document.getElementById('writeModal').classList.remove('show')}
 function throwBottle(){
