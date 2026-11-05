@@ -350,6 +350,13 @@ header p{letter-spacing:.4px}
 .quote-compose span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .quote-compose button{border:0;background:transparent;color:#8799a8}
 
+
+/* 修正聊天气泡被 flex 压窄导致中文逐字换行 */
+#messageThread .chat-line{width:100%;box-sizing:border-box}
+#messageThread .chat-content{width:72%;max-width:72%;min-width:0;flex:0 1 72%}
+#messageThread .message-bubble{display:inline-block;width:fit-content;max-width:100%;min-width:0;box-sizing:border-box;white-space:normal;word-break:normal;overflow-wrap:anywhere}
+#messageThread .message-bubble>div{white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
+
 </style>
 </head>
 
