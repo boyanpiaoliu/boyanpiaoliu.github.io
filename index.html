@@ -523,12 +523,16 @@ const p=document.createElement('p');p.style.whiteSpace='pre-wrap';p.style.lineHe
 const m=document.createElement('div');m.className='meta';m.textContent='漂流时间：'+dateText(b.created_at);
 card.append(p,m);box.append(card);
 const saved=favorites.some(f=>f.bottle_id===b.id);
-$('favoriteButton').textContent=saved?'♥ 已收藏':'♡ 收藏';
+$('favoriteButton').textContent=b.is_demo?'官方示例 · 不可收藏':saved?'♥ 已收藏':'♡ 收藏';
 $('sendMessageButton').style.display=user&&b.user_id!==user.id?'block':'none';
 showPage('detail');
 }
 async function toggleFavorite(){
 if(!requireLogin()||!activeBottle)return;
+if(activeBottle.is_demo){
+notify('官方体验示例','示例漂流瓶暂不支持收藏，但可以正常浏览。');
+return;
+}
 try{
 const existing=favorites.find(f=>f.bottle_id===activeBottle.id);
 if(existing){
