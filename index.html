@@ -305,6 +305,25 @@ header p{letter-spacing:.4px}
 #messageModal textarea,#messageText{min-height:86px;max-height:130px;padding:11px 13px;font-size:13px;line-height:1.55;border-radius:14px}
 #messageModal .btn{padding:11px 14px;font-size:12px}
 
+
+#messageThread .message-bubble{max-width:76%;padding:10px 13px;border-radius:17px;font-size:13px;line-height:1.6;box-shadow:0 3px 10px rgba(52,78,102,.06)}
+#messageThread .message-bubble.mine{background:linear-gradient(135deg,#cfeaff,#a9d6f5);color:#244f70;border-bottom-right-radius:5px}
+#messageThread .message-bubble.theirs{background:linear-gradient(135deg,#ffe3ec,#f8cbdc);color:#78465b;border-bottom-left-radius:5px}
+#messageThread .message-bubble time{color:rgba(70,90,110,.65)}
+.chat-line{display:flex;align-items:flex-end;gap:8px;margin:12px 0}
+.chat-line.mine{justify-content:flex-end}
+.chat-line.theirs{justify-content:flex-start}
+.chat-avatar{width:31px;height:31px;flex:0 0 31px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#e7f2f9;color:#5d86a2;font-size:12px;font-weight:700;border:1px solid #fff;box-shadow:0 2px 7px #54738b20}
+.chat-avatar img{width:100%;height:100%;object-fit:cover}
+.chat-content{max-width:calc(100% - 42px);display:flex;flex-direction:column}
+.chat-line.mine .chat-content{align-items:flex-end}
+.chat-line.theirs .chat-content{align-items:flex-start}
+.avatar-edit-preview{width:76px;height:76px;border-radius:50%;overflow:hidden;background:#e8f3f9;display:grid;place-items:center;margin:8px 0 12px;font-size:30px}
+.avatar-edit-preview img{width:100%;height:100%;object-fit:cover}
+#avatarFile{font-size:12px;padding:8px;margin-bottom:14px}
+#avatar{overflow:hidden}
+#avatar img{width:100%;height:100%;object-fit:cover}
+
 </style>
 </head>
 
@@ -412,7 +431,7 @@ header p{letter-spacing:.4px}
 <div class="card friends-search-card">
 <label class="form-label" for="friendSearchId">搜索好友 ID</label>
 <div class="fieldline"><input id="friendSearchId" placeholder="粘贴对方完整好友 ID" autocomplete="off" autocapitalize="off"><button class="btn primary" data-action="searchFriend">搜索</button></div>
-<p class="friends-hint">你的好友 ID：<strong id="myFriendId">登录后显示</strong> <button data-action="copyFriendId" class="copy-id">复制</button></p>
+<p class="friends-hint">你的数字好友 ID：<strong id="myFriendId">登录后显示</strong> <button data-action="copyFriendId" class="copy-id">复制</button></p>
 <div id="friendSearchResult"></div>
 </div>
 <div class="section-title">好友申请 <span id="friendRequestCount" class="friend-count">0</span></div>
@@ -424,6 +443,9 @@ header p{letter-spacing:.4px}
 <section class="page" id="editProfile">
 <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>编辑资料</h2></div>
 <div class="card">
+<label class="form-label">头像</label>
+<div class="avatar-edit-preview"><img id="editAvatarPreview" alt="头像预览" style="display:none"><span id="editAvatarFallback">🌊</span></div>
+<input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp">
 <label class="form-label">昵称</label>
 <input id="editNickname" maxlength="20" placeholder="请输入昵称">
 <button class="btn primary block" data-action="saveProfile">保存资料</button>
@@ -620,7 +642,8 @@ syncProfile();
 }
 function syncProfile(){
 $('nickname').textContent=profile?.nickname||'海边的风';
-$('userId').textContent=user?'ID：'+user.id.slice(0,8):'尚未登录';
+$('userId').textContent=user?'好友 ID：'+(profile?.friend_code||'生成中…'):'尚未登录';
+const av=$('avatar');if(av)av.innerHTML=profile?.avatar_url?'<img src="'+profile.avatar_url+'" alt="头像">':'🌊';
 $('authButton').textContent=user?'已登录':'登录 / 注册';
 $('logoutRow').style.display=user?'flex':'none';
 }
@@ -727,10 +750,18 @@ async function openConversation(peer){
  const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',renderMessages);
  const title=document.createElement('strong');title.textContent='与漂流者 '+peer.slice(0,8)+' 的对话';head.append(back,title);thread.append(head);
  items.forEach(m=>{
- const bubble=document.createElement('div');bubble.className='message-bubble '+(m.sender_id===user.id?'mine':'theirs');bubble.textContent=m.content;
+ const mine=m.sender_id===user.id;
+ const line=document.createElement('div');line.className='chat-line '+(mine?'mine':'theirs');
+ const avatar=document.createElement('div');avatar.className='chat-avatar';
+ const person=mine?profile:null;
+ if(person?.avatar_url){const image=document.createElement('img');image.src=person.avatar_url;image.alt='我的头像';avatar.append(image)}
+ else avatar.textContent=(person?.nickname||'我').slice(0,1);
+ const content=document.createElement('div');content.className='chat-content';
+ const bubble=document.createElement('div');bubble.className='message-bubble '+(mine?'mine':'theirs');bubble.textContent=m.content;
  const time=document.createElement('time');time.textContent=dateText(m.created_at);bubble.append(time);
- if(m.sender_id===user.id){const del=document.createElement('button');del.className='message-delete';del.textContent='删除这条消息';del.addEventListener('click',()=>deleteMessage(m.id,peer));bubble.append(del)}
- thread.append(bubble);
+ content.append(bubble);
+ if(mine){const del=document.createElement('button');del.className='message-delete';del.textContent='删除这条消息';del.addEventListener('click',()=>deleteMessage(m.id,peer));content.append(del)}
+ line.append(avatar,content);thread.append(line);
  });
  const composer=document.createElement('div');composer.className='message-composer';
  const input=document.createElement('input');input.maxLength=500;input.placeholder='写下你的回复…';input.id='threadReply';
@@ -766,7 +797,7 @@ function updateFriendUnreadBadge(count){
 }
 async function loadFriends(){
  if(!user){$('friendList').innerHTML='<div class="empty">登录后查看好友。</div>';return}
- $('myFriendId').textContent=user.id;
+ $('myFriendId').textContent=profile?.friend_code||'生成中…';
  const [{data:requests,error:rErr},{data:friends,error:fErr}]=await Promise.all([
   db.from('friend_requests').select('id,sender_id,receiver_id,status,created_at').eq('receiver_id',user.id).eq('status','pending').order('created_at',{ascending:false}),
   db.rpc('get_my_friends')
@@ -780,7 +811,7 @@ async function loadFriends(){
   const {data:people,error}=await db.rpc('search_profile_by_id',{p_id:req.sender_id});if(error)throw error;
   const person=people?.[0];const row=document.createElement('div');row.className='friend-request-row';
   const av=document.createElement('div');av.className='friend-avatar';av.textContent=(person?.nickname||'漂').slice(0,1);
-  const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person?.nickname||'漂流者';const id=document.createElement('span');id.textContent=req.sender_id;info.append(name,id);
+  const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person?.nickname||'漂流者';const id=document.createElement('span');id.textContent='ID：'+(person?.friend_code||'');info.append(name,id);
   const accept=document.createElement('button');accept.className='friend-action accept';accept.textContent='同意';accept.addEventListener('click',()=>respondFriendRequest(req.id,'accepted'));
   const reject=document.createElement('button');reject.className='friend-action';reject.textContent='拒绝';reject.addEventListener('click',()=>respondFriendRequest(req.id,'rejected'));
   row.append(av,info,accept,reject);reqBox.append(row);
@@ -789,7 +820,7 @@ async function loadFriends(){
  if(!friends?.length){friendBox.innerHTML='<div class="empty">还没有好友，试着搜索一个 ID 吧。</div>';return}
  friends.forEach(f=>{
   const row=document.createElement('div');row.className='friend-row';const av=document.createElement('div');av.className='friend-avatar';av.textContent=(f.nickname||'漂').slice(0,1);
-  const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=f.nickname||'漂流者';const id=document.createElement('span');id.textContent=f.id;info.append(name,id);
+  const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=f.nickname||'漂流者';const id=document.createElement('span');id.textContent='ID：'+(f.friend_code||'');info.append(name,id);
   const msg=document.createElement('button');msg.className='friend-action';msg.textContent='发消息';msg.addEventListener('click',()=>{messageReceiver=f.id;openMessage(f.id)});
   row.append(av,info,msg);friendBox.append(row);
  });
@@ -799,8 +830,8 @@ async function searchFriend(){
  const raw=$('friendSearchId').value.trim();
  const box=$('friendSearchResult');box.replaceChildren();friendSearchResult=null;
  if(!raw){notify('请输入好友 ID','请粘贴对方的完整好友 ID。');return}
- if(raw===user.id){notify('这是你自己的 ID','搜索其他用户的好友 ID。');return}
- if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(raw)){notify('ID 格式不正确','请使用完整的 UUID 好友 ID。');return}
+ if(raw===profile?.friend_code){notify('这是你自己的 ID','搜索其他用户的数字好友 ID。');return}
+ if(!/^\\d{8}$/.test(raw)){notify('ID 格式不正确','请输入 8 位数字好友 ID。');return}
  try{
   const {data,error}=await db.rpc('search_profile_by_id',{p_id:raw});if(error)throw error;
   const person=data?.[0];if(!person){box.innerHTML='<div class="empty">没有找到这个 ID 对应的用户。</div>';return}
@@ -831,8 +862,8 @@ async function respondFriendRequest(id,status){
 }
 async function copyFriendId(){
  if(!user)return;
- try{await navigator.clipboard.writeText(user.id);notify('已复制','你的好友 ID 已复制，可以发送给朋友。')}
- catch(e){$('myFriendId').textContent=user.id;notify('复制失败','请长按好友 ID 手动复制。')}
+ try{await navigator.clipboard.writeText(profile?.friend_code||'');notify('已复制','你的数字好友 ID 已复制，可以发送给朋友。')}
+ catch(e){notify('复制失败','请长按数字好友 ID 手动复制。')}
 }
 
 // 漂流瓶详情
@@ -1040,18 +1071,29 @@ async function resendConfirmation(){
 function editProfile(){
 if(!requireLogin())return;
 $('editNickname').value=profile?.nickname||'';
+const img=$('editAvatarPreview'),fallback=$('editAvatarFallback');if(profile?.avatar_url){img.src=profile.avatar_url;img.style.display='block';fallback.style.display='none'}else{img.style.display='none';fallback.style.display='block'}
 showPage('editProfile');
 }
 async function saveProfile(){
 const nickname=$('editNickname').value.trim();
 if(!nickname){notify('昵称不能为空','请填写昵称。');return}
 try{
-const {data,error}=await db.from('profiles').upsert({
-id:user.id,nickname
-}).select().single();
+let avatar_url=profile?.avatar_url||null;
+const file=$('avatarFile').files?.[0];
+if(file){
+ if(file.size>2*1024*1024)throw new Error('头像不能超过 2MB。');
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('头像仅支持 JPG、PNG 或 WEBP。');
+ const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+ const path=user.id+'/avatar.'+ext;
+ const {error:uploadError}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type});
+ if(uploadError)throw uploadError;
+ const {data}=db.storage.from('avatars').getPublicUrl(path);
+ avatar_url=data.publicUrl+'?v='+Date.now();
+}
+const {data,error}=await db.from('profiles').upsert({id:user.id,nickname,avatar_url}).select().single();
 if(error)throw error;
 profile=data;syncProfile();showPage('profile');
-notify('保存成功','个人资料已同步到云端。');
+notify('保存成功','昵称和头像已同步到云端。');
 }catch(e){showError(e)}
 }
 
