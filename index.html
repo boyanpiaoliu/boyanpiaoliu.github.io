@@ -841,7 +841,7 @@ async function searchFriend(){
   const {data:existing,error:e}=await db.from('friend_requests').select('id,sender_id,receiver_id,status').or('and(sender_id.eq.'+user.id+',receiver_id.eq.'+person.id+'),and(sender_id.eq.'+person.id+',receiver_id.eq.'+user.id+')').limit(1);
   if(e)throw e;
   const row=document.createElement('div');row.className='friend-result';const av=document.createElement('div');av.className='friend-avatar';av.textContent=(person.nickname||'漂').slice(0,1);
-  const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person.nickname||'漂流者';const id=document.createElement('span');id.textContent=person.id;info.append(name,id);
+  const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person.nickname||'漂流者';const id=document.createElement('span');id.textContent='ID：'+(person.friend_code||'');info.append(name,id);
   const action=document.createElement('button');action.className='friend-action';
   if(existing?.[0]?.status==='accepted'){action.textContent='已是好友';action.disabled=true;row.classList.add('is-friend');const status=document.createElement('span');status.className='friend-status';status.textContent='你们已经是好友了';info.append(status)}
   else if(existing?.[0]?.status==='pending'){action.textContent=existing[0].sender_id===user.id?'已发送申请':'对方已申请';action.disabled=true}
