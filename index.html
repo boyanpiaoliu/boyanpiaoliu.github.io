@@ -324,6 +324,19 @@ header p{letter-spacing:.4px}
 #avatar{overflow:hidden}
 #avatar img{width:100%;height:100%;object-fit:cover}
 
+
+.gender-choice-wrap{margin:14px 0 16px}
+.gender-once-note{display:block;font-size:10px;color:#9aaab7;font-weight:400;margin-top:5px}
+.gender-options{display:flex;gap:10px}
+.gender-option{flex:1;border:1px solid #e4eaf0;border-radius:13px;padding:12px;background:#f8fafc;color:#61788b;font-size:13px}
+.gender-option.female.selected{background:#fff0f5;border-color:#edb5ca;color:#b85e82}
+.gender-option.male.selected{background:#eaf5ff;border-color:#9fc8e9;color:#397fb4}
+.gender-choice-locked{padding:11px 13px;border-radius:13px;background:#f5f7f9;color:#74899a;font-size:12px}
+#messageThread .chat-line.mine.gender-female .message-bubble{background:linear-gradient(135deg,#ffe0ec,#f5bdd4);color:#78465b}
+#messageThread .chat-line.mine.gender-male .message-bubble{background:linear-gradient(135deg,#cfeaff,#a9d6f5);color:#244f70}
+#messageThread .chat-line.theirs.gender-female .message-bubble{background:linear-gradient(135deg,#ffe0ec,#f5bdd4);color:#78465b}
+#messageThread .chat-line.theirs.gender-male .message-bubble{background:linear-gradient(135deg,#cfeaff,#a9d6f5);color:#244f70}
+
 </style>
 </head>
 
@@ -448,6 +461,7 @@ header p{letter-spacing:.4px}
 <input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp">
 <label class="form-label">昵称</label>
 <input id="editNickname" maxlength="20" placeholder="请输入昵称">
+<div id="genderChoiceWrap" class="gender-choice-wrap"><label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div></div>
 <button class="btn primary block" data-action="saveProfile">保存资料</button>
 </div>
 </section>
@@ -565,6 +579,7 @@ let authMethod='email';
 let activeFilter='all';
 let messageReceiver=null;
 let friendSearchResult=null;
+let selectedGender=null;
 // 官方体验示例漂流瓶
 const demoBottles=[
 {
@@ -742,7 +757,7 @@ function renderMessages(){
 async function openConversation(peer){
  if(!user)return;
  try{
- const {error}=await db.from('messages').update({is_read:true}).eq('sender_id',peer).eq('receiver_id',user.id).eq('is_read',false);if(error)throw error;
+ const {error}=await db.rpc('mark_conversation_read',{p_peer:peer});if(error)throw error;
  await loadMessages();
  const items=messages.filter(m=>m.sender_id===peer||m.receiver_id===peer).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  const {data:friendProfiles}=await db.rpc('get_my_friends');
@@ -756,6 +771,7 @@ async function openConversation(peer){
  const line=document.createElement('div');line.className='chat-line '+(mine?'mine':'theirs');
  const avatar=document.createElement('div');avatar.className='chat-avatar';
  const person=mine?profile:peerProfile;
+ line.classList.add(person?.gender==='female'?'gender-female':'gender-male');
  if(person?.avatar_url){const image=document.createElement('img');image.src=person.avatar_url;image.alt=mine?'我的头像':'对方头像';avatar.append(image)}
  else avatar.textContent=(person?.nickname|| (mine?'我':'友')).slice(0,1);
  const content=document.createElement('div');content.className='chat-content';
@@ -1073,11 +1089,16 @@ async function resendConfirmation(){
 function editProfile(){
 if(!requireLogin())return;
 $('editNickname').value=profile?.nickname||'';
+selectedGender=profile?.gender||null;
+const genderWrap=$('genderChoiceWrap');
+if(profile?.gender){genderWrap.innerHTML='<label class="form-label">性别</label><div class="gender-choice-locked">'+(profile.gender==='female'?'女生':'男生')+' · 已确认，性别仅可选择一次</div>'}
+else{genderWrap.innerHTML='<label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div>'}
 const img=$('editAvatarPreview'),fallback=$('editAvatarFallback');if(profile?.avatar_url){img.src=profile.avatar_url;img.style.display='block';fallback.style.display='none'}else{img.style.display='none';fallback.style.display='block'}
 showPage('editProfile');
 }
 async function saveProfile(){
 const nickname=$('editNickname').value.trim();
+if(!profile?.gender&&!selectedGender){notify('请选择性别','性别提交后不可修改，请确认后选择。');return}
 if(!nickname){notify('昵称不能为空','请填写昵称。');return}
 try{
 let avatar_url=profile?.avatar_url||null;
@@ -1092,7 +1113,8 @@ if(file){
  const {data}=db.storage.from('avatars').getPublicUrl(path);
  avatar_url=data.publicUrl+'?v='+Date.now();
 }
-const {data,error}=await db.from('profiles').upsert({id:user.id,nickname,avatar_url}).select().single();
+const profileUpdate={id:user.id,nickname,avatar_url};if(!profile?.gender)profileUpdate.gender=selectedGender;
+const {data,error}=await db.from('profiles').upsert(profileUpdate).select().single();
 if(error)throw error;
 profile=data;syncProfile();showPage('profile');
 notify('保存成功','昵称和头像已同步到云端。');
@@ -1137,6 +1159,8 @@ activeFilter=filter.dataset.filter;
 document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b===filter));
 renderDiscover();return;
 }
+const gender=e.target.closest('[data-gender]');
+if(gender){if(profile?.gender){notify('性别已锁定','性别只能选择一次。');return}selectedGender=gender.dataset.gender;document.querySelectorAll('[data-gender]').forEach(b=>b.classList.toggle('selected',b.dataset.gender===selectedGender));return}
 const a=e.target.closest('[data-action]');
 if(!a)return;
 switch(a.dataset.action){
