@@ -366,6 +366,20 @@ header p{letter-spacing:.4px}
 #messageThread .chat-line.mine .chat-content{align-items:flex-end!important}
 #messageThread .chat-line.theirs .chat-content{align-items:flex-start!important}
 
+
+/* Long-press message actions; keep the conversation clean */
+.chat-actions{display:none!important}
+.chat-context-actions{display:flex;gap:8px;padding:7px 10px;margin-top:5px;border:1px solid #e5edf3;border-radius:12px;background:rgba(255,255,255,.96);box-shadow:0 5px 18px rgba(45,72,95,.12);width:max-content;max-width:100%}
+.chat-context-actions button{border:0;border-radius:9px;padding:7px 12px;background:#eef5fa;color:#55758d;font-size:11px}
+.chat-context-actions button.retract{background:#fff0f1;color:#bf6874}
+.chat-line.mine{flex-direction:row}
+.chat-line.mine .chat-avatar{order:2}
+.chat-line.mine .chat-content{order:1}
+.chat-line.theirs .chat-avatar{order:1}
+.chat-line.theirs .chat-content{order:2}
+.chat-line.mine .chat-context-actions{align-self:flex-end}
+.chat-line.theirs .chat-context-actions{align-self:flex-start}
+
 </style>
 </head>
 
@@ -819,16 +833,28 @@ async function openConversation(peer){
  content.append(bubble);
  const time=document.createElement('time');time.className='chat-meta-time';time.textContent=dateText(m.created_at);content.append(time);
  if(!m.is_retracted){
-  const actions=document.createElement('div');actions.className='chat-actions';
-  const quote=document.createElement('button');quote.className='chat-action';quote.textContent='引用';quote.addEventListener('click',()=>{replyTargetMessage=m;$('quoteComposeText').textContent='引用：'+m.content;$('quoteCompose').style.display='flex';$('threadReply').focus()});actions.append(quote);
-  if(mine){
-   const canRetract=Date.now()-new Date(m.created_at).getTime()<=120000;
-   if(canRetract){const retract=document.createElement('button');retract.className='chat-action retract';retract.textContent='撤回';retract.addEventListener('click',()=>retractMessage(m.id,peer));actions.append(retract)}
-  }
-  content.append(actions);
+  let pressTimer=null, longPressed=false;
+  const clearPress=()=>{if(pressTimer){clearTimeout(pressTimer);pressTimer=null}};
+  const showActions=()=>{
+   if(content.querySelector('.chat-context-actions'))return;
+   const actions=document.createElement('div');actions.className='chat-context-actions';
+   const quote=document.createElement('button');quote.textContent='引用';quote.addEventListener('click',()=>{
+    replyTargetMessage=m;$('quoteComposeText').textContent='引用：'+m.content;$('quoteCompose').style.display='flex';$('threadReply').focus();actions.remove();
+   });actions.append(quote);
+   if(mine&&Date.now()-new Date(m.created_at).getTime()<=120000){
+    const retract=document.createElement('button');retract.className='retract';retract.textContent='撤回';retract.addEventListener('click',()=>retractMessage(m.id,peer));actions.append(retract);
+   }
+   content.append(actions);
+  };
+  bubble.addEventListener('touchstart',()=>{longPressed=false;pressTimer=setTimeout(()=>{longPressed=true;showActions()},500)},{passive:true});
+  bubble.addEventListener('touchend',clearPress,{passive:true});
+  bubble.addEventListener('touchmove',clearPress,{passive:true});
+  bubble.addEventListener('touchcancel',clearPress,{passive:true});
+  bubble.addEventListener('contextmenu',e=>{e.preventDefault();showActions()});
+  bubble.addEventListener('click',e=>{if(longPressed){e.preventDefault();e.stopPropagation();longPressed=false}});
  }
- line.append(avatar,content);thread.append(line);
- });
+ line.append(mine?content:avatar,mine?avatar:content);thread.append(line);
+ });;
  const quoteBar=document.createElement('div');quoteBar.id='quoteCompose';quoteBar.className='quote-compose';quoteBar.style.display=replyTargetMessage?'flex':'none';
  const quoteText=document.createElement('span');quoteText.id='quoteComposeText';quoteText.textContent=replyTargetMessage?'引用：'+replyTargetMessage.content:'';
  const clearQuote=document.createElement('button');clearQuote.textContent='取消引用';clearQuote.addEventListener('click',()=>{replyTargetMessage=null;quoteBar.style.display='none'});
