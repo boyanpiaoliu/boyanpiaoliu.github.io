@@ -860,7 +860,7 @@ async function openConversation(peer){
  await loadMessages();
  messages=messages.map(m=>m.sender_id===peer&&m.receiver_id===user.id?{...m,is_read:true}:m);
  updateUnreadBadge();
- const items=messages.filter(m=>m.sender_id===peer||m.receiver_id===peer).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ const items=messages.filter(m=>(m.sender_id===peer||m.receiver_id===peer)&&!m.is_retracted).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  const {data:friendProfiles}=await db.rpc('get_my_friends');
  const peerProfile=(friendProfiles||[]).find(f=>f.id===peer)||null;
  $('messageList').style.display='none';const thread=$('messageThread');thread.style.display='block';thread.replaceChildren();
@@ -880,7 +880,7 @@ async function openConversation(peer){
  const bubble=document.createElement('div');bubble.className='message-bubble '+(mine?'mine':'theirs')+(m.is_retracted?' retracted':'');
  if(m.reply_to_id){
   const quoted=items.find(x=>x.id===m.reply_to_id);
-  const q=document.createElement('div');q.className='chat-quote';q.textContent=quoted?(quoted.is_retracted?'引用：消息已撤回':'引用：'+quoted.content):'引用了一条消息';bubble.append(q);
+  if(quoted){const q=document.createElement('div');q.className='chat-quote';q.textContent='引用：'+quoted.content;bubble.append(q)}
  }
  const body=document.createElement('div');body.textContent=m.is_retracted?'这条消息已撤回':m.content;bubble.append(body);
  const bubbleColor=person?.bubble_color;if(bubbleColor){bubble.style.background=bubbleColor;bubble.style.color='#30485d'}
