@@ -294,6 +294,17 @@ header p{letter-spacing:.4px}
 .friend-action{border:0;border-radius:11px;padding:9px 12px;background:#eaf4fb;color:#4d83a5;font-size:11px;font-weight:650;white-space:nowrap}
 .friend-action.accept{background:#4c8db5;color:white}.friend-action:disabled{opacity:.55}
 #friends .section-title{display:flex;align-items:center;font-size:16px;margin:20px 2px 10px}
+
+.friend-entry{position:relative}
+.friend-unread-badge{margin-left:auto;margin-right:8px;min-width:19px;height:19px;padding:0 6px;display:inline-grid;place-items:center;border-radius:12px;background:#e87982;color:#fff;font-size:10px;font-weight:700;box-shadow:0 2px 7px #e8798240}
+.friend-result.is-friend{background:linear-gradient(110deg,#f0f8f4,#fff);border-color:#dceee4}
+.friend-status{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:4px 8px;border-radius:10px;background:#eaf6ee;color:#4d9870;font-size:10px;font-weight:700}
+.friend-status:before{content:"✓";font-size:11px}
+.friend-action{padding:7px 10px;font-size:10px}
+#messageModal .modalbox{padding:18px}
+#messageModal textarea,#messageText{min-height:86px;max-height:130px;padding:11px 13px;font-size:13px;line-height:1.55;border-radius:14px}
+#messageModal .btn{padding:11px 14px;font-size:12px}
+
 </style>
 </head>
 
@@ -379,7 +390,7 @@ header p{letter-spacing:.4px}
 <div class="row" data-action="myBottles"><span class="icon">📮</span><span class="label">我的瓶子</span><span class="arrow">›</span></div>
 <div class="row" data-action="favorites"><span class="icon">♡</span><span class="label">我的收藏</span><span class="arrow">›</span></div>
 <div class="row" data-action="editProfile"><span class="icon">✎</span><span class="label">编辑资料</span><span class="arrow">›</span></div>
-<div class="row" data-action="friends"><span class="icon">♧</span><span class="label">好友与好友申请</span><span class="arrow">›</span></div>
+<div class="row friend-entry" data-action="friends"><span class="icon">♧</span><span class="label">好友与好友申请</span><span id="friendUnreadBadge" class="friend-unread-badge" style="display:none">0</span><span class="arrow">›</span></div>
 <div class="row" data-action="settings"><span class="icon">⚙</span><span class="label">设置</span><span class="arrow">›</span></div>
 <div class="row" data-action="logout" id="logoutRow" style="display:none"><span class="icon">↪</span><span class="label danger">退出登录</span><span class="arrow">›</span></div>
 </div>
@@ -739,6 +750,20 @@ async function deleteMessage(id,peer){
 }
 
 
+
+async function refreshFriendRequestCount(){
+ if(!user){updateFriendUnreadBadge(0);return}
+ try{
+  const {count,error}=await db.from('friend_requests').select('id',{count:'exact',head:true}).eq('receiver_id',user.id).eq('status','pending');
+  if(error)throw error;updateFriendUnreadBadge(count||0);
+ }catch(e){console.warn('好友申请数量刷新失败',e)}
+}
+function updateFriendUnreadBadge(count){
+ const badge=$('friendUnreadBadge');if(!badge)return;
+ badge.textContent=count>99?'99+':String(count);
+ badge.style.display=count?'inline-grid':'none';
+ const title=$('friendRequestCount');if(title)title.textContent=String(count);
+}
 async function loadFriends(){
  if(!user){$('friendList').innerHTML='<div class="empty">登录后查看好友。</div>';return}
  $('myFriendId').textContent=user.id;
@@ -748,6 +773,7 @@ async function loadFriends(){
  ]);
  if(rErr)throw rErr;if(fErr)throw fErr;
  $('friendRequestCount').textContent=(requests||[]).length;
+ updateFriendUnreadBadge((requests||[]).length);
  const reqBox=$('friendRequests');reqBox.replaceChildren();
  if(!requests?.length){reqBox.innerHTML='<div class="empty">暂时没有新的好友申请。</div>'}
  for(const req of requests||[]){
@@ -784,7 +810,7 @@ async function searchFriend(){
   const row=document.createElement('div');row.className='friend-result';const av=document.createElement('div');av.className='friend-avatar';av.textContent=(person.nickname||'漂').slice(0,1);
   const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person.nickname||'漂流者';const id=document.createElement('span');id.textContent=person.id;info.append(name,id);
   const action=document.createElement('button');action.className='friend-action';
-  if(existing?.[0]?.status==='accepted'){action.textContent='已是好友';action.disabled=true}
+  if(existing?.[0]?.status==='accepted'){action.textContent='已是好友';action.disabled=true;row.classList.add('is-friend');const status=document.createElement('span');status.className='friend-status';status.textContent='你们已经是好友了';info.append(status)}
   else if(existing?.[0]?.status==='pending'){action.textContent=existing[0].sender_id===user.id?'已发送申请':'对方已申请';action.disabled=true}
   else{action.textContent='添加好友';action.addEventListener('click',()=>sendFriendRequest(person.id,action))}
   row.append(av,info,action);box.append(row);
@@ -800,7 +826,7 @@ async function sendFriendRequest(receiver,button){
 async function respondFriendRequest(id,status){
  try{
   const {error}=await db.from('friend_requests').update({status}).eq('id',id).eq('receiver_id',user.id);if(error)throw error;
-  await loadFriends();notify(status==='accepted'?'已添加好友':'已拒绝申请',status==='accepted'?'你们现在已经是好友了。':'该好友申请已拒绝。');
+  await loadFriends();if(status==='accepted')notify('好友添加成功','你们已经是好友了，现在可以互相发送消息。');else notify('已拒绝申请','该好友申请已拒绝。');
  }catch(e){showError(e)}
 }
 async function copyFriendId(){
@@ -1038,6 +1064,7 @@ if(user)await loadProfile();
 else profile=null;
 syncProfile();
 await refreshAll();
+await refreshFriendRequestCount();
 }
 async function logout(){
 if(!confirm('确定退出当前账号吗？'))return;
@@ -1053,6 +1080,7 @@ const nav=e.target.closest('[data-page]');
 if(nav){
 showPage(nav.dataset.page);
 if(nav.dataset.page==='messages'){await loadMessages();renderMessages()}
+if(nav.dataset.page==='profile'){await refreshFriendRequestCount()}
 return;
 }
 const method=e.target.closest('[data-method]');
