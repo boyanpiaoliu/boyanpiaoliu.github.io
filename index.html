@@ -272,6 +272,7 @@ max-width:420px;max-height:85vh;overflow:auto;
 <input id="registerNickname" maxlength="20" placeholder="给自己取个昵称">
 </div>
 <button class="btn primary block" data-action="submitAuth" id="submitAuth">登录</button>
+<button class="btn ghost block" data-action="resendConfirmation">重新发送邮箱验证邮件</button>
 <p class="toastnote">邮箱使用密码登录；手机号使用真实短信验证码。手机号功能需要在 Supabase 配置短信服务。</p>
 </div>
 </section>
@@ -655,7 +656,31 @@ showPage('profile');
 notify('登录成功','你的账号已经连接云端。');
 }catch(e){showError(e)}
 }
+// 重新发送邮箱验证邮件
+async function resendConfirmation(){
+  const email=$('account').value.trim();
 
+  if(!email || !email.includes('@')){
+    notify('请先填写邮箱','请输入注册时使用的邮箱。');
+    return;
+  }
+
+  try{
+    const {error}=await db.auth.resend({
+      type:'signup',
+      email:email,
+      options:{
+        emailRedirectTo:'https://yaya1022.github.io/'
+      }
+    });
+
+    if(error) throw error;
+
+    notify('发送成功','请检查邮箱收件箱和垃圾邮件文件夹。');
+  }catch(e){
+    showError(e);
+  }
+}
 // 编辑资料
 function editProfile(){
 if(!requireLogin())return;
@@ -720,6 +745,7 @@ break;
 case'closeWrite':$('writeModal').classList.remove('show');break;
 case'pick':await pickBottle();break;
 case'submitBottle':await submitBottle();break;
+case'resendConfirmation':await resendConfirmation();break;
 case'toggleFavorite':await toggleFavorite();break;
 case'myBottles':await openMyBottles();break;
 case'favorites':await openFavorites();break;
