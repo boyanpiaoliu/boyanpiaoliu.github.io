@@ -866,8 +866,8 @@ async function openConversation(peer){
  const person=mine?profile:peerProfile;
  line.classList.add(person?.gender==='female'?'gender-female':'gender-male');
  if(person?.avatar_url){const image=document.createElement('img');image.src=person.avatar_url;image.alt=mine?'我的头像':'对方头像';avatar.append(image)}
- avatar.dataset.profileId=person?.id|| (mine?user.id:peer);avatar.title='查看'+(mine?'我的':'对方')+'资料';
  else avatar.textContent=(person?.nickname||(mine?'我':'友')).slice(0,1);
+ avatar.dataset.profileId=person?.id|| (mine?user.id:peer);avatar.title='查看'+(mine?'我的':'对方')+'资料';
  const content=document.createElement('div');content.className='chat-content';
  const bubble=document.createElement('div');bubble.className='message-bubble '+(mine?'mine':'theirs')+(m.is_retracted?' retracted':'');
  if(m.reply_to_id){
