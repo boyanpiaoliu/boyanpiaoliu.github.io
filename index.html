@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -5,6 +6,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#f4f8fc">
 <title>漂流瓶</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
@@ -14,254 +17,129 @@
 --muted:#8b9bad;
 --line:#e8eef4;
 --bg:#f4f8fc;
---white:#fff;
---shadow:0 8px 28px rgba(55,100,140,.08);
 }
 *{box-sizing:border-box}
 body{
-margin:0;
-background:var(--bg);
-color:var(--ink);
-font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif;
+margin:0;background:var(--bg);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
 -webkit-font-smoothing:antialiased;
 }
 button,input,textarea{font:inherit}
 button{cursor:pointer}
 header{
-padding:calc(18px + env(safe-area-inset-top)) 20px 14px;
-text-align:center;
-background:rgba(255,255,255,.72);
-backdrop-filter:blur(18px);
-position:sticky;
-top:0;
-z-index:3;
+position:sticky;top:0;z-index:5;text-align:center;
+padding:calc(17px + env(safe-area-inset-top)) 18px 13px;
+background:#ffffffed;backdrop-filter:blur(18px);
 }
-header h1{font-size:23px;letter-spacing:1px;margin:0 0 5px}
+header h1{font-size:23px;margin:0 0 5px}
 header p{font-size:12px;color:var(--muted);margin:0}
 .page{
-display:none;
-min-height:calc(100vh - 145px);
+display:none;min-height:calc(100vh - 145px);
 padding:18px 18px calc(105px + env(safe-area-inset-bottom));
 }
 .page.active{display:block}
 h2{font-size:21px;margin:0 0 12px}
-.section-title{font-size:19px;font-weight:700;margin:10px 2px 15px}
-.sub{font-size:13px;color:var(--muted);line-height:1.65}
+.section-title{font-size:19px;font-weight:700;margin:20px 2px 14px}
+.sub{font-size:13px;color:var(--muted);line-height:1.7}
 .card{
-background:white;
-border:1px solid rgba(225,235,244,.8);
-border-radius:22px;
-padding:18px;
-margin-bottom:13px;
-box-shadow:var(--shadow);
+background:white;border:1px solid var(--line);
+border-radius:22px;padding:18px;margin-bottom:13px;
+box-shadow:0 8px 28px rgba(55,100,140,.06);
 }
 .hero{
-min-height:255px;
-border-radius:28px;
-padding:25px 18px;
+min-height:245px;border-radius:28px;padding:25px 18px;
 background:linear-gradient(145deg,#a9dff3,#5da9d4 48%,#286a9e);
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-text-align:center;
-color:white;
+display:flex;flex-direction:column;align-items:center;
+justify-content:center;text-align:center;color:white;
 }
-.hero .bottle{font-size:66px}
-.hero h2{margin:12px 0 5px;color:white}
+.bottle{font-size:65px}
+.hero h2{color:white;margin:12px 0 5px}
 .hero p{font-size:13px;opacity:.9;margin:0}
-.actions{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
-margin:16px 0 24px;
-}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 24px}
 .btn{
-border:0;
-border-radius:16px;
-padding:14px 16px;
-background:var(--blue2);
-color:var(--blue);
-font-weight:650;
-font-size:15px;
+border:0;border-radius:15px;padding:14px;
+background:var(--blue2);color:var(--blue);
+font-weight:650;font-size:14px;
 }
 .btn.primary{background:var(--blue);color:white}
 .btn.ghost{background:#f2f6fa;color:#52677c}
 .btn.block{width:100%;margin-top:10px}
+.btn:disabled{opacity:.5}
 .row{
-display:flex;
-align-items:center;
-gap:12px;
-padding:16px 2px;
-border-bottom:1px solid var(--line);
-cursor:pointer;
-min-height:54px;
+display:flex;align-items:center;gap:12px;
+padding:15px 2px;border-bottom:1px solid var(--line);
+min-height:53px;cursor:pointer;
 }
 .row:last-child{border-bottom:0}
 .row .label{flex:1;font-size:15px}
-.row .icon{
-width:30px;height:30px;
-border-radius:10px;
-background:#eff6fb;
-display:grid;
-place-items:center;
-color:var(--blue);
+.icon{
+width:31px;height:31px;border-radius:10px;
+background:#eff6fb;display:grid;place-items:center;color:var(--blue);
 }
 .arrow{color:#a8b5c2;font-size:20px}
 nav{
-position:fixed;
-z-index:5;
-left:0;right:0;bottom:0;
+position:fixed;z-index:8;left:0;right:0;bottom:0;
 padding:8px 8px calc(8px + env(safe-area-inset-bottom));
 height:calc(72px + env(safe-area-inset-bottom));
-display:flex;
-justify-content:space-around;
-align-items:center;
-background:rgba(255,255,255,.92);
-border-top:1px solid rgba(220,230,240,.8);
+display:flex;justify-content:space-around;align-items:center;
+background:#ffffffed;border-top:1px solid var(--line);
 backdrop-filter:blur(20px);
 }
 .navbtn{
-border:0;
-background:transparent;
-color:#93a1b0;
-min-width:62px;
-padding:5px 10px;
-font-size:11px;
+border:0;background:transparent;color:#93a1b0;
+min-width:62px;padding:5px 10px;font-size:11px;
 }
 .navbtn .ico{display:block;font-size:21px;margin-bottom:3px}
 .navbtn.active{color:var(--blue);font-weight:700}
 .avatar{
-width:68px;height:68px;
-border-radius:50%;
-display:grid;
-place-items:center;
-margin:0 auto 10px;
-background:linear-gradient(145deg,#d8f0fb,#b6dff1);
-font-size:30px;
+width:68px;height:68px;border-radius:50%;
+display:grid;place-items:center;margin:0 auto 10px;
+background:linear-gradient(145deg,#d8f0fb,#b6dff1);font-size:30px;
 }
 .profile-head{text-align:center;padding:24px 18px}
 .profile-head h2{margin:4px 0}
+.statline{display:flex;justify-content:space-around;text-align:center;padding:12px 0}
+.statline strong{display:block;font-size:19px}
+.statline span{font-size:12px;color:var(--muted)}
 input,textarea{
-width:100%;
-border:1px solid #e0e9f1;
-border-radius:14px;
-background:#f9fbfd;
-padding:14px;
-color:var(--ink);
-outline:none;
-margin:7px 0;
-font-size:15px;
+width:100%;border:1px solid #e0e9f1;border-radius:14px;
+background:#f9fbfd;padding:14px;color:var(--ink);
+outline:none;margin:7px 0;font-size:15px;
 }
-input:focus,textarea:focus{
-border-color:#8bbbdc;
-box-shadow:0 0 0 3px #eaf4fc;
-}
-textarea{min-height:125px;resize:vertical}
-.form-label{
-display:block;
-font-size:13px;
-color:#61758a;
-margin:12px 2px 2px;
-}
+input:focus,textarea:focus{border-color:#8bbbdc;box-shadow:0 0 0 3px #eaf4fc}
+textarea{min-height:120px;resize:vertical}
+.form-label{display:block;font-size:13px;color:#61758a;margin:12px 2px 2px}
 .fieldline{display:flex;gap:8px;align-items:center}
 .fieldline input{flex:1;min-width:0}
-.fieldline .btn{white-space:nowrap;padding:13px 11px;font-size:13px}
-.tabs{
-display:flex;
-gap:7px;
-background:#f0f5f9;
-padding:4px;
-border-radius:14px;
-margin:14px 0;
-}
+.fieldline .btn{white-space:nowrap;padding:13px 10px;font-size:12px}
+.tabs{display:flex;gap:7px;background:#f0f5f9;padding:4px;border-radius:14px;margin:14px 0}
 .tabs button{
-flex:1;
-border:0;
-background:transparent;
-border-radius:11px;
-padding:10px;
-color:#718397;
-font-size:14px;
+flex:1;border:0;background:transparent;border-radius:11px;
+padding:10px;color:#718397;font-size:14px;
 }
-.tabs button.active{
-background:white;
-color:var(--blue);
-box-shadow:0 2px 8px #294d6812;
-font-weight:650;
-}
-.page-head{
-display:flex;
-align-items:center;
-gap:12px;
-margin:0 0 18px;
-}
-.back{
-border:0;
-background:#eaf2f8;
-color:#47799e;
-border-radius:12px;
-padding:9px 13px;
-font-size:14px;
-}
+.tabs button.active{background:white;color:var(--blue);font-weight:650}
+.page-head{display:flex;align-items:center;gap:12px;margin:0 0 18px}
+.back{border:0;background:#eaf2f8;color:#47799e;border-radius:12px;padding:9px 13px}
 .page-head h2{margin:0;flex:1}
 .list-item{
-padding:15px 16px;
-border-radius:17px;
-background:white;
-border:1px solid var(--line);
-margin-bottom:10px;
-cursor:pointer;
+padding:15px 16px;border-radius:17px;background:white;
+border:1px solid var(--line);margin-bottom:10px;
 }
-.list-item p{
-white-space:pre-wrap;
-line-height:1.65;
-margin:0 0 9px;
-overflow-wrap:anywhere;
-}
+.list-item p{white-space:pre-wrap;line-height:1.65;margin:0 0 9px;overflow-wrap:anywhere}
 .meta{font-size:12px;color:#99a8b7}
-.empty{
-text-align:center;
-padding:32px 18px;
-color:#91a0ae;
-background:white;
-border-radius:18px;
-}
+.empty{text-align:center;padding:32px 18px;color:#91a0ae;background:white;border-radius:18px}
 .modal{
-display:none;
-position:fixed;
-inset:0;
-background:#142d4966;
-z-index:10;
-align-items:center;
-justify-content:center;
-padding:20px;
+display:none;position:fixed;inset:0;background:#142d4966;
+z-index:20;align-items:center;justify-content:center;padding:20px;
 }
 .modal.show{display:flex}
 .modalbox{
-background:white;
-border-radius:24px;
-padding:22px;
-width:100%;
-max-width:420px;
-max-height:84vh;
-overflow:auto;
+background:white;border-radius:24px;padding:22px;width:100%;
+max-width:420px;max-height:85vh;overflow:auto;
 }
-.toastnote{
-font-size:12px;
-color:#9aa8b6;
-line-height:1.6;
-margin:12px 2px;
-}
+.toastnote{font-size:12px;color:#9aa8b6;line-height:1.6;margin:12px 2px}
 .danger{color:#c45b5b}
-.statline{
-display:flex;
-justify-content:space-around;
-text-align:center;
-padding:10px 0;
-}
-.statline strong{display:block;font-size:19px}
-.statline span{font-size:12px;color:var(--muted)}
+.status{font-size:12px;color:#6d91ad;text-align:center;padding:8px}
 </style>
 </head>
 
@@ -274,9 +152,7 @@ padding:10px 0;
 
 <main>
 
-<!-- 首页 -->
 <section class="page active" id="home">
-
 <div class="hero">
 <div class="bottle">🍾</div>
 <h2>大海正在等待你的故事</h2>
@@ -289,1006 +165,598 @@ padding:10px 0;
 </div>
 
 <div class="section-title">今日海洋</div>
-
 <div class="card">
-<p style="line-height:1.7;margin:0 0 8px">
-🐚 每一个陌生人的故事，都值得被温柔对待。
-</p>
+<p style="line-height:1.7">🐚 每一个陌生人的故事，都值得被温柔对待。</p>
 <span class="meta">漂流瓶 · 与陌生人分享心情</span>
 </div>
 
 <div class="section-title">海上来信</div>
 <div id="homeFeed"></div>
-
 </section>
 
-<!-- 发现 -->
 <section class="page" id="discover">
-
 <div class="section-title">发现故事</div>
 <p class="sub">看看海面上正在漂流的心情。</p>
-
 <div class="tabs">
 <button class="active" data-filter="all">推荐</button>
 <button data-filter="warm">温暖</button>
 <button data-filter="thought">心事</button>
 </div>
-
 <div id="discoverList"></div>
-
 </section>
 
-<!-- 消息 -->
 <section class="page" id="messages">
-
 <div class="section-title">消息</div>
-
 <div class="card">
-
-<div class="row" data-action="notice">
-<span class="icon">🔔</span>
-<span class="label">系统通知</span>
-<span class="arrow">›</span>
-</div>
-
-<div class="row" data-action="replies">
+<div class="row" data-action="refreshMessages">
 <span class="icon">💌</span>
-<span class="label">瓶子回信</span>
-<span class="arrow">›</span>
+<span class="label">刷新消息</span><span class="arrow">›</span>
 </div>
-
-<div class="row" data-action="likes">
-<span class="icon">♡</span>
-<span class="label">收到的喜欢</span>
-<span class="arrow">›</span>
 </div>
-
-</div>
-
-<div id="messageContent" class="empty">
-目前还没有新消息。<br>
-当有人回应你的故事时，会在这里出现。
-</div>
-
+<div id="messageList"></div>
 </section>
 
-<!-- 我的 -->
 <section class="page" id="profile">
-
 <div class="card profile-head">
-
 <div class="avatar" id="avatar">🌊</div>
-
 <h2 id="nickname">海边的风</h2>
-
-<p class="sub" id="userId">ID：102948</p>
-
-<button class="btn primary" data-action="auth">
-登录 / 注册
-</button>
-
+<p class="sub" id="userId">尚未登录</p>
+<button class="btn primary" data-action="auth" id="authButton">登录 / 注册</button>
 <div class="statline">
-
-<div>
-<strong id="myCountStat">0</strong>
-<span>我的瓶子</span>
-</div>
-
-<div>
-<strong id="favCountStat">0</strong>
-<span>收藏</span>
-</div>
-
-<div>
-<strong id="followCountStat">0</strong>
-<span>关注</span>
-</div>
-
+<div><strong id="myCountStat">0</strong><span>我的瓶子</span></div>
+<div><strong id="favCountStat">0</strong><span>收藏</span></div>
 </div>
 </div>
 
 <div class="card">
-
-<div class="row" data-action="myBottles">
-<span class="icon">📮</span>
-<span class="label">我的瓶子</span>
-<span class="meta" id="mycount">0</span>
-<span class="arrow">›</span>
+<div class="row" data-action="myBottles"><span class="icon">📮</span><span class="label">我的瓶子</span><span class="arrow">›</span></div>
+<div class="row" data-action="favorites"><span class="icon">♡</span><span class="label">我的收藏</span><span class="arrow">›</span></div>
+<div class="row" data-action="editProfile"><span class="icon">✎</span><span class="label">编辑资料</span><span class="arrow">›</span></div>
+<div class="row" data-action="settings"><span class="icon">⚙</span><span class="label">设置</span><span class="arrow">›</span></div>
+<div class="row" data-action="logout" id="logoutRow" style="display:none"><span class="icon">↪</span><span class="label danger">退出登录</span><span class="arrow">›</span></div>
 </div>
-
-<div class="row" data-action="favorites">
-<span class="icon">♡</span>
-<span class="label">我的收藏</span>
-<span class="meta" id="favcount">0</span>
-<span class="arrow">›</span>
-</div>
-
-<div class="row" data-action="following">
-<span class="icon">♧</span>
-<span class="label">我的关注</span>
-<span class="meta" id="followcount">0</span>
-<span class="arrow">›</span>
-</div>
-
-</div>
-
-<div class="card">
-
-<div class="row" data-action="editProfile">
-<span class="icon">✎</span>
-<span class="label">编辑资料</span>
-<span class="arrow">›</span>
-</div>
-
-<div class="row" data-action="settings">
-<span class="icon">⚙</span>
-<span class="label">设置</span>
-<span class="arrow">›</span>
-</div>
-
-<div class="row" data-action="about">
-<span class="icon">ⓘ</span>
-<span class="label">关于漂流瓶</span>
-<span class="arrow">›</span>
-</div>
-
-<div class="row" data-action="logout" id="logoutRow" style="display:none">
-<span class="icon">↪</span>
-<span class="label danger">退出登录</span>
-<span class="arrow">›</span>
-</div>
-
-</div>
-
 </section>
 
-<!-- 我的瓶子 -->
 <section class="page" id="myBottles">
-<div class="page-head">
-<button class="back" data-action="backProfile">‹ 返回</button>
-<h2>我的瓶子</h2>
-</div>
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>我的瓶子</h2></div>
 <div id="bottleList"></div>
 </section>
 
-<!-- 收藏 -->
 <section class="page" id="favorites">
-<div class="page-head">
-<button class="back" data-action="backProfile">‹ 返回</button>
-<h2>我的收藏</h2>
-</div>
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>我的收藏</h2></div>
 <div id="favoriteList"></div>
 </section>
 
-<!-- 关注 -->
-<section class="page" id="following">
-<div class="page-head">
-<button class="back" data-action="backProfile">‹ 返回</button>
-<h2>我的关注</h2>
-</div>
-<div class="empty">你还没有关注任何人。</div>
-</section>
-
-<!-- 设置 -->
-<section class="page" id="settings">
-
-<div class="page-head">
-<button class="back" data-action="backProfile">‹ 返回</button>
-<h2>设置</h2>
-</div>
-
-<div class="card">
-
-<div class="row" data-action="privacy">
-<span class="label">隐私设置</span>
-<span class="arrow">›</span>
-</div>
-
-<div class="row" data-action="notificationSettings">
-<span class="label">消息通知</span>
-<span class="arrow">›</span>
-</div>
-
-<div class="row" data-action="accountSecurity">
-<span class="label">账号与安全</span>
-<span class="arrow">›</span>
-</div>
-
-<div class="row" data-action="clearLocal">
-<span class="label danger">清除本机演示数据</span>
-<span class="arrow">›</span>
-</div>
-
-</div>
-</section>
-
-<!-- 编辑资料 -->
 <section class="page" id="editProfile">
-
-<div class="page-head">
-<button class="back" data-action="backProfile">‹ 返回</button>
-<h2>编辑资料</h2>
-</div>
-
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>编辑资料</h2></div>
 <div class="card">
-
 <label class="form-label">昵称</label>
 <input id="editNickname" maxlength="20" placeholder="请输入昵称">
-
-<label class="form-label">个人签名</label>
-<textarea id="editBio" maxlength="80" placeholder="写一句介绍自己"></textarea>
-
-<button class="btn primary block" data-action="saveProfile">
-保存资料
-</button>
-
+<button class="btn primary block" data-action="saveProfile">保存资料</button>
 </div>
 </section>
 
-<!-- 漂流瓶详情 -->
 <section class="page" id="detail">
-
-<div class="page-head">
-<button class="back" data-action="backDetail">‹ 返回</button>
-<h2>漂流瓶详情</h2>
-</div>
-
+<div class="page-head"><button class="back" data-action="backDetail">‹ 返回</button><h2>漂流瓶详情</h2></div>
 <div id="detailContent"></div>
-
-<button class="btn block" data-action="toggleFavorite" id="favoriteButton">
-♡ 收藏
-</button>
-
+<button class="btn block" id="favoriteButton" data-action="toggleFavorite">♡ 收藏</button>
+<button class="btn primary block" data-action="sendMessage" id="sendMessageButton">给瓶子主人写信</button>
 </section>
 
-<!-- 注册和登录 -->
 <section class="page" id="auth">
-
-<div class="page-head">
-<button class="back" data-action="backProfile">‹ 返回</button>
-<h2 id="authHeading">欢迎回来</h2>
-</div>
-
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2 id="authHeading">欢迎回来</h2></div>
 <div class="card">
-
 <div class="tabs">
 <button class="active" data-authmode="login">登录</button>
 <button data-authmode="register">注册</button>
 </div>
-
 <div class="tabs">
-<button class="active" data-method="phone">手机号</button>
-<button data-method="email">邮箱</button>
+<button class="active" data-method="email">邮箱</button>
+<button data-method="phone">手机号</button>
 </div>
-
-<label class="form-label" id="accountLabel">手机号</label>
-
-<input id="account" type="tel" placeholder="请输入手机号" autocomplete="username">
-
-<label class="form-label">验证码</label>
-
+<label class="form-label" id="accountLabel">邮箱</label>
+<input id="account" type="email" placeholder="请输入邮箱">
+<div id="passwordFields">
+<label class="form-label">密码</label>
+<input id="password" type="password" placeholder="请输入密码" autocomplete="current-password">
+</div>
+<div id="phoneFields" style="display:none">
+<label class="form-label">短信验证码</label>
 <div class="fieldline">
-<input id="verifyCode" inputmode="numeric" maxlength="6" placeholder="请输入6位验证码">
-<button class="btn" data-action="sendCode" id="sendCode">获取验证码</button>
+<input id="verifyCode" inputmode="numeric" placeholder="请输入验证码">
+<button class="btn" data-action="sendCode">发送验证码</button>
 </div>
-
+</div>
 <div id="registerFields" style="display:none">
-
 <label class="form-label">设置昵称</label>
 <input id="registerNickname" maxlength="20" placeholder="给自己取个昵称">
-
-<label class="form-label">设置密码（至少8位）</label>
-<input id="registerPassword" type="password" minlength="8" placeholder="设置登录密码">
-
 </div>
-
-<button class="btn primary block" data-action="submitAuth" id="submitAuth">
-登录
-</button>
-
-<p class="toastnote">
-当前为前端演示版本。验证码按钮仅模拟发送，演示验证码为 123456；尚未接入真实短信、邮件服务或云端账号数据库。请勿将此演示版本用于真实账号注册。
-</p>
-
+<button class="btn primary block" data-action="submitAuth" id="submitAuth">登录</button>
+<p class="toastnote">邮箱使用密码登录；手机号使用真实短信验证码。手机号功能需要在 Supabase 配置短信服务。</p>
 </div>
 </section>
 
-<!-- 通用详情 -->
-<section class="page" id="subpage">
-
-<div class="page-head">
-<button class="back" data-action="backProfile">‹ 返回</button>
-<h2 id="subTitle">详情</h2>
+<section class="page" id="settings">
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>设置</h2></div>
+<div class="card">
+<div class="row" data-action="about"><span class="label">关于漂流瓶</span><span class="arrow">›</span></div>
+<div class="row" data-action="refresh"><span class="label">刷新云端数据</span><span class="arrow">›</span></div>
 </div>
-
-<div class="card" id="subBody"></div>
-
 </section>
 
 </main>
 
-<!-- 底部导航 -->
 <nav id="mainNav">
-
-<button class="navbtn active" data-page="home">
-<span class="ico">⌂</span>首页
-</button>
-
-<button class="navbtn" data-page="discover">
-<span class="ico">◉</span>发现
-</button>
-
-<button class="navbtn" data-page="messages">
-<span class="ico">♡</span>消息
-</button>
-
-<button class="navbtn" data-page="profile">
-<span class="ico">♙</span>我的
-</button>
-
+<button class="navbtn active" data-page="home"><span class="ico">⌂</span>首页</button>
+<button class="navbtn" data-page="discover"><span class="ico">◉</span>发现</button>
+<button class="navbtn" data-page="messages"><span class="ico">♡</span>消息</button>
+<button class="navbtn" data-page="profile"><span class="ico">♙</span>我的</button>
 </nav>
 
-<!-- 投递窗口 -->
 <div class="modal" id="writeModal">
-
 <div class="modalbox">
-
 <h2>投递一只漂流瓶</h2>
-
 <p class="sub">写下此刻想说的话，让它随海风漂向远方。</p>
-
 <textarea id="bottleText" maxlength="500" placeholder="你好，远方的陌生人……"></textarea>
-
-<button class="btn primary block" data-action="submitBottle">
-投进大海
-</button>
-
-<button class="btn ghost block" data-action="closeWrite">
-取消
-</button>
-
+<label class="form-label">心情分类</label>
+<select id="bottleMood" style="width:100%;padding:13px;border:1px solid #e0e9f1;border-radius:13px;background:#f9fbfd">
+<option value="warm">温暖</option>
+<option value="thought">心事</option>
+</select>
+<label style="display:block;margin:14px 0;font-size:14px">
+<input id="isPublic" type="checkbox" checked style="width:auto;margin-right:7px">
+公开漂流（允许其他用户捡到）
+</label>
+<button class="btn primary block" data-action="submitBottle">投进大海</button>
+<button class="btn ghost block" data-action="closeWrite">取消</button>
 </div>
 </div>
 
-<!-- 提示窗口 -->
 <div class="modal" id="genericModal">
-
 <div class="modalbox">
-
 <h2 id="modalTitle">提示</h2>
-
 <div id="modalBody" class="sub"></div>
+<button class="btn primary block" data-action="closeGeneric">知道了</button>
+</div>
+</div>
 
-<button class="btn primary block" data-action="closeGeneric">
-知道了
-</button>
-
+<div class="modal" id="messageModal">
+<div class="modalbox">
+<h2>写一封回信</h2>
+<p class="sub" id="messageTarget"></p>
+<textarea id="messageText" maxlength="500" placeholder="写下你想说的话……"></textarea>
+<button class="btn primary block" data-action="submitMessage">发送消息</button>
+<button class="btn ghost block" data-action="closeMessage">取消</button>
 </div>
 </div>
 
 <script>
+const SUPABASE_URL='https://zqbyltitcskpmhulfhib.supabase.co';
+const SUPABASE_KEY='sb_publishable_4kKbdlqKL5IojR1KUtbSzA_c95eKOUG';
+
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 
-const read=(k,d)=>{
-try{
-return JSON.parse(localStorage.getItem(k))??d;
-}catch(e){
-return d;
-}
-};
-
-let bottles=read('bottles',[]);
-let favorites=read('favorites',[]);
-let following=read('following',[]);
-let user=read('demoUser',null);
-
-let authMode='login';
-let authMethod='phone';
+let user=null;
+let profile=null;
+let bottles=[];
+let favorites=[];
+let messages=[];
 let activeBottle=null;
+let authMode='login';
+let authMethod='email';
 let activeFilter='all';
-let demoCodeSent=false;
+let messageReceiver=null;
 
-function save(){
-localStorage.setItem('bottles',JSON.stringify(bottles));
-localStorage.setItem('favorites',JSON.stringify(favorites));
-localStorage.setItem('following',JSON.stringify(following));
-}
-
-function showPage(id){
-
-document.querySelectorAll('.page').forEach(p=>{
-p.classList.toggle('active',p.id===id);
-});
-
-document.querySelectorAll('.navbtn').forEach(b=>{
-b.classList.toggle('active',b.dataset.page===id);
-});
-
-window.scrollTo(0,0);
-}
-
-function showModal(title,body){
+function notify(title,body){
 $('modalTitle').textContent=title;
 $('modalBody').textContent=body;
 $('genericModal').classList.add('show');
 }
-
-function closeGeneric(){
-$('genericModal').classList.remove('show');
+function closeGeneric(){$('genericModal').classList.remove('show')}
+function showPage(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings'].includes(id)?'none':'flex';
+window.scrollTo(0,0);
+}
+function escapeText(value){return String(value??'')}
+function dateText(value){
+if(!value)return '';
+return new Date(value).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+function showError(error){
+console.error(error);
+notify('操作没有完成',error?.message||'请检查网络连接和数据库权限。');
+}
+function requireLogin(){
+if(user)return true;
+notify('请先登录','登录后才能使用这个功能。');
+showPage('auth');
+return false;
 }
 
-function openWrite(){
-$('writeModal').classList.add('show');
+// 用户资料
+async function loadProfile(){
+if(!user){profile=null;return}
+const {data,error}=await db.from('profiles').select('*').eq('id',user.id).maybeSingle();
+if(error)throw error;
+if(data){profile=data}
+else{
+const nickname=user.user_metadata?.nickname||user.email?.split('@')[0]||'漂流者';
+const {data:newProfile,error:e}=await db.from('profiles').upsert({
+id:user.id,nickname
+}).select().single();
+if(e)throw e;
+profile=newProfile;
+}
+syncProfile();
+}
+function syncProfile(){
+$('nickname').textContent=profile?.nickname||'海边的风';
+$('userId').textContent=user?'ID：'+user.id.slice(0,8):'尚未登录';
+$('authButton').textContent=user?'已登录':'登录 / 注册';
+$('logoutRow').style.display=user?'flex':'none';
 }
 
-function closeWrite(){
-$('writeModal').classList.remove('show');
+// 加载数据
+async function loadBottles(){
+const {data,error}=await db.from('bottles')
+.select('id,user_id,content,created_at,is_public,mood,status,picked_up_by,picked_up_at')
+.order('created_at',{ascending:false}).limit(100);
+if(error)throw error;
+bottles=data||[];
 }
-
-// 投递漂流瓶
-function submitBottle(){
-
-let text=$('bottleText').value.trim();
-
-if(!text){
-showModal('还没有写内容','先写下一段心情，再把漂流瓶投进大海。');
-return;
+async function loadFavorites(){
+if(!user){favorites=[];return}
+const {data,error}=await db.from('favorites')
+.select('id,user_id,bottle_id,created_at').eq('user_id',user.id);
+if(error)throw error;
+favorites=data||[];
 }
-
-bottles.unshift({
-id:Date.now(),
-text:text,
-date:new Date().toLocaleString('zh-CN'),
-owner:user?.id||'local'
+async function loadMessages(){
+if(!user){messages=[];return}
+const {data,error}=await db.from('messages')
+.select('*').or('sender_id.eq.'+user.id+',receiver_id.eq.'+user.id)
+.order('created_at',{ascending:false}).limit(100);
+if(error)throw error;
+messages=data||[];
+}
+async function refreshAll(){
+try{
+await loadBottles();
+await loadFavorites();
+await loadMessages();
+renderAll();
+}catch(e){showError(e)}
+}
+function renderAll(){
+renderList('homeFeed',bottles.filter(b=>b.is_public).slice(0,3));
+renderDiscover();
+renderMessages();
+renderStats();
+}
+function renderStats(){
+$('myCountStat').textContent=bottles.filter(b=>b.user_id===user?.id).length;
+$('favCountStat').textContent=favorites.length;
+}
+function renderList(target,items,emptyText='海面暂时很安静。'){
+const el=$(target);el.replaceChildren();
+if(!items.length){
+const e=document.createElement('div');e.className='empty';e.textContent=emptyText;el.append(e);return;
+}
+items.forEach(b=>{
+const c=document.createElement('div');c.className='list-item';
+const p=document.createElement('p');p.textContent=b.content;
+const m=document.createElement('div');m.className='meta';
+m.textContent=(b.mood==='warm'?'温暖 · ':'心事 · ')+dateText(b.created_at);
+c.append(p,m);
+c.addEventListener('click',()=>openDetail(b));
+el.append(c);
 });
-
-save();
-
-$('bottleText').value='';
-
-closeWrite();
-
-refresh();
-
-showModal('投递成功','你的漂流瓶已经放进本机演示海域。正式多人漂流需要接入云端数据库。');
 }
-
-// 捡漂流瓶
-function pickBottle(){
-
-let pool=bottles.filter(b=>b.owner!==(user?.id||'local'));
-
-if(!pool.length){
-showModal('海面暂时很安静','目前没有其他用户投递的真实瓶子。这里不会把示例内容伪装成其他用户的真实投稿。');
-return;
+function renderDiscover(){
+let items=bottles.filter(b=>b.is_public);
+if(activeFilter!=='all')items=items.filter(b=>b.mood===activeFilter);
+renderList('discoverList',items,'暂时还没有公开漂流瓶。');
 }
-
-openDetail(pool[Math.floor(Math.random()*pool.length)]);
+function renderMessages(){
+const el=$('messageList');el.replaceChildren();
+if(!user){
+el.innerHTML='<div class="empty">登录后查看你的云端消息。</div>';return;
+}
+if(!messages.length){
+el.innerHTML='<div class="empty">目前还没有消息。</div>';return;
+}
+messages.forEach(m=>{
+const c=document.createElement('div');c.className='list-item';
+const p=document.createElement('p');p.textContent=m.content;
+const meta=document.createElement('div');meta.className='meta';
+meta.textContent=(m.sender_id===user.id?'我发送的':'收到的消息')+' · '+dateText(m.created_at);
+c.append(p,meta);
+if(m.sender_id!==user.id){
+const b=document.createElement('button');b.className='btn';b.textContent='回复';
+b.addEventListener('click',()=>openMessage(m.sender_id));
+c.append(b);
+}
+el.append(c);
+});
 }
 
 // 漂流瓶详情
 function openDetail(b){
-
 activeBottle=b;
-
-let box=$('detailContent');
-
-box.innerHTML='';
-
-let c=document.createElement('div');
-c.className='card';
-
-let p=document.createElement('p');
-p.textContent=b.text;
-
-let m=document.createElement('span');
-m.className='meta';
-m.textContent=b.date||'漂流中';
-
-c.append(p,m);
-box.append(c);
-
-$('favoriteButton').textContent=
-favorites.some(x=>x.id===b.id)?'♥ 已收藏':'♡ 收藏';
-
+const box=$('detailContent');box.replaceChildren();
+const card=document.createElement('div');card.className='card';
+const p=document.createElement('p');p.style.whiteSpace='pre-wrap';p.style.lineHeight='1.8';p.textContent=b.content;
+const m=document.createElement('div');m.className='meta';m.textContent='漂流时间：'+dateText(b.created_at);
+card.append(p,m);box.append(card);
+const saved=favorites.some(f=>f.bottle_id===b.id);
+$('favoriteButton').textContent=saved?'♥ 已收藏':'♡ 收藏';
+$('sendMessageButton').style.display=user&&b.user_id!==user.id?'block':'none';
 showPage('detail');
 }
-
-// 收藏
-function toggleFavorite(){
-
-if(!activeBottle)return;
-
-let i=favorites.findIndex(x=>x.id===activeBottle.id);
-
-if(i>=0){
-favorites.splice(i,1);
+async function toggleFavorite(){
+if(!requireLogin()||!activeBottle)return;
+try{
+const existing=favorites.find(f=>f.bottle_id===activeBottle.id);
+if(existing){
+const {error}=await db.from('favorites').delete().eq('id',existing.id);
+if(error)throw error;
 }else{
-favorites.unshift(activeBottle);
+const {error}=await db.from('favorites').insert({
+user_id:user.id,bottle_id:activeBottle.id
+});
+if(error)throw error;
+}
+await loadFavorites();renderStats();
+$('favoriteButton').textContent=favorites.some(f=>f.bottle_id===activeBottle.id)?'♥ 已收藏':'♡ 收藏';
+}catch(e){showError(e)}
+}
+async function openMyBottles(){
+if(!requireLogin())return;
+try{
+const {data,error}=await db.from('bottles').select('*')
+.eq('user_id',user.id).order('created_at',{ascending:false});
+if(error)throw error;
+renderList('bottleList',data||[],'你还没有投递漂流瓶。');
+showPage('myBottles');
+}catch(e){showError(e)}
+}
+async function openFavorites(){
+if(!requireLogin())return;
+try{
+const ids=favorites.map(f=>f.bottle_id);
+if(!ids.length){renderList('favoriteList',[],'你还没有收藏漂流瓶。');showPage('favorites');return}
+const {data,error}=await db.from('bottles').select('*').in('id',ids);
+if(error)throw error;
+renderList('favoriteList',data||[],'你还没有收藏漂流瓶。');
+showPage('favorites');
+}catch(e){showError(e)}
 }
 
-save();
-
-$('favoriteButton').textContent=
-i>=0?'♡ 收藏':'♥ 已收藏';
-
-refresh();
+// 投递
+async function submitBottle(){
+if(!requireLogin())return;
+const content=$('bottleText').value.trim();
+if(!content){notify('还没有写内容','先写下一段心情。');return}
+try{
+const {error}=await db.from('bottles').insert({
+user_id:user.id,
+content,
+is_public:$('isPublic').checked,
+mood:$('bottleMood').value
+});
+if(error)throw error;
+$('bottleText').value='';
+$('writeModal').classList.remove('show');
+await refreshAll();
+notify('投递成功','你的漂流瓶已经投进云端大海。');
+}catch(e){showError(e)}
 }
 
-// 列表
-function renderList(target,items,empty,click){
-
-let el=$(target);
-
-el.innerHTML='';
-
-if(!items.length){
-el.innerHTML='<div class="empty">'+empty+'</div>';
+// 随机捡瓶
+async function pickBottle(){
+try{
+const pool=bottles.filter(b=>b.is_public&&b.user_id!==user?.id);
+if(!pool.length){
+notify('海面暂时很安静','暂时没有其他用户公开投递的漂流瓶。');
 return;
 }
+const b=pool[Math.floor(Math.random()*pool.length)];
+openDetail(b);
+}catch(e){showError(e)}
+}
 
-items.forEach(b=>{
-
-let c=document.createElement('div');
-c.className='list-item';
-
-let p=document.createElement('p');
-p.textContent=b.text;
-
-let m=document.createElement('span');
-m.className='meta';
-m.textContent=(b.date||'')+' · 点击查看';
-
-c.append(p,m);
-
-c.onclick=()=>click(b);
-
-el.append(c);
-
+// 消息
+function openMessage(receiver){
+if(!requireLogin())return;
+if(receiver===user.id){notify('提示','不能给自己发送消息。');return}
+messageReceiver=receiver;
+$('messageTarget').textContent='正在给瓶子主人写信';
+$('messageText').value='';
+$('messageModal').classList.add('show');
+}
+async function submitMessage(){
+if(!requireLogin()||!messageReceiver)return;
+const content=$('messageText').value.trim();
+if(!content){notify('消息不能为空','请输入你想说的话。');return}
+try{
+const {error}=await db.from('messages').insert({
+sender_id:user.id,receiver_id:messageReceiver,content,is_read:false
 });
-}
-
-function openMyBottles(){
-
-renderList(
-'bottleList',
-bottles,
-'你还没有投递漂流瓶。',
-openDetail
-);
-
-showPage('myBottles');
-}
-
-function openFavorites(){
-
-renderList(
-'favoriteList',
-favorites,
-'你还没有收藏漂流瓶。',
-openDetail
-);
-
-showPage('favorites');
-}
-
-// 页面刷新
-function refresh(){
-
-$('mycount').textContent=bottles.length;
-$('myCountStat').textContent=bottles.length;
-
-$('favcount').textContent=favorites.length;
-$('favCountStat').textContent=favorites.length;
-
-$('followcount').textContent=following.length;
-$('followCountStat').textContent=following.length;
-
-renderList(
-'homeFeed',
-bottles.slice(0,3),
-'海面暂时很安静。',
-openDetail
-);
-
-renderDiscover();
-
-syncUser();
-}
-
-function renderDiscover(){
-
-let items=bottles.filter(b=>
-activeFilter==='all'||b.tag===activeFilter
-);
-
-renderList(
-'discoverList',
-items,
-'暂时还没有公开漂流瓶。',
-openDetail
-);
-}
-
-// 用户资料
-function syncUser(){
-
-$('nickname').textContent=user?.nickname||'海边的风';
-
-$('userId').textContent='ID：'+(user?.id||'102948');
-
-$('logoutRow').style.display=user?'flex':'none';
-
+if(error)throw error;
+$('messageModal').classList.remove('show');
+messageReceiver=null;
+await loadMessages();renderMessages();
+notify('发送成功','你的消息已经发送。');
+}catch(e){showError(e)}
 }
 
 // 登录注册
-function openAuth(){
-
-authMode='login';
-authMethod='phone';
-
-syncAuth();
-
-showPage('auth');
-}
-
 function syncAuth(){
-
-$('authHeading').textContent=
-authMode==='login'?'欢迎回来':'创建账号';
-
-$('submitAuth').textContent=
-authMode==='login'?'登录':'注册';
-
-$('accountLabel').textContent=
-authMethod==='phone'?'手机号':'邮箱';
-
-$('account').placeholder=
-authMethod==='phone'?'请输入手机号':'请输入邮箱';
-
-$('account').type=
-authMethod==='phone'?'tel':'email';
-
-$('registerFields').style.display=
-authMode==='register'?'block':'none';
-
-document.querySelectorAll('[data-authmode]').forEach(b=>{
-b.classList.toggle('active',b.dataset.authmode===authMode);
+$('authHeading').textContent=authMode==='login'?'欢迎回来':'创建账号';
+$('submitAuth').textContent=authMode==='login'?'登录':'注册';
+$('accountLabel').textContent=authMethod==='email'?'邮箱':'手机号';
+$('account').type=authMethod==='email'?'email':'tel';
+$('account').placeholder=authMethod==='email'?'请输入邮箱':'请输入国际格式手机号，例如 +8613800000000';
+$('passwordFields').style.display=authMethod==='email'?'block':'none';
+$('phoneFields').style.display=authMethod==='phone'?'block':'none';
+$('registerFields').style.display=authMode==='register'?'block':'none';
+document.querySelectorAll('[data-authmode]').forEach(b=>b.classList.toggle('active',b.dataset.authmode===authMode));
+document.querySelectorAll('[data-method]').forEach(b=>b.classList.toggle('active',b.dataset.method===authMethod));
+}
+function openAuth(){
+authMode='login';authMethod='email';syncAuth();showPage('auth');
+}
+async function sendCode(){
+const phone=$('account').value.trim();
+if(!phone.startsWith('+')){notify('手机号格式不正确','请使用国际格式，例如 +8613800000000。');return}
+try{
+const {error}=await db.auth.signInWithOtp({phone,options:{shouldCreateUser:authMode==='register'}});
+if(error)throw error;
+notify('验证码已发送','请查看手机短信，并输入收到的验证码。');
+}catch(e){showError(e)}
+}
+async function submitAuth(){
+const account=$('account').value.trim();
+try{
+if(authMethod==='email'){
+const password=$('password').value;
+if(!account||password.length<6){notify('信息不完整','请输入邮箱和至少6位密码。');return}
+if(authMode==='register'){
+const nickname=$('registerNickname').value.trim()||account.split('@')[0];
+const {data,error}=await db.auth.signUp({
+email:account,password,
+options:{data:{nickname}}
 });
-
-document.querySelectorAll('[data-method]').forEach(b=>{
-b.classList.toggle('active',b.dataset.method===authMethod);
-});
-
-$('verifyCode').value='';
-
-demoCodeSent=false;
-
-$('sendCode').textContent='获取验证码';
+if(error)throw error;
+if(!data.session){
+notify('注册成功','请到邮箱查收验证邮件，完成验证后再登录。');
+}else{
+notify('注册成功','账号已创建并登录。');
 }
-
-// 演示发送验证码
-function sendCode(){
-
-let a=$('account').value.trim();
-
-if(authMethod==='phone'&&!/^\+?[0-9 -]{6,20}$/.test(a)){
-showModal('请检查手机号','请输入有效手机号。');
-return;
+}else{
+const {error}=await db.auth.signInWithPassword({email:account,password});
+if(error)throw error;
 }
-
-if(authMethod==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a)){
-showModal('请检查邮箱','请输入有效邮箱地址。');
-return;
+}else{
+const phone=account;
+const token=$('verifyCode').value.trim();
+if(!phone||!token){notify('信息不完整','请输入手机号和短信验证码。');return}
+const {error}=await db.auth.verifyOtp({phone,token,type:'sms'});
+if(error)throw error;
 }
-
-demoCodeSent=true;
-
-$('sendCode').textContent='演示码 123456';
-
-showModal(
-'演示验证码已生成',
-'当前没有连接短信或邮件服务。请在验证码框输入 123456 继续体验页面。'
-);
-}
-
-// 注册或登录
-function submitAuth(){
-
-let a=$('account').value.trim();
-let code=$('verifyCode').value.trim();
-
-if(authMethod==='phone'&&!/^\+?[0-9 -]{6,20}$/.test(a)){
-showModal('手机号格式不正确','请检查后重新输入。');
-return;
-}
-
-if(authMethod==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a)){
-showModal('邮箱格式不正确','请检查后重新输入。');
-return;
-}
-
-if(!demoCodeSent||code!=='123456'){
-showModal('验证码不正确','请先点击获取验证码，并输入演示验证码 123456。');
-return;
-}
-
-let nickname=$('registerNickname').value.trim();
-let password=$('registerPassword').value;
-
-if(authMode==='register'&&(!nickname||password.length<8)){
-showModal('请完善注册信息','请填写昵称，并设置至少8位密码。');
-return;
-}
-
-user={
-id:'DB'+Date.now().toString().slice(-8),
-account:a,
-method:authMethod,
-nickname:nickname||a
-};
-
-localStorage.setItem('demoUser',JSON.stringify(user));
-
-syncUser();
-
+await initSession();
 showPage('profile');
-
-showModal(
-authMode==='register'?'注册演示完成':'登录演示完成',
-'当前账号只保存在本机浏览器，尚未连接真实认证服务器。'
-);
+notify('登录成功','你的账号已经连接云端。');
+}catch(e){showError(e)}
 }
 
 // 编辑资料
 function editProfile(){
-
-$('editNickname').value=user?.nickname||'海边的风';
-
-$('editBio').value=user?.bio||'';
-
+if(!requireLogin())return;
+$('editNickname').value=profile?.nickname||'';
 showPage('editProfile');
 }
-
-function saveProfile(){
-
-let n=$('editNickname').value.trim();
-
-if(!n){
-showModal('昵称不能为空','请填写昵称后再保存。');
-return;
+async function saveProfile(){
+const nickname=$('editNickname').value.trim();
+if(!nickname){notify('昵称不能为空','请填写昵称。');return}
+try{
+const {data,error}=await db.from('profiles').upsert({
+id:user.id,nickname
+}).select().single();
+if(error)throw error;
+profile=data;syncProfile();showPage('profile');
+notify('保存成功','个人资料已同步到云端。');
+}catch(e){showError(e)}
 }
 
-user=user||{
-id:'DB'+Date.now().toString().slice(-8)
-};
-
-user.nickname=n;
-user.bio=$('editBio').value.trim();
-
-localStorage.setItem('demoUser',JSON.stringify(user));
-
-syncUser();
-
-showPage('profile');
+// 登录状态
+async function initSession(){
+const {data,error}=await db.auth.getSession();
+if(error)throw error;
+user=data.session?.user||null;
+if(user)await loadProfile();
+else profile=null;
+syncProfile();
+await refreshAll();
+}
+async function logout(){
+if(!confirm('确定退出当前账号吗？'))return;
+const {error}=await db.auth.signOut();
+if(error){showError(error);return}
+user=null;profile=null;bottles=[];favorites=[];messages=[];
+syncProfile();renderAll();showPage('profile');
 }
 
-function backProfile(){
-showPage('profile');
-}
-
-function backDetail(){
-showPage('discover');
-}
-
-// 退出登录
-function logout(){
-
-if(!confirm('确定退出当前演示账号吗？'))return;
-
-user=null;
-
-localStorage.removeItem('demoUser');
-
-syncUser();
-
-showPage('profile');
-}
-
-// 点击功能统一管理
-function action(name){
-
-switch(name){
-
-case'write':
-openWrite();
-break;
-
-case'pick':
-pickBottle();
-break;
-
-case'myBottles':
-openMyBottles();
-break;
-
-case'favorites':
-openFavorites();
-break;
-
-case'following':
-renderList('subBody',following,'你还没有关注任何人。',()=>{});
-$('subTitle').textContent='我的关注';
-showPage('subpage');
-break;
-
-case'auth':
-openAuth();
-break;
-
-case'settings':
-showPage('settings');
-break;
-
-case'editProfile':
-editProfile();
-break;
-
-case'saveProfile':
-saveProfile();
-break;
-
-case'about':
-showModal(
-'关于漂流瓶',
-'一个让心事随海风漂流、让陌生故事温柔相遇的空间。当前版本为前端演示。'
-);
-break;
-
-case'logout':
-logout();
-break;
-
-case'backProfile':
-backProfile();
-break;
-
-case'backDetail':
-backDetail();
-break;
-
-case'toggleFavorite':
-toggleFavorite();
-break;
-
-case'submitBottle':
-submitBottle();
-break;
-
-case'closeWrite':
-closeWrite();
-break;
-
-case'closeGeneric':
-closeGeneric();
-break;
-
-case'sendCode':
-sendCode();
-break;
-
-case'submitAuth':
-submitAuth();
-break;
-
-case'notice':
-showModal('系统通知','目前没有系统通知。');
-break;
-
-case'replies':
-showModal('瓶子回信','目前还没有收到回信。');
-break;
-
-case'likes':
-showModal('收到的喜欢','目前还没有收到喜欢。');
-break;
-
-case'privacy':
-showModal(
-'隐私设置',
-'演示版本暂未接入云端隐私设置。正式上线前会提供内容可见范围和屏蔽管理。'
-);
-break;
-
-case'notificationSettings':
-showModal(
-'消息通知',
-'演示版本暂未接入推送通知。'
-);
-break;
-
-case'accountSecurity':
-showModal(
-'账号与安全',
-'当前为本地演示账号，未接入真实身份验证。'
-);
-break;
-
-case'clearLocal':
-
-if(confirm('确定清除本机保存的漂流瓶、收藏和演示账号吗？此操作不可撤销。')){
-
-bottles=[];
-favorites=[];
-following=[];
-user=null;
-
-localStorage.removeItem('demoUser');
-
-save();
-refresh();
-showPage('profile');
-
-}
-
-break;
-
-}
-
-}
-
-// 所有按钮统一事件监听
-document.addEventListener('click',e=>{
-
-let nav=e.target.closest('[data-page]');
-
+// 事件
+document.addEventListener('click',async e=>{
+const nav=e.target.closest('[data-page]');
 if(nav){
 showPage(nav.dataset.page);
+if(nav.dataset.page==='messages'){await loadMessages();renderMessages()}
 return;
 }
-
-let a=e.target.closest('[data-action]');
-
-if(a){
-action(a.dataset.action);
-return;
+const method=e.target.closest('[data-method]');
+if(method){authMethod=method.dataset.method;syncAuth();return}
+const mode=e.target.closest('[data-authmode]');
+if(mode){authMode=mode.dataset.authmode;syncAuth();return}
+const filter=e.target.closest('[data-filter]');
+if(filter){
+activeFilter=filter.dataset.filter;
+document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b===filter));
+renderDiscover();return;
 }
-
-let m=e.target.closest('[data-method]');
-
-if(m){
-authMethod=m.dataset.method;
-syncAuth();
-return;
+const a=e.target.closest('[data-action]');
+if(!a)return;
+switch(a.dataset.action){
+case'write':
+if(requireLogin())$('writeModal').classList.add('show');
+break;
+case'closeWrite':$('writeModal').classList.remove('show');break;
+case'pick':await pickBottle();break;
+case'submitBottle':await submitBottle();break;
+case'toggleFavorite':await toggleFavorite();break;
+case'myBottles':await openMyBottles();break;
+case'favorites':await openFavorites();break;
+case'auth':openAuth();break;
+case'submitAuth':await submitAuth();break;
+case'sendCode':await sendCode();break;
+case'editProfile':editProfile();break;
+case'saveProfile':await saveProfile();break;
+case'logout':await logout();break;
+case'backProfile':showPage('profile');break;
+case'backDetail':showPage('discover');break;
+case'settings':showPage('settings');break;
+case'about':notify('关于漂流瓶','让心事随海风漂流，让陌生故事温柔相遇。');break;
+case'refresh':await refreshAll();notify('刷新完成','云端数据已重新加载。');break;
+case'refreshMessages':await loadMessages();renderMessages();break;
+case'sendMessage':if(activeBottle)openMessage(activeBottle.user_id);break;
+case'submitMessage':await submitMessage();break;
+case'closeMessage':$('messageModal').classList.remove('show');break;
+case'closeGeneric':closeGeneric();break;
 }
-
-let t=e.target.closest('[data-authmode]');
-
-if(t){
-authMode=t.dataset.authmode;
-syncAuth();
-return;
-}
-
-let f=e.target.closest('[data-filter]');
-
-if(f){
-
-activeFilter=f.dataset.filter;
-
-document.querySelectorAll('[data-filter]').forEach(x=>{
-x.classList.toggle('active',x===f);
 });
 
-renderDiscover();
-
+// 实时监听登录状态
+db.auth.onAuthStateChange(async(event,session)=>{
+if(event==='SIGNED_IN'||event==='SIGNED_OUT'){
+user=session?.user||null;
+try{
+if(user)await loadProfile();else profile=null;
+syncProfile();
+await refreshAll();
+}catch(e){console.error(e)}
 }
-
 });
 
-refresh();
-
+// 启动
+(async()=>{
+try{
+await initSession();
+}catch(e){showError(e)}
+})();
 </script>
-
 </body>
 </html>
