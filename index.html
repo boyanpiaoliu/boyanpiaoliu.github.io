@@ -1312,7 +1312,7 @@ case'favorites':await openFavorites();break;
 case'auth':openAuth();break;
 case'submitAuth':await submitAuth();break;
 case'sendCode':await sendCode();break;
-case'editProfile':editProfile();break;
+case'editProfile':$('profileViewModal').style.display='none';editProfile();break;
 case'friends':if(requireLogin()){showPage('friends');await loadFriends()}break;
 case'searchFriend':await searchFriend();break;
 case'respondFriendRequest':break;
