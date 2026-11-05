@@ -279,6 +279,21 @@ header p{letter-spacing:.4px}
 .modalbox{box-shadow:0 18px 55px rgba(24,53,79,.2);border:1px solid rgba(232,241,247,.9)}
 @media(max-width:380px){.hero-premium{height:345px;padding:23px 18px}.hero-premium h2{font-size:26px}.hero-bottle{right:10px;font-size:65px}.home-quick-four .quick-card span{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.hero-bottle,.hero .bottle{animation:none}}
+
+.friends-intro{display:flex;align-items:center;gap:13px;padding:17px;margin:3px 0 15px;border-radius:20px;background:linear-gradient(120deg,#eaf5fb,#f9eef0);border:1px solid #e5eef4}
+.friends-intro-icon{width:45px;height:45px;border-radius:15px;display:grid;place-items:center;background:#fff;color:#548bb0;font-size:25px;box-shadow:0 5px 14px #739bb51c}
+.friends-intro strong,.friends-intro span{display:block}.friends-intro strong{font-size:13px;color:#3c5c75}.friends-intro span{font-size:11px;color:#8b9dad;margin-top:5px}
+.friends-search-card{padding:16px}
+.friends-search-card .fieldline{gap:7px}.friends-search-card .fieldline input{font-size:12px;padding:12px 10px}.friends-search-card .fieldline .btn{padding:12px 14px}
+.friends-hint{font-size:10px;color:#91a1af;margin:9px 0 0;overflow-wrap:anywhere}.friends-hint strong{color:#577c98;font-weight:600}
+.copy-id{border:0;background:#eef6fb;color:#4f88ad;border-radius:8px;padding:5px 8px;font-size:10px;margin-left:5px}
+.friend-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#eaf3f9;color:#5686a7;font-size:10px;margin-left:5px}
+.friend-result,.friend-row,.friend-request-row{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid #e8eef3;border-radius:15px;margin-top:10px;background:#fff}
+.friend-avatar{width:39px;height:39px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#e5f3fa,#cfe5f1);color:#5687a8;font-weight:700}
+.friend-info{flex:1;min-width:0}.friend-info strong{display:block;font-size:12px;color:#3d566b}.friend-info span{display:block;font-size:10px;color:#9aabba;margin-top:4px;overflow-wrap:anywhere}
+.friend-action{border:0;border-radius:11px;padding:9px 12px;background:#eaf4fb;color:#4d83a5;font-size:11px;font-weight:650;white-space:nowrap}
+.friend-action.accept{background:#4c8db5;color:white}.friend-action:disabled{opacity:.55}
+#friends .section-title{display:flex;align-items:center;font-size:16px;margin:20px 2px 10px}
 </style>
 </head>
 
@@ -364,6 +379,7 @@ header p{letter-spacing:.4px}
 <div class="row" data-action="myBottles"><span class="icon">📮</span><span class="label">我的瓶子</span><span class="arrow">›</span></div>
 <div class="row" data-action="favorites"><span class="icon">♡</span><span class="label">我的收藏</span><span class="arrow">›</span></div>
 <div class="row" data-action="editProfile"><span class="icon">✎</span><span class="label">编辑资料</span><span class="arrow">›</span></div>
+<div class="row" data-action="friends"><span class="icon">♧</span><span class="label">好友与好友申请</span><span class="arrow">›</span></div>
 <div class="row" data-action="settings"><span class="icon">⚙</span><span class="label">设置</span><span class="arrow">›</span></div>
 <div class="row" data-action="logout" id="logoutRow" style="display:none"><span class="icon">↪</span><span class="label danger">退出登录</span><span class="arrow">›</span></div>
 </div>
@@ -377,6 +393,21 @@ header p{letter-spacing:.4px}
 <section class="page" id="favorites">
 <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>我的收藏</h2></div>
 <div id="favoriteList"></div>
+</section>
+
+<section class="page" id="friends">
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>好友</h2></div>
+<div class="friends-intro"><div class="friends-intro-icon">♧</div><div><strong>让远方的故事有个回音</strong><span>输入对方的好友 ID，发送好友申请。</span></div></div>
+<div class="card friends-search-card">
+<label class="form-label" for="friendSearchId">搜索好友 ID</label>
+<div class="fieldline"><input id="friendSearchId" placeholder="粘贴对方完整好友 ID" autocomplete="off" autocapitalize="off"><button class="btn primary" data-action="searchFriend">搜索</button></div>
+<p class="friends-hint">你的好友 ID：<strong id="myFriendId">登录后显示</strong> <button data-action="copyFriendId" class="copy-id">复制</button></p>
+<div id="friendSearchResult"></div>
+</div>
+<div class="section-title">好友申请 <span id="friendRequestCount" class="friend-count">0</span></div>
+<div id="friendRequests"></div>
+<div class="section-title">我的好友</div>
+<div id="friendList"></div>
 </section>
 
 <section class="page" id="editProfile">
@@ -500,6 +531,7 @@ let authMode='login';
 let authMethod='email';
 let activeFilter='all';
 let messageReceiver=null;
+let friendSearchResult=null;
 // 官方体验示例漂流瓶
 const demoBottles=[
 {
@@ -540,7 +572,7 @@ function closeGeneric(){$('genericModal').classList.remove('show')}
 function showPage(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
 document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings'].includes(id)?'none':'flex';
+$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends'].includes(id)?'none':'flex';
 window.scrollTo(0,0);
 }
 function escapeText(value){return String(value??'')}
@@ -704,6 +736,77 @@ async function deleteMessage(id,peer){
  if(!confirm('确定删除这条消息吗？'))return;
  try{const {error}=await db.from('messages').delete().eq('id',id).eq('sender_id',user.id);if(error)throw error;await loadMessages();await openConversation(peer)}
  catch(e){showError(e)}
+}
+
+
+async function loadFriends(){
+ if(!user){$('friendList').innerHTML='<div class="empty">登录后查看好友。</div>';return}
+ $('myFriendId').textContent=user.id;
+ const [{data:requests,error:rErr},{data:friends,error:fErr}]=await Promise.all([
+  db.from('friend_requests').select('id,sender_id,receiver_id,status,created_at').eq('receiver_id',user.id).eq('status','pending').order('created_at',{ascending:false}),
+  db.rpc('get_my_friends')
+ ]);
+ if(rErr)throw rErr;if(fErr)throw fErr;
+ $('friendRequestCount').textContent=(requests||[]).length;
+ const reqBox=$('friendRequests');reqBox.replaceChildren();
+ if(!requests?.length){reqBox.innerHTML='<div class="empty">暂时没有新的好友申请。</div>'}
+ for(const req of requests||[]){
+  const {data:people,error}=await db.rpc('search_profile_by_id',{p_id:req.sender_id});if(error)throw error;
+  const person=people?.[0];const row=document.createElement('div');row.className='friend-request-row';
+  const av=document.createElement('div');av.className='friend-avatar';av.textContent=(person?.nickname||'漂').slice(0,1);
+  const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person?.nickname||'漂流者';const id=document.createElement('span');id.textContent=req.sender_id;info.append(name,id);
+  const accept=document.createElement('button');accept.className='friend-action accept';accept.textContent='同意';accept.addEventListener('click',()=>respondFriendRequest(req.id,'accepted'));
+  const reject=document.createElement('button');reject.className='friend-action';reject.textContent='拒绝';reject.addEventListener('click',()=>respondFriendRequest(req.id,'rejected'));
+  row.append(av,info,accept,reject);reqBox.append(row);
+ }
+ const friendBox=$('friendList');friendBox.replaceChildren();
+ if(!friends?.length){friendBox.innerHTML='<div class="empty">还没有好友，试着搜索一个 ID 吧。</div>';return}
+ friends.forEach(f=>{
+  const row=document.createElement('div');row.className='friend-row';const av=document.createElement('div');av.className='friend-avatar';av.textContent=(f.nickname||'漂').slice(0,1);
+  const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=f.nickname||'漂流者';const id=document.createElement('span');id.textContent=f.id;info.append(name,id);
+  const msg=document.createElement('button');msg.className='friend-action';msg.textContent='发消息';msg.addEventListener('click',()=>{messageReceiver=f.id;openMessage(f.id)});
+  row.append(av,info,msg);friendBox.append(row);
+ });
+}
+async function searchFriend(){
+ if(!requireLogin())return;
+ const raw=$('friendSearchId').value.trim();
+ const box=$('friendSearchResult');box.replaceChildren();friendSearchResult=null;
+ if(!raw){notify('请输入好友 ID','请粘贴对方的完整好友 ID。');return}
+ if(raw===user.id){notify('这是你自己的 ID','搜索其他用户的好友 ID。');return}
+ if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(raw)){notify('ID 格式不正确','请使用完整的 UUID 好友 ID。');return}
+ try{
+  const {data,error}=await db.rpc('search_profile_by_id',{p_id:raw});if(error)throw error;
+  const person=data?.[0];if(!person){box.innerHTML='<div class="empty">没有找到这个 ID 对应的用户。</div>';return}
+  friendSearchResult=person;
+  const {data:existing,error:e}=await db.from('friend_requests').select('id,sender_id,receiver_id,status').or('and(sender_id.eq.'+user.id+',receiver_id.eq.'+person.id+'),and(sender_id.eq.'+person.id+',receiver_id.eq.'+user.id+')').limit(1);
+  if(e)throw e;
+  const row=document.createElement('div');row.className='friend-result';const av=document.createElement('div');av.className='friend-avatar';av.textContent=(person.nickname||'漂').slice(0,1);
+  const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person.nickname||'漂流者';const id=document.createElement('span');id.textContent=person.id;info.append(name,id);
+  const action=document.createElement('button');action.className='friend-action';
+  if(existing?.[0]?.status==='accepted'){action.textContent='已是好友';action.disabled=true}
+  else if(existing?.[0]?.status==='pending'){action.textContent=existing[0].sender_id===user.id?'已发送申请':'对方已申请';action.disabled=true}
+  else{action.textContent='添加好友';action.addEventListener('click',()=>sendFriendRequest(person.id,action))}
+  row.append(av,info,action);box.append(row);
+ }catch(e){showError(e)}
+}
+async function sendFriendRequest(receiver,button){
+ button.disabled=true;
+ try{
+  const {error}=await db.from('friend_requests').insert({sender_id:user.id,receiver_id:receiver,status:'pending'});if(error)throw error;
+  button.textContent='申请已发送';notify('申请已发送','好友申请已送达，等待对方确认。');
+ }catch(e){button.disabled=false;showError(e)}
+}
+async function respondFriendRequest(id,status){
+ try{
+  const {error}=await db.from('friend_requests').update({status}).eq('id',id).eq('receiver_id',user.id);if(error)throw error;
+  await loadFriends();notify(status==='accepted'?'已添加好友':'已拒绝申请',status==='accepted'?'你们现在已经是好友了。':'该好友申请已拒绝。');
+ }catch(e){showError(e)}
+}
+async function copyFriendId(){
+ if(!user)return;
+ try{await navigator.clipboard.writeText(user.id);notify('已复制','你的好友 ID 已复制，可以发送给朋友。')}
+ catch(e){$('myFriendId').textContent=user.id;notify('复制失败','请长按好友 ID 手动复制。')}
 }
 
 // 漂流瓶详情
@@ -979,6 +1082,10 @@ case'auth':openAuth();break;
 case'submitAuth':await submitAuth();break;
 case'sendCode':await sendCode();break;
 case'editProfile':editProfile();break;
+case'friends':if(requireLogin()){showPage('friends');await loadFriends()}break;
+case'searchFriend':await searchFriend();break;
+case'respondFriendRequest':break;
+case'copyFriendId':await copyFriendId();break;
 case'saveProfile':await saveProfile();break;
 case'logout':await logout();break;
 case'backProfile':showPage('profile');break;
