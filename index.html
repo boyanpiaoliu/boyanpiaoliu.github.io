@@ -48,16 +48,20 @@ font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
 }
 button,input,textarea{font:inherit}
 button{cursor:pointer}
-header{
-position:sticky;top:0;z-index:5;text-align:center;
-padding:calc(17px + env(safe-area-inset-top)) 18px 13px;
-background:#ffffffed;backdrop-filter:blur(18px);
+.global-brand-bar{
+position:sticky;top:0;z-index:20;
+padding:calc(10px + env(safe-area-inset-top)) 12px 10px;
+background:rgba(255,255,255,.92);backdrop-filter:blur(18px);
+border-bottom:1px solid rgba(220,232,241,.72);
+text-align:center;white-space:nowrap;overflow:hidden;
 }
-header h1{font-size:23px;margin:0 0 5px}
-header p{font-size:12px;color:var(--muted);margin:0}
+.global-brand-bar>div{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;color:#315875;font-size:clamp(11px,3.35vw,14px);letter-spacing:.1px}
+.global-brand-bar strong{font-size:clamp(13px,3.8vw,16px);font-weight:800;letter-spacing:.6px}
+.global-brand-bar i{font-style:normal;color:#a8bdcc;margin:0 1px}
+.global-brand-bar span{color:#8299aa;font-size:clamp(10px,3.05vw,13px);font-weight:500}
 .page{
-display:none;min-height:calc(100vh - 70px);
-padding:18px 18px calc(105px + env(safe-area-inset-bottom));
+display:none;min-height:calc(100vh - 112px);
+padding:14px 18px calc(105px + env(safe-area-inset-bottom));
 }
 .page.active{display:block}
 h2{font-size:21px;margin:0 0 12px}
@@ -411,10 +415,11 @@ header p{letter-spacing:.4px}
 
 <body>
 
+<header class="global-brand-bar"><div>🌊 <strong>泊言漂流瓶</strong><i>丨</i><span>心事停泊，偶然被看见</span></div></header>
+
 <main>
 
 <section class="page active" id="home">
-<div class="home-topline"><div><div class="home-brand">漂流瓶<span>DRIFTING BOTTLE</span></div><div class="home-tagline">把心事交给大海，把温柔留给彼此</div></div><div class="home-date">TODAY <strong>随心漂流</strong></div></div>
 <div class="hero hero-premium">
 <div class="hero-sky"><span class="hero-star star-one">✦</span><span class="hero-star star-two">✧</span><span class="hero-moon">☼</span><span class="hero-bird">⌁</span></div>
 <div class="hero-copy"><span class="hero-kicker">A MESSAGE TO THE OCEAN</span><h2>大海正在<br>等待你的故事</h2><p>把心事装进漂流瓶，让它飘向未知的远方。</p>
