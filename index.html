@@ -628,7 +628,10 @@ if(authMode==='register'){
 const nickname=$('registerNickname').value.trim()||account.split('@')[0];
 const {data,error}=await db.auth.signUp({
 email:account,password,
-options:{data:{nickname}}
+options:{
+  data:{nickname},
+  emailRedirectTo:'https://yaya1022.github.io/'
+}
 });
 if(error)throw error;
 if(!data.session){
