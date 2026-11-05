@@ -313,7 +313,7 @@ header p{letter-spacing:.4px}
 .chat-line{display:flex;align-items:flex-end;gap:8px;margin:12px 0}
 .chat-line.mine{justify-content:flex-end}
 .chat-line.theirs{justify-content:flex-start}
-.chat-avatar{width:31px;height:31px;flex:0 0 31px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#e7f2f9;color:#5d86a2;font-size:12px;font-weight:700;border:1px solid #fff;box-shadow:0 2px 7px #54738b20}
+.chat-avatar{width:40px;height:40px;flex:0 0 40px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#e7f2f9;color:#5d86a2;font-size:12px;font-weight:700;border:1px solid #fff;box-shadow:0 2px 7px #54738b20}
 .chat-avatar img{width:100%;height:100%;object-fit:cover}
 .chat-content{max-width:calc(100% - 42px);display:flex;flex-direction:column}
 .chat-line.mine .chat-content{align-items:flex-end}
@@ -400,6 +400,11 @@ header p{letter-spacing:.4px}
 .profile-view-details div{display:flex;flex-direction:column;gap:7px}
 .profile-view-details span{font-size:10px;color:#9aabb8}
 .profile-view-details strong{font-size:13px;color:#536f85}
+.profile-view-extra{text-align:left;border-top:1px solid #edf1f4;padding-top:13px;margin-bottom:15px}
+.profile-view-extra section{padding:7px 0}
+.profile-view-extra span{font-size:11px;color:#94a5b2}
+.profile-view-extra p{font-size:13px;line-height:1.6;color:#526d82;margin:6px 0;overflow-wrap:anywhere}
+.profile-view-extra small{font-size:10px;color:#a0afba}
 
 </style>
 </head>
@@ -526,6 +531,7 @@ header p{letter-spacing:.4px}
 <input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp">
 <label class="form-label">昵称</label>
 <input id="editNickname" maxlength="20" placeholder="请输入昵称">
+<label class="form-label" style="margin-top:14px">个性签名</label><textarea id="editSignature" maxlength="80" placeholder="写一句话介绍自己吧（最多80字）" style="width:100%;min-height:76px;padding:13px;border:1px solid #e0e9f1;border-radius:13px;background:#f9fbfd;resize:vertical"></textarea>
 <div id="genderChoiceWrap" class="gender-choice-wrap"><label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div></div>
 <div class="bubble-color-setting"><label class="form-label">个性外观 · 气泡颜色</label><p class="bubble-color-note">选择你喜欢的颜色，保存后会应用到你发送的消息。</p><div class="bubble-color-options">
 <button type="button" class="bubble-color-swatch" data-bubble-color="#a9d6f5" title="海盐蓝" aria-label="海盐蓝" style="--swatch:#a9d6f5"><span></span><small>海盐蓝</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f5bdd4" title="樱花粉" aria-label="樱花粉" style="--swatch:#f5bdd4"><span></span><small>樱花粉</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#b9e4c9" title="薄荷绿" aria-label="薄荷绿" style="--swatch:#b9e4c9"><span></span><small>薄荷绿</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f6d59b" title="奶油黄" aria-label="奶油黄" style="--swatch:#f6d59b"><span></span><small>奶油黄</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#c9c4f5" title="薰衣草" aria-label="薰衣草" style="--swatch:#c9c4f5"><span></span><small>薰衣草</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#b9dce8" title="雾霾蓝" aria-label="雾霾蓝" style="--swatch:#b9dce8"><span></span><small>雾霾蓝</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f2b8a8" title="蜜桃橘" aria-label="蜜桃橘" style="--swatch:#f2b8a8"><span></span><small>蜜桃橘</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#d5dce5" title="月光灰" aria-label="月光灰" style="--swatch:#d5dce5"><span></span><small>月光灰</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#e7c6f3" title="梦幻紫" aria-label="梦幻紫" style="--swatch:#e7c6f3"><span></span><small>梦幻紫</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#c9d9a8" title="青柠绿" aria-label="青柠绿" style="--swatch:#c9d9a8"><span></span><small>青柠绿</small></button>
@@ -583,7 +589,7 @@ header p{letter-spacing:.4px}
 </div>
 </section>
 
-<div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>性别</span><strong id="profileViewGender">未设置</strong></div><div><span>气泡颜色</span><strong id="profileViewColor">默认</strong></div></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button></div></div>
+<div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>账号 ID</span><strong id="profileViewAccountId">—</strong></div><div><span>性别</span><strong id="profileViewGender">未设置</strong></div></div><div class="profile-view-extra"><section><span>个性签名</span><p id="profileViewSignature">这个人还没有填写个性签名</p></section><section><span>最近的动态</span><p id="profileViewActivity">暂时没有公开动态</p><small id="profileViewActivityTime"></small></section></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button></div></div>
 </main>
 
 <nav id="mainNav">
@@ -730,16 +736,17 @@ syncProfile();
 async function showUserProfile(id){
  try{
   let person;
-  if(id===user?.id)person=profile;
-  else{const {data,error}=await db.rpc('view_friend_profile',{p_id:id});if(error)throw error;person=data?.[0]}
+  const {data,error}=await db.rpc('view_friend_profile',{p_id:id});if(error)throw error;person=data?.[0];
   if(!person){notify('暂时无法查看','只能查看自己和已成为好友的用户资料。');return}
   const av=$('profileViewAvatar');av.replaceChildren();
   if(person.avatar_url){const img=document.createElement('img');img.src=person.avatar_url;img.alt='头像';av.append(img)}else av.textContent=(person.nickname||'漂').slice(0,1);
   $('profileViewName').textContent=person.nickname||'漂流者';
   $('profileViewId').textContent='好友 ID：'+(person.friend_code||'—');
   $('profileViewGender').textContent=person.gender==='female'?'女生':person.gender==='male'?'男生':'未设置';
-  const colors={'#a9d6f5':'海盐蓝','#f5bdd4':'樱花粉','#b9e4c9':'薄荷绿','#f6d59b':'奶油黄','#c9c4f5':'薰衣草','#b9dce8':'雾霾蓝','#f2b8a8':'蜜桃橘','#d5dce5':'月光灰','#e7c6f3':'梦幻紫','#c9d9a8':'青柠绿'};
-  $('profileViewColor').textContent=colors[person.bubble_color]||'默认';
+  $('profileViewAccountId').textContent=person.friend_code||'—';
+  $('profileViewSignature').textContent=person.signature||'这个人还没有填写个性签名';
+  $('profileViewActivity').textContent=person.recent_activity||'暂时没有公开动态';
+  $('profileViewActivityTime').textContent=person.recent_activity_at?dateText(person.recent_activity_at):'';
   $('profileViewEdit').style.display=id===user?.id?'block':'none';
   $('profileViewModal').style.display='flex';
  }catch(e){showError(e)}
@@ -1219,6 +1226,7 @@ async function resendConfirmation(){
 function editProfile(){
 if(!requireLogin())return;
 $('editNickname').value=profile?.nickname||'';
+$('editSignature').value=profile?.signature||'';
 selectedGender=profile?.gender||null;
 const genderWrap=$('genderChoiceWrap');
 if(profile?.gender){genderWrap.innerHTML='<label class="form-label">性别</label><div class="gender-choice-locked">'+(profile.gender==='female'?'女生':'男生')+' · 已确认，性别仅可选择一次</div>'}
@@ -1244,7 +1252,8 @@ if(file){
  const {data}=db.storage.from('avatars').getPublicUrl(path);
  avatar_url=data.publicUrl+'?v='+Date.now();
 }
-const profileUpdate={id:user.id,nickname,avatar_url,bubble_color:selectedBubbleColor||profile?.bubble_color||'#a9d6f5'};if(!profile?.gender)profileUpdate.gender=selectedGender;
+const signature=$('editSignature').value.trim();
+const profileUpdate={id:user.id,nickname,avatar_url,signature,bubble_color:selectedBubbleColor||profile?.bubble_color||'#a9d6f5'};if(!profile?.gender)profileUpdate.gender=selectedGender;
 const {data,error}=await db.from('profiles').upsert(profileUpdate,{onConflict:'id'}).select().single();
 if(error)throw error;
 profile=data;syncProfile();showPage('profile');
