@@ -186,6 +186,34 @@ max-width:420px;max-height:85vh;overflow:auto;
 .toastnote{font-size:12px;color:#9aa8b6;line-height:1.6;margin:12px 2px}
 .danger{color:#c45b5b}
 .status{font-size:12px;color:#6d91ad;text-align:center;padding:8px}
+
+.message-heading{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 16px}
+.message-heading .section-title{margin:0 0 5px}
+.message-refresh{width:40px;height:40px;border:1px solid #e3edf4;border-radius:14px;background:#f7fbfd;color:#6296b5;font-size:23px}
+.message-summary{display:flex;gap:9px;margin:0 0 15px}
+.message-summary span{background:#eef6fb;border-radius:13px;padding:9px 12px;font-size:11px;color:#6e8ca2}
+.message-summary strong{color:#3f789d;margin-right:4px}
+.conversation-item{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #e7eef4;border-radius:17px;background:#fff;margin-bottom:10px;cursor:pointer}
+.conversation-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#dff2fa,#c3e1ef);font-size:19px}
+.conversation-main{min-width:0;flex:1}
+.conversation-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.conversation-top strong{font-size:13px;color:#40566b}
+.conversation-time{font-size:10px;color:#9aabba;white-space:nowrap}
+.conversation-preview{font-size:12px;color:#8799a9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:5px}
+.conversation-unread{width:8px;height:8px;border-radius:50%;background:#e77e83;flex:0 0 8px}
+.message-thread-head{display:flex;align-items:center;gap:10px;padding:12px 0 15px;border-bottom:1px solid #e7eef4;margin-bottom:14px}
+.message-thread-head button{border:0;background:#eef6fb;color:#5687a8;border-radius:12px;padding:8px 12px}
+.message-thread-head strong{font-size:14px;color:#40566b}
+.message-bubble{max-width:84%;padding:12px 14px;border-radius:17px;margin:9px 0;line-height:1.65;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.message-bubble.mine{margin-left:auto;background:#dceef8;color:#365a73;border-bottom-right-radius:5px}
+.message-bubble.theirs{margin-right:auto;background:#f1f5f8;color:#526779;border-bottom-left-radius:5px}
+.message-bubble time{display:block;font-size:9px;color:#8da1b1;margin-top:5px;text-align:right}
+.message-delete{border:0;background:transparent;color:#b2a0a0;font-size:10px;padding:5px 0}
+.message-composer{display:flex;gap:8px;align-items:center;margin:14px 0 8px}
+.message-composer input{margin:0;min-width:0;flex:1}
+.message-composer button{border:0;border-radius:13px;padding:13px 16px;background:var(--blue);color:white;font-weight:650}
+.message-nav{position:relative}
+.unread-badge{display:inline-grid;place-items:center;min-width:16px;height:16px;padding:0 4px;border-radius:10px;background:#e77e83;color:white;font-size:9px;position:absolute;top:0;right:5px}
 </style>
 </head>
 
@@ -252,14 +280,13 @@ max-width:420px;max-height:85vh;overflow:auto;
 </section>
 
 <section class="page" id="messages">
-<div class="section-title">消息</div>
-<div class="card">
-<div class="row" data-action="refreshMessages">
-<span class="icon">💌</span>
-<span class="label">刷新消息</span><span class="arrow">›</span>
+<div class="message-heading">
+<div><div class="discover-kicker">LETTERS FROM THE SEA</div><div class="section-title">海上来信</div><p class="sub">每一次回应，都是一次真实的相遇。</p></div>
+<button class="message-refresh" data-action="refreshMessages" aria-label="刷新消息">↻</button>
 </div>
-</div>
+<div id="messageSummary" class="message-summary"></div>
 <div id="messageList"></div>
+<div id="messageThread" style="display:none"></div>
 </section>
 
 <section class="page" id="profile">
@@ -356,7 +383,7 @@ max-width:420px;max-height:85vh;overflow:auto;
 <nav id="mainNav">
 <button class="navbtn active" data-page="home"><span class="ico">⌂</span>首页</button>
 <button class="navbtn" data-page="discover"><span class="ico">◉</span>发现</button>
-<button class="navbtn" data-page="messages"><span class="ico">♡</span>消息</button>
+<button class="navbtn message-nav" data-page="messages"><span class="ico">♡</span>消息<span id="unreadBadge" class="unread-badge" style="display:none">0</span></button>
 <button class="navbtn" data-page="profile"><span class="ico">♙</span>我的</button>
 </nav>
 
@@ -557,27 +584,67 @@ let items=[...demoBottles,...bottles.filter(b=>b.is_public)];
 if(activeFilter!=='all')items=items.filter(b=>b.mood===activeFilter);
 renderList('discoverList',items,'暂时还没有公开漂流瓶。');
 }
+function unreadCount(){return user?messages.filter(m=>m.receiver_id===user.id&&!m.is_read).length:0}
+function updateUnreadBadge(){
+ const badge=$('unreadBadge');if(!badge)return;
+ const count=unreadCount();badge.textContent=count>99?'99+':String(count);badge.style.display=count?'inline-grid':'none';
+}
+function conversationGroups(){
+ const map=new Map();
+ messages.forEach(m=>{const peer=m.sender_id===user.id?m.receiver_id:m.sender_id;if(!peer)return;if(!map.has(peer))map.set(peer,[]);map.get(peer).push(m)});
+ return [...map.entries()].map(([peer,items])=>({peer,items:items.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))})).sort((a,b)=>new Date(b.items[b.items.length-1].created_at)-new Date(a.items[a.items.length-1].created_at));
+}
 function renderMessages(){
-const el=$('messageList');el.replaceChildren();
-if(!user){
-el.innerHTML='<div class="empty">登录后查看你的云端消息。</div>';return;
+ const el=$('messageList'),thread=$('messageThread');el.replaceChildren();thread.style.display='none';el.style.display='block';updateUnreadBadge();
+ if(!user){el.innerHTML='<div class="empty">登录后查看你的云端消息。</div>';return}
+ const groups=conversationGroups(),unread=unreadCount();
+ $('messageSummary').innerHTML='<span><strong>'+groups.length+'</strong>段对话</span><span><strong>'+unread+'</strong>条未读来信</span>';
+ if(!groups.length){el.innerHTML='<div class="empty">海面暂时很安静，收到回信后会显示在这里。</div>';return}
+ groups.forEach(g=>{
+ const last=g.items[g.items.length-1],unreadPeer=g.items.filter(m=>m.receiver_id===user.id&&!m.is_read).length;
+ const c=document.createElement('div');c.className='conversation-item';
+ const avatar=document.createElement('div');avatar.className='conversation-avatar';avatar.textContent='💌';
+ const main=document.createElement('div');main.className='conversation-main';
+ const top=document.createElement('div');top.className='conversation-top';
+ const name=document.createElement('strong');name.textContent='漂流者 '+g.peer.slice(0,8);
+ const time=document.createElement('span');time.className='conversation-time';time.textContent=dateText(last.created_at);top.append(name,time);
+ const preview=document.createElement('div');preview.className='conversation-preview';preview.textContent=(last.sender_id===user.id?'我：':'对方：')+last.content;
+ main.append(top,preview);c.append(avatar,main);
+ if(unreadPeer){const dot=document.createElement('span');dot.className='conversation-unread';c.append(dot)}
+ c.addEventListener('click',()=>openConversation(g.peer));el.append(c);
+ });
 }
-if(!messages.length){
-el.innerHTML='<div class="empty">目前还没有消息。</div>';return;
+async function openConversation(peer){
+ if(!user)return;
+ try{
+ const {error}=await db.from('messages').update({is_read:true}).eq('sender_id',peer).eq('receiver_id',user.id).eq('is_read',false);if(error)throw error;
+ await loadMessages();
+ const items=messages.filter(m=>m.sender_id===peer||m.receiver_id===peer).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ $('messageList').style.display='none';const thread=$('messageThread');thread.style.display='block';thread.replaceChildren();
+ const head=document.createElement('div');head.className='message-thread-head';
+ const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',renderMessages);
+ const title=document.createElement('strong');title.textContent='与漂流者 '+peer.slice(0,8)+' 的对话';head.append(back,title);thread.append(head);
+ items.forEach(m=>{
+ const bubble=document.createElement('div');bubble.className='message-bubble '+(m.sender_id===user.id?'mine':'theirs');bubble.textContent=m.content;
+ const time=document.createElement('time');time.textContent=dateText(m.created_at);bubble.append(time);
+ if(m.sender_id===user.id){const del=document.createElement('button');del.className='message-delete';del.textContent='删除这条消息';del.addEventListener('click',()=>deleteMessage(m.id,peer));bubble.append(del)}
+ thread.append(bubble);
+ });
+ const composer=document.createElement('div');composer.className='message-composer';
+ const input=document.createElement('input');input.maxLength=500;input.placeholder='写下你的回复…';input.id='threadReply';
+ const send=document.createElement('button');send.textContent='发送';send.addEventListener('click',()=>sendThreadReply(peer));
+ composer.append(input,send);thread.append(composer);thread.scrollIntoView({behavior:'smooth',block:'end'});updateUnreadBadge();
+ }catch(e){showError(e)}
 }
-messages.forEach(m=>{
-const c=document.createElement('div');c.className='list-item';
-const p=document.createElement('p');p.textContent=m.content;
-const meta=document.createElement('div');meta.className='meta';
-meta.textContent=(m.sender_id===user.id?'我发送的':'收到的消息')+' · '+dateText(m.created_at);
-c.append(p,meta);
-if(m.sender_id!==user.id){
-const b=document.createElement('button');b.className='btn';b.textContent='回复';
-b.addEventListener('click',()=>openMessage(m.sender_id));
-c.append(b);
+async function sendThreadReply(peer){
+ const input=$('threadReply'),content=input?.value.trim();if(!content)return;
+ try{const {error}=await db.from('messages').insert({sender_id:user.id,receiver_id:peer,content,is_read:false});if(error)throw error;await loadMessages();await openConversation(peer)}
+ catch(e){showError(e)}
 }
-el.append(c);
-});
+async function deleteMessage(id,peer){
+ if(!confirm('确定删除这条消息吗？'))return;
+ try{const {error}=await db.from('messages').delete().eq('id',id).eq('sender_id',user.id);if(error)throw error;await loadMessages();await openConversation(peer)}
+ catch(e){showError(e)}
 }
 
 // 漂流瓶详情
