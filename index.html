@@ -1245,7 +1245,7 @@ if(file){
  avatar_url=data.publicUrl+'?v='+Date.now();
 }
 const profileUpdate={id:user.id,nickname,avatar_url,bubble_color:selectedBubbleColor||profile?.bubble_color||'#a9d6f5'};if(!profile?.gender)profileUpdate.gender=selectedGender;
-const {data,error}=await db.from('profiles').update(profileUpdate).eq('id',user.id).select().single();
+const {data,error}=await db.from('profiles').upsert(profileUpdate,{onConflict:'id'}).select().single();
 if(error)throw error;
 profile=data;syncProfile();showPage('profile');
 notify('保存成功','昵称、头像和聊天气泡外观已同步到云端。');
