@@ -500,6 +500,12 @@ header p{letter-spacing:.4px}
  #home .home-quick-four{gap:6px}
 }
 
+
+.profile-safety-actions{display:flex;gap:10px;margin-top:14px}
+.profile-safety-actions button{flex:1;border:1px solid #e8edf0;background:#f8fafb;color:#82919a;border-radius:11px;padding:10px;font-size:11px}
+.report-card select,.report-card textarea{width:100%;margin:12px 0 0;padding:12px;border:1px solid #e2eaf0;border-radius:12px;background:#f9fbfc;color:#40586a;font:inherit}
+.report-card textarea{min-height:90px;resize:vertical}
+
 </style>
 </head>
 
@@ -716,8 +722,9 @@ header p{letter-spacing:.4px}
 </div>
 </section>
 
-<div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>账号 ID</span><strong id="profileViewAccountId">—</strong></div><div><span>性别</span><strong id="profileViewGender">未设置</strong></div></div><div class="profile-view-extra"><section><span>性取向</span><p id="profileViewOrientation">未公开</p></section></div><div class="profile-view-extra"><section><span>个性签名</span><p id="profileViewSignature">这个人还没有填写个性签名</p></section><section><span>最近的动态</span><p id="profileViewActivity">暂时没有公开动态</p><small id="profileViewActivityTime"></small></section></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button></div></div>
+<div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>账号 ID</span><strong id="profileViewAccountId">—</strong></div><div><span>性别</span><strong id="profileViewGender">未设置</strong></div></div><div class="profile-view-extra"><section><span>性取向</span><p id="profileViewOrientation">未公开</p></section></div><div class="profile-view-extra"><section><span>个性签名</span><p id="profileViewSignature">这个人还没有填写个性签名</p></section><section><span>最近的动态</span><p id="profileViewActivity">暂时没有公开动态</p><small id="profileViewActivityTime"></small></section></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button><div id="profileSafetyActions" class="profile-safety-actions"><button data-action="reportProfile">举报用户</button><button data-action="blockProfile">拉黑用户</button></div></div></div>
 <div id="heartMatchModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card heart-match-card"><button class="profile-view-close" data-action="closeHeartMatch">×</button><div class="profile-view-avatar" id="heartMatchAvatar">🌊</div><h3 id="heartMatchName">遇见一位漂流者</h3><p id="heartMatchId"></p><p id="heartMatchSignature">也许你们会有共同话题</p><div class="heart-match-actions"><button data-action="heartMatchAgain">再找一位</button><button id="heartMatchAdd" class="primary">申请加好友</button></div></div></div>
+<div id="reportModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card report-card"><button class="profile-view-close" data-action="closeReport">×</button><h3>提交举报</h3><p class="sub">请选择原因，平台会根据举报内容进行处理。</p><select id="reportReason"><option value="spam">垃圾广告或引流</option><option value="harassment">骚扰、辱骂或威胁</option><option value="sexual_content">色情或不适内容</option><option value="violence">暴力或危险内容</option><option value="fraud">诈骗或虚假信息</option><option value="other">其他违规内容</option></select><textarea id="reportDetails" maxlength="300" placeholder="补充说明（选填，最多300字）"></textarea><button class="btn primary block" data-action="submitReport">提交举报</button></div></div>
 </main>
 
 <nav id="mainNav">
@@ -785,6 +792,9 @@ let friendSearchResult=null;
 let selectedGender=null;
 let replyTargetMessage=null;
 let selectedBubbleColor=null;
+let viewedProfileId=null;
+let reportTarget=null;
+let blockedUserIds=[];
 // 官方体验示例漂流瓶
 const demoBottles=[
 {
@@ -863,6 +873,7 @@ syncProfile();
 
 async function showUserProfile(id){
  try{
+  viewedProfileId=id;
   let person;
   const {data,error}=await db.rpc('view_friend_profile',{p_id:id});if(error)throw error;person=data?.[0];
   if(!person){notify('暂时无法查看','只能查看自己和已成为好友的用户资料。');return}
@@ -878,6 +889,7 @@ async function showUserProfile(id){
   $('profileViewActivity').textContent=person.recent_activity||'暂时没有公开动态';
   $('profileViewActivityTime').textContent=person.recent_activity_at?dateText(person.recent_activity_at):'';
   $('profileViewEdit').style.display=id===user?.id?'block':'none';
+  $('profileSafetyActions').style.display=id===user?.id?'none':'flex';
   $('profileViewModal').style.display='flex';
  }catch(e){showError(e)}
 }
@@ -891,11 +903,12 @@ $('logoutRow').style.display=user?'flex':'none';
 
 // 加载数据
 async function loadBottles(){
+if(user){const {data:blocks,error:blockError}=await db.from('user_blocks').select('blocked_id').eq('blocker_id',user.id);if(blockError)throw blockError;blockedUserIds=(blocks||[]).map(x=>x.blocked_id)}else blockedUserIds=[];
 const {data,error}=await db.from('bottles')
 .select('id,user_id,content,created_at,is_public,mood,status,picked_up_by,picked_up_at')
 .order('created_at',{ascending:false}).limit(100);
 if(error)throw error;
-bottles=data||[];
+bottles=(data||[]).filter(b=>!blockedUserIds.includes(b.user_id));
 }
 async function loadFavorites(){
 if(!user){favorites=[];return}
@@ -910,7 +923,7 @@ const {data,error}=await db.from('messages')
 .select('*').or('sender_id.eq.'+user.id+',receiver_id.eq.'+user.id)
 .order('created_at',{ascending:false}).limit(100);
 if(error)throw error;
-messages=data||[];
+messages=(data||[]).filter(m=>!blockedUserIds.includes(m.sender_id)&&!blockedUserIds.includes(m.receiver_id));
 }
 async function refreshAll(){
 try{
@@ -1152,6 +1165,33 @@ async function copyInvite(){
  catch(e){notify('复制失败','请手动复制邀请码：'+code)}
 }
 
+
+function openReport(type,id){
+ if(!requireLogin())return;
+ reportTarget={type,id};
+ $('reportReason').value='spam';$('reportDetails').value='';
+ $('reportModal').style.display='flex';
+}
+async function submitReport(){
+ if(!user||!reportTarget)return;
+ try{
+  const {error}=await db.from('content_reports').insert({reporter_id:user.id,target_type:reportTarget.type,target_id:reportTarget.id,reason:$('reportReason').value,details:$('reportDetails').value.trim()});
+  if(error)throw error;
+  $('reportModal').style.display='none';reportTarget=null;
+  notify('举报已提交','感谢反馈。平台会根据举报内容进行核查。');
+ }catch(e){showError(e)}
+}
+async function blockViewedUser(){
+ if(!requireLogin()||!viewedProfileId)return;
+ if(!confirm('拉黑后，你将不再看到对方的漂流瓶和对话，也不会再向对方推荐心动匹配。确定拉黑吗？'))return;
+ try{
+  const {error}=await db.rpc('block_user',{p_user_id:viewedProfileId});if(error)throw error;
+  $('profileViewModal').style.display='none';
+  await refreshAll();
+  notify('已拉黑','对方已加入黑名单，你可以在设置中管理屏蔽关系。');
+ }catch(e){showError(e)}
+}
+
 async function searchFriend(){
  if(!requireLogin())return;
  const raw=$('friendSearchId').value.trim();
@@ -1202,6 +1242,7 @@ const p=document.createElement('p');p.style.whiteSpace='pre-wrap';p.style.lineHe
 const m=document.createElement('div');m.className='meta';m.textContent='漂流时间：'+dateText(b.created_at);
 card.append(p,m);box.append(card);
 const saved=favorites.some(f=>f.bottle_id===b.id);
+const reportBtn=document.createElement('button');reportBtn.className='btn ghost block';reportBtn.textContent='举报这只漂流瓶';reportBtn.style.marginTop='12px';reportBtn.dataset.action='reportBottle';box.append(reportBtn);
 $('favoriteButton').textContent=b.is_demo?'官方示例 · 不可收藏':saved?'♥ 已收藏':'♡ 收藏';
 $('sendMessageButton').style.display=user&&b.user_id!==user.id?'block':'none';
 showPage('detail');
@@ -1479,6 +1520,11 @@ if(color){selectedBubbleColor=color.dataset.bubbleColor;document.querySelectorAl
 const invitePage=e.target.closest('[data-action="inviteCenter"]');if(invitePage){showPage('inviteCenter');await loadInviteCenter();return}
 const memberPage=e.target.closest('[data-action="membership"]');if(memberPage){showPage('membership');await loadMembership();return}
 const copyInviteButton=e.target.closest('[data-action="copyInvite"]');if(copyInviteButton){await copyInvite();return}
+const reportBottleButton=e.target.closest('[data-action="reportBottle"]');if(reportBottleButton&&activeBottle&&!activeBottle.is_demo){openReport('bottle',activeBottle.id);return}
+const reportProfileButton=e.target.closest('[data-action="reportProfile"]');if(reportProfileButton&&viewedProfileId){openReport('user',viewedProfileId);return}
+const blockProfileButton=e.target.closest('[data-action="blockProfile"]');if(blockProfileButton){await blockViewedUser();return}
+const submitReportButton=e.target.closest('[data-action="submitReport"]');if(submitReportButton){await submitReport();return}
+const closeReportButton=e.target.closest('[data-action="closeReport"]');if(closeReportButton){$('reportModal').style.display='none';reportTarget=null;return}
 const closeMatch=e.target.closest('[data-action="closeHeartMatch"]');if(closeMatch){$('heartMatchModal').style.display='none';return}
 const matchAgain=e.target.closest('[data-action="heartMatchAgain"]');if(matchAgain){startHeartMatch();return}
 const match=e.target.closest('[data-action="heartMatch"]');if(match){startHeartMatch();return}
