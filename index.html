@@ -410,6 +410,13 @@ header p{letter-spacing:.4px}
 .profile-view-extra p{font-size:13px;line-height:1.6;color:#526d82;margin:6px 0;overflow-wrap:anywhere}
 .profile-view-extra small{font-size:10px;color:#a0afba}
 
+
+.orientation-setting{margin:16px 0;padding:15px 0;border-top:1px solid #e8eef3}
+.orientation-select{width:100%;margin-top:8px;padding:12px;border:1px solid #e0e9f1;border-radius:12px;background:#f9fbfd;color:#526d82;font-size:13px}
+.orientation-visibility{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:#607b90}
+.orientation-visibility input{width:16px;height:16px;accent-color:#6b9fbd}
+.orientation-note{font-size:10px;line-height:1.6;color:#95a7b5;margin:8px 0 0}
+
 </style>
 </head>
 
@@ -533,6 +540,22 @@ header p{letter-spacing:.4px}
 <input id="editNickname" maxlength="20" placeholder="请输入昵称">
 <label class="form-label" style="margin-top:14px">个性签名</label><textarea id="editSignature" maxlength="80" placeholder="写一句话介绍自己吧（最多80字）" style="width:100%;min-height:76px;padding:13px;border:1px solid #e0e9f1;border-radius:13px;background:#f9fbfd;resize:vertical"></textarea>
 <div id="genderChoiceWrap" class="gender-choice-wrap"><label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div></div>
+<div class="orientation-setting">
+<label class="form-label" for="sexualOrientation">选择性取向（选填）</label>
+<select id="sexualOrientation" class="orientation-select">
+<option value="">暂不选择</option>
+<option value="heterosexual">异性恋</option>
+<option value="homosexual">同性恋</option>
+<option value="bisexual">双性恋</option>
+<option value="pansexual">泛性恋</option>
+<option value="asexual">无性恋</option>
+<option value="questioning">探索中</option>
+<option value="other">其他</option>
+<option value="prefer_not_to_say">不愿透露</option>
+</select>
+<label class="orientation-visibility"><input id="sexualOrientationVisible" type="checkbox"> 在我的个人资料中向好友展示</label>
+<p class="orientation-note">默认仅自己可见；只有你主动勾选后，已添加的好友才能看到。你可以随时修改或清空。</p>
+</div>
 <div class="bubble-color-setting"><label class="form-label">个性外观 · 气泡颜色</label><p class="bubble-color-note">选择你喜欢的颜色，保存后会应用到你发送的消息。</p><div class="bubble-color-options">
 <button type="button" class="bubble-color-swatch" data-bubble-color="#a9d6f5" title="海盐蓝" aria-label="海盐蓝" style="--swatch:#a9d6f5"><span></span><small>海盐蓝</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f5bdd4" title="樱花粉" aria-label="樱花粉" style="--swatch:#f5bdd4"><span></span><small>樱花粉</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#b9e4c9" title="薄荷绿" aria-label="薄荷绿" style="--swatch:#b9e4c9"><span></span><small>薄荷绿</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f6d59b" title="奶油黄" aria-label="奶油黄" style="--swatch:#f6d59b"><span></span><small>奶油黄</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#c9c4f5" title="薰衣草" aria-label="薰衣草" style="--swatch:#c9c4f5"><span></span><small>薰衣草</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#b9dce8" title="雾霾蓝" aria-label="雾霾蓝" style="--swatch:#b9dce8"><span></span><small>雾霾蓝</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f2b8a8" title="蜜桃橘" aria-label="蜜桃橘" style="--swatch:#f2b8a8"><span></span><small>蜜桃橘</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#d5dce5" title="月光灰" aria-label="月光灰" style="--swatch:#d5dce5"><span></span><small>月光灰</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#e7c6f3" title="梦幻紫" aria-label="梦幻紫" style="--swatch:#e7c6f3"><span></span><small>梦幻紫</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#c9d9a8" title="青柠绿" aria-label="青柠绿" style="--swatch:#c9d9a8"><span></span><small>青柠绿</small></button>
 </div></div>
@@ -589,7 +612,7 @@ header p{letter-spacing:.4px}
 </div>
 </section>
 
-<div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>账号 ID</span><strong id="profileViewAccountId">—</strong></div><div><span>性别</span><strong id="profileViewGender">未设置</strong></div></div><div class="profile-view-extra"><section><span>个性签名</span><p id="profileViewSignature">这个人还没有填写个性签名</p></section><section><span>最近的动态</span><p id="profileViewActivity">暂时没有公开动态</p><small id="profileViewActivityTime"></small></section></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button></div></div>
+<div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>账号 ID</span><strong id="profileViewAccountId">—</strong></div><div><span>性别</span><strong id="profileViewGender">未设置</strong></div></div><div class="profile-view-extra"><section><span>性取向</span><p id="profileViewOrientation">未公开</p></section></div><div class="profile-view-extra"><section><span>个性签名</span><p id="profileViewSignature">这个人还没有填写个性签名</p></section><section><span>最近的动态</span><p id="profileViewActivity">暂时没有公开动态</p><small id="profileViewActivityTime"></small></section></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button></div></div>
 </main>
 
 <nav id="mainNav">
@@ -743,6 +766,8 @@ async function showUserProfile(id){
   $('profileViewName').textContent=person.nickname||'漂流者';
   $('profileViewId').textContent='好友 ID：'+(person.friend_code||'—');
   $('profileViewGender').textContent=person.gender==='female'?'女生':person.gender==='male'?'男生':'未设置';
+  const orientationNames={heterosexual:'异性恋',homosexual:'同性恋',bisexual:'双性恋',pansexual:'泛性恋',asexual:'无性恋',questioning:'探索中',other:'其他',prefer_not_to_say:'不愿透露'};
+  $('profileViewOrientation').textContent=person.sexual_orientation_visible&&person.sexual_orientation?(orientationNames[person.sexual_orientation]||'未公开'):(id===user?.id?(person.sexual_orientation?orientationNames[person.sexual_orientation]:'未填写'):'未公开');
   $('profileViewAccountId').textContent=person.friend_code||'—';
   $('profileViewSignature').textContent=person.signature||'这个人还没有填写个性签名';
   $('profileViewActivity').textContent=person.recent_activity||'暂时没有公开动态';
@@ -1227,6 +1252,8 @@ function editProfile(){
 if(!requireLogin())return;
 $('editNickname').value=profile?.nickname||'';
 $('editSignature').value=profile?.signature||'';
+$('sexualOrientation').value=profile?.sexual_orientation||'';
+$('sexualOrientationVisible').checked=!!profile?.sexual_orientation_visible;
 selectedGender=profile?.gender||null;
 const genderWrap=$('genderChoiceWrap');
 if(profile?.gender){genderWrap.innerHTML='<label class="form-label">性别</label><div class="gender-choice-locked">'+(profile.gender==='female'?'女生':'男生')+' · 已确认，性别仅可选择一次</div>'}
@@ -1253,7 +1280,7 @@ if(file){
  avatar_url=data.publicUrl+'?v='+Date.now();
 }
 const signature=$('editSignature').value.trim();
-const profileUpdate={id:user.id,nickname,avatar_url,signature,bubble_color:selectedBubbleColor||profile?.bubble_color||'#a9d6f5'};if(!profile?.gender)profileUpdate.gender=selectedGender;
+const profileUpdate={id:user.id,nickname,avatar_url,signature,bubble_color:selectedBubbleColor||profile?.bubble_color||'#a9d6f5',sexual_orientation:$('sexualOrientation').value||null,sexual_orientation_visible:$('sexualOrientationVisible').checked};if(!profile?.gender)profileUpdate.gender=selectedGender;
 const {data,error}=await db.from('profiles').upsert(profileUpdate,{onConflict:'id'}).select().single();
 if(error)throw error;
 profile=data;syncProfile();showPage('profile');
