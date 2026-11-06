@@ -2090,6 +2090,7 @@ case'notifications':if(requireLogin()){showPage('notifications');await loadNotif
 case'growthCenter':if(requireLogin()){showPage('growthCenter');await loadGrowthCenter()}break;
 case'claimDaily':await claimDailyReward();break;
 case'buyOceanItem':await buyOceanItem(a.dataset.item);break;
+case'useOceanItem':await useOceanItem(a.dataset.item);break;
 case'loadNotifications':await loadNotifications();break;
 case'loadCommunity':await loadCommunity();break;
 case'publishCommunity':await publishCommunity();break;
@@ -2292,7 +2293,7 @@ async function loadGrowthCenter(){
   const title=document.createElement('strong');title.textContent=item.name;
   const desc=document.createElement('small');desc.textContent=item.desc+' · '+item.cost+' 🐚';
   const buy=document.createElement('button');buy.dataset.action='buyOceanItem';buy.dataset.item=item.code;
-  buy.textContent=owned.has(item.code)?'已拥有':(wallet.shells||0)>=item.cost?'兑换':'贝壳不足';buy.disabled=owned.has(item.code);
+  buy.textContent=owned.has(item.code)?'使用装扮':(wallet.shells||0)>=item.cost?'兑换':'贝壳不足';buy.disabled=(wallet.shells||0)<item.cost&&!owned.has(item.code);if(owned.has(item.code))buy.dataset.action='useOceanItem';
   card.append(art,title,desc,buy);shop.append(card);
  });
 }
@@ -2302,6 +2303,20 @@ async function claimDailyReward(){
  const result=data?.[0];if(!result){notify('签到未完成','请稍后重试。');return}
  await loadGrowthCenter();
  notify(result.success?'签到成功':'今天已经签到过了',result.success?'获得 5 枚贝壳和 10 点经验，继续积累你的海洋旅程。':'每日奖励每天只能领取一次。');
+}
+async function useOceanItem(code){
+ if(!requireLogin())return;
+ const owned=await db.from('ocean_inventory').select('item_code').eq('user_id',user.id).eq('item_code',code).maybeSingle();
+ if(owned.error){showError(owned.error);return}if(!owned.data){notify('尚未拥有','请先使用贝壳兑换这件装扮。');return}
+ if(code.startsWith('theme_')){
+  const theme=code.replace('theme_','');
+  const {data,error}=await db.from('profiles').update({profile_theme:theme}).eq('id',user.id).select().single();
+  if(error){showError(error);return}profile=data;applyProfileTheme();
+ }else{
+  const frameMap={frame_pearl:'pearl',frame_coral:'mint',frame_starlight:'starlight'};
+  localStorage.setItem('boyan-avatar-frame',frameMap[code]||'none');applyAvatarFrame();
+ }
+ notify('装扮已启用','这套装扮已应用到你的主页。');
 }
 async function buyOceanItem(code){
  if(!requireLogin())return;
