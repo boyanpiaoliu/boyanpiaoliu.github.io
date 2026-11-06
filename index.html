@@ -538,7 +538,43 @@ header p{letter-spacing:.4px}
 .phone-entry{display:flex;gap:8px;align-items:center;margin:7px 0}
 .phone-entry select{width:46%;max-width:190px;min-width:0;padding:14px 8px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);font-size:13px;appearance:auto}
 .phone-entry input{flex:1;min-width:0}
-.auth-mode-switch{margin-left:auto;border:0;background:transparent;color:var(--blue,#4d83b5);font-size:14px;font-weight:600;padding:8px 2px;white-space:nowrap}.page-head{gap:10px}.page-head h2{flex:0 1 auto}</style>
+.auth-mode-switch{margin-left:auto;border:0;background:transparent;color:var(--blue,#4d83b5);font-size:14px;font-weight:600;padding:8px 2px;white-space:nowrap}.page-head{gap:10px}.page-head h2{flex:0 1 auto}/* 首页沉浸式海岸装饰 */
+.ocean-scene-card{margin:18px 0 20px;border-radius:25px;overflow:hidden;background:linear-gradient(145deg,#f8e9d9 0%,#f5e5dd 38%,#dceef1 100%);box-shadow:0 12px 28px rgba(86,128,151,.10);border:1px solid rgba(255,255,255,.85)}
+.ocean-scene-top{display:flex;justify-content:space-between;align-items:flex-start;padding:19px 19px 12px;color:#526b7b}
+.ocean-scene-top>div:first-child{display:flex;flex-direction:column;gap:6px}
+.scene-eyebrow{font-size:9px;letter-spacing:2px;font-weight:800;color:#9b8d8a}
+.ocean-scene-top strong{font-size:16px;letter-spacing:.2px;color:#465d70}
+.ocean-scene-top small{font-size:11px;color:#8b9da6}
+.scene-sun{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.55);color:#d6a66e;font-size:23px;box-shadow:0 0 0 8px rgba(255,255,255,.18)}
+.scene-horizon{height:116px;position:relative;overflow:hidden;background:linear-gradient(180deg,#f2dcd0 0%,#d7e8e9 48%,#9fcbd2 49%,#83b9c7 100%)}
+.scene-horizon:before{content:"";position:absolute;left:-8%;right:-8%;height:54px;bottom:36px;background:#b4d7d8;border-radius:50% 50% 0 0/70% 70% 0 0;opacity:.72}
+.scene-horizon:after{content:"";position:absolute;left:-10%;right:-10%;height:52px;bottom:8px;background:#75aebb;border-radius:50% 50% 0 0/65% 65% 0 0}
+.scene-cloud{position:absolute;width:55px;height:15px;border-radius:20px;background:rgba(255,255,255,.55);top:22px}
+.scene-cloud:before,.scene-cloud:after{content:"";position:absolute;background:inherit;border-radius:50%}
+.scene-cloud:before{width:23px;height:23px;left:9px;top:-10px}.scene-cloud:after{width:18px;height:18px;left:26px;top:-6px}
+.cloud-a{left:17%}.cloud-b{right:17%;top:36px;transform:scale(.72)}
+.scene-bird{position:absolute;top:17px;left:47%;font-size:15px;color:#9c9a9a;letter-spacing:5px;z-index:2}
+.scene-sun-reflection{position:absolute;z-index:2;top:48px;left:62%;width:34px;height:48px;background:linear-gradient(180deg,rgba(255,242,210,.65),transparent);filter:blur(5px)}
+.scene-wave-line{position:absolute;z-index:3;left:8%;width:84%;height:10px;border-top:1px solid rgba(255,255,255,.55);border-radius:50%}
+.line-a{bottom:46px}.line-b{bottom:27px;left:21%;width:64%}.line-c{bottom:13px;left:4%;width:47%}
+.scene-shell{position:absolute;z-index:4;right:16%;bottom:12px;font-size:24px;transform:rotate(-12deg);filter:drop-shadow(0 4px 3px rgba(46,95,110,.15))}
+.scene-star{position:absolute;z-index:4;left:27%;bottom:27px;color:#fff4d9;font-size:16px}
+.scene-bottom{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(255,255,255,.52);font-size:10px;color:#718d98}
+.scene-bottom button{border:0;background:rgba(255,255,255,.75);border-radius:20px;padding:8px 11px;color:#527f91;font-size:11px;font-weight:700}
+.home-feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 22px}
+.home-feature{position:relative;text-align:left;border:1px solid rgba(255,255,255,.9);border-radius:20px;min-height:126px;padding:14px 13px;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden;box-shadow:0 7px 18px rgba(67,100,125,.055);transition:transform .2s}
+.home-feature:active{transform:scale(.98)}
+.home-feature:after{content:"";position:absolute;width:84px;height:84px;border:1px solid rgba(255,255,255,.65);border-radius:50%;right:-25px;top:-27px}
+.feature-lilac{background:linear-gradient(145deg,#f1edff,#e7e9fb)}.feature-peach{background:linear-gradient(145deg,#fff0e8,#f9e5df)}.feature-mint{background:linear-gradient(145deg,#e7f5ef,#dcefe9)}.feature-blue{background:linear-gradient(145deg,#e7f3fc,#dcebf7)}
+.feature-symbol{width:29px;height:29px;border-radius:10px;background:rgba(255,255,255,.68);display:grid;place-items:center;font-size:17px;margin-bottom:9px;color:#668ca5}
+.home-feature strong{font-size:13px;color:#40576a}.home-feature small{font-size:10px;color:#8497a5;margin-top:4px}.home-feature b{font-size:10px;color:#668ca5;margin-top:auto;padding-top:10px}
+.home-mood-head{margin-top:4px}.home-mood-head>div{display:flex;flex-direction:column;gap:3px}.home-mood-head>span{font-size:10px;color:#a0acb6}
+.home-mood-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0 20px}
+.home-mood-row button{border:1px solid #e8edf1;border-radius:16px;background:linear-gradient(150deg,#fff,#f8fbfd);padding:12px 5px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#667d8f;box-shadow:0 4px 12px rgba(72,105,130,.04)}
+.home-mood-row button span{font-size:22px}.home-mood-row button b{font-size:10px;font-weight:650}
+@media(min-width:600px){.home-feature-grid{gap:14px}.home-feature{min-height:140px;padding:17px}.scene-horizon{height:140px}}
+@media(prefers-reduced-motion:no-preference){.scene-cloud{animation:cloudDrift 18s ease-in-out infinite alternate}.scene-bird{animation:birdFloat 4s ease-in-out infinite alternate}@keyframes cloudDrift{from{transform:translateX(-5px)}to{transform:translateX(12px)}}@keyframes birdFloat{from{transform:translateY(0)}to{transform:translateY(-5px)}}}
+</style>
 </head>
 
 <body>
@@ -580,6 +616,23 @@ header p{letter-spacing:.4px}
 <div class="home-quick home-quick-two">
 <div class="quick-card" data-action="favorites"><div class="qicon">☆</div><strong>我的收藏</strong><span>珍藏温暖话语</span></div>
 <div class="quick-card" data-page="messages"><div class="qicon">✉</div><strong>海上来信</strong><span>查看回复消息</span></div>
+</div>
+<div class="ocean-scene-card">
+ <div class="ocean-scene-top"><div><span class="scene-eyebrow">BOYAN OCEAN CLUB</span><strong>今天的海边，适合认识新朋友</strong><small>把一点好奇心，交给下一次相遇。</small></div><div class="scene-sun">☀</div></div>
+ <div class="scene-horizon"><span class="scene-cloud cloud-a"></span><span class="scene-cloud cloud-b"></span><span class="scene-bird">⌁　⌁</span><div class="scene-sun-reflection"></div><div class="scene-wave-line line-a"></div><div class="scene-wave-line line-b"></div><div class="scene-wave-line line-c"></div><div class="scene-shell">🐚</div><div class="scene-star">✦</div></div>
+ <div class="scene-bottom"><span>🌊 慢一点，也会遇见</span><button data-page="discover">去海上看看　›</button></div>
+</div>
+<div class="home-feature-grid">
+ <button class="home-feature feature-lilac" data-page="discover"><span class="feature-symbol">✧</span><strong>遇见新故事</strong><small>看看陌生人的心情</small><b>去探索　→</b></button>
+ <button class="home-feature feature-peach" data-action="heartMatch"><span class="feature-symbol">♡</span><strong>心动匹配</strong><small>寻找频率相近的人</small><b>开始匹配　→</b></button>
+ <button class="home-feature feature-mint" data-page="friends"><span class="feature-symbol">☻</span><strong>朋友来信</strong><small>和认识的人保持联系</small><b>看看好友　→</b></button>
+ <button class="home-feature feature-blue" data-action="inviteCenter"><span class="feature-symbol">↗</span><strong>分享这片海</strong><small>邀请朋友一起加入</small><b>邀请好友　→</b></button>
+</div>
+<div class="home-section-head home-mood-head"><div><div class="discover-kicker">A LITTLE MOMENT</div><div class="section-title">给今天选一种心情</div></div><span>轻轻点一下</span></div>
+<div class="home-mood-row">
+ <button data-filter="warm" data-page="discover"><span>☀️</span><b>想要温暖</b></button>
+ <button data-filter="thought" data-page="discover"><span>🌙</span><b>想说心事</b></button>
+ <button data-page="discover"><span>🌊</span><b>随便逛逛</b></button>
 </div>
 <div class="home-quote">
 <div class="quote-label">TODAY'S OCEAN NOTE <span>☾</span></div>
