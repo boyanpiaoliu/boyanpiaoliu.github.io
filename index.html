@@ -654,6 +654,27 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 .avatar-frame-option b{font-size:9px;color:#758b99}
 #avatar.frame-pearl,#avatar.frame-sunset,#avatar.frame-starlight,#avatar.frame-mint{box-shadow:0 0 0 4px #fff,0 0 0 7px currentColor}
 #avatar.frame-pearl{color:#d9bd8b}#avatar.frame-sunset{color:#e9a58e}#avatar.frame-starlight{color:#9997c8}#avatar.frame-mint{color:#8fc7aa}
+/* 漂流瓶皮肤与聊天主题 */
+.style-subtitle{font-size:12px;font-weight:750;color:#60798b;margin:15px 2px 9px}
+.bottle-skin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.bottle-skin-option,.chat-skin-option{border:1px solid #e8edf1;border-radius:15px;background:#fff;padding:7px 5px;display:flex;flex-direction:column;align-items:center;gap:7px}
+.bottle-skin-option.selected,.chat-skin-option.selected{border-color:#78b5cb;box-shadow:0 0 0 2px rgba(120,181,203,.14)}
+.bottle-skin-art{width:100%;height:76px;border-radius:11px;display:grid;place-items:center;font-size:30px;position:relative;overflow:hidden}
+.bottle-skin-art:after{content:"";position:absolute;width:100px;height:28px;border-radius:50%;background:rgba(255,255,255,.28);bottom:-15px;left:-10px}
+.skin-classic{background:linear-gradient(145deg,#d9f2f8,#73b8d0)}.skin-starlight{background:linear-gradient(145deg,#343b68,#8985bd)}.skin-cherry{background:linear-gradient(145deg,#f9e0e8,#e9aebd)}.skin-pearl{background:linear-gradient(145deg,#f6ead5,#d5c3a4)}.skin-sunset{background:linear-gradient(145deg,#f9d7b4,#e88f83)}.skin-mint{background:linear-gradient(145deg,#d8f0e4,#80bca7)}
+.bottle-skin-option b,.chat-skin-option b{font-size:10px;color:#617889}
+.chat-skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.chat-skin-preview{width:100%;height:65px;border-radius:11px;display:grid;place-items:center;font-size:23px}
+.chat-foam{background:linear-gradient(145deg,#e9f5f8,#c8e4ed)}.chat-night{background:linear-gradient(145deg,#333858,#8b89b9)}.chat-blossom{background:linear-gradient(145deg,#f8e4ec,#edc5d2)}.chat-sunset{background:linear-gradient(145deg,#f6d4bb,#e89a8c)}
+.list-item.bottle-skin-starlight{background:linear-gradient(145deg,#f0efff,#fff);border-color:#d8d6f1}
+.list-item.bottle-skin-cherry{background:linear-gradient(145deg,#fff2f5,#fff);border-color:#f2dce5}
+.list-item.bottle-skin-pearl{background:linear-gradient(145deg,#fffaf0,#fff);border-color:#eadfc9}
+.list-item.bottle-skin-sunset{background:linear-gradient(145deg,#fff2e9,#fff);border-color:#f1ddd1}
+.list-item.bottle-skin-mint{background:linear-gradient(145deg,#eef9f3,#fff);border-color:#d9eee3}
+#messageThread.chat-theme-night{background:linear-gradient(180deg,#343858,#535b82);border-radius:20px;padding:12px;color:#fff}
+#messageThread.chat-theme-blossom{background:linear-gradient(180deg,#fff0f5,#f8e2ea);border-radius:20px;padding:12px}
+#messageThread.chat-theme-sunset{background:linear-gradient(180deg,#fff0e6,#f8d8c9);border-radius:20px;padding:12px}
+#messageThread.chat-theme-foam{background:linear-gradient(180deg,#edf8fb,#dceef3);border-radius:20px;padding:12px}
 </style>
 </head>
 
@@ -953,6 +974,24 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
  <button class="collection-theme" data-ocean-theme="island"><span class="theme-art theme-island">🏝️<i>✦</i></span><b>薄荷岛屿</b><small>薄荷绿 · 清新</small></button>
 </div>
 <div class="collection-section-head"><div><span>AVATAR DECORATION</span><h3>头像装扮</h3></div><small>选择喜欢的头像边框</small></div>
+<div class="collection-section-head"><div><span>BOTTLE & CHAT STYLE</span><h3>漂流瓶与聊天主题</h3></div><small>即时预览，保存在本设备</small></div>
+<div class="style-subtitle">漂流瓶外观</div>
+<div class="bottle-skin-grid">
+ <button data-bottle-skin="classic" class="bottle-skin-option"><span class="bottle-skin-art skin-classic">🍾</span><b>海蓝玻璃</b></button>
+ <button data-bottle-skin="starlight" class="bottle-skin-option"><span class="bottle-skin-art skin-starlight">🌌</span><b>星河漂流</b></button>
+ <button data-bottle-skin="cherry" class="bottle-skin-option"><span class="bottle-skin-art skin-cherry">🌸</span><b>樱花信笺</b></button>
+ <button data-bottle-skin="pearl" class="bottle-skin-option"><span class="bottle-skin-art skin-pearl">🐚</span><b>珍珠海贝</b></button>
+ <button data-bottle-skin="sunset" class="bottle-skin-option"><span class="bottle-skin-art skin-sunset">🌅</span><b>落日余温</b></button>
+ <button data-bottle-skin="mint" class="bottle-skin-option"><span class="bottle-skin-art skin-mint">🫧</span><b>薄荷海风</b></button>
+</div>
+<div class="style-subtitle">聊天背景</div>
+<div class="chat-skin-grid">
+ <button data-chat-skin="foam" class="chat-skin-option"><span class="chat-skin-preview chat-foam">☁️</span><b>海盐泡沫</b></button>
+ <button data-chat-skin="night" class="chat-skin-option"><span class="chat-skin-preview chat-night">🌙</span><b>月光星海</b></button>
+ <button data-chat-skin="blossom" class="chat-skin-option"><span class="chat-skin-preview chat-blossom">🌸</span><b>樱花微风</b></button>
+ <button data-chat-skin="sunset" class="chat-skin-option"><span class="chat-skin-preview chat-sunset">🌇</span><b>橘色日落</b></button>
+</div>
+
 <div class="avatar-frame-grid">
  <button data-avatar-frame="none" class="avatar-frame-option"><span class="frame-preview frame-none">🌊</span><b>简约</b></button>
  <button data-avatar-frame="pearl" class="avatar-frame-option"><span class="frame-preview frame-pearl">🐚</span><b>珍珠</b></button>
@@ -1214,7 +1253,7 @@ if(!items.length){
 const e=document.createElement('div');e.className='empty';e.textContent=emptyText;el.append(e);return;
 }
 items.forEach(b=>{
-const c=document.createElement('div');c.className='list-item';
+const c=document.createElement('div');const bottleSkin=localStorage.getItem('boyan-bottle-skin')||'classic';c.className='list-item'+(bottleSkin==='classic'?'':' bottle-skin-'+bottleSkin);
 const p=document.createElement('p');p.textContent=b.content;
 const m=document.createElement('div');m.className='meta';
 m.textContent=(b.mood==='warm'?'温暖 · ':'心事 · ')+dateText(b.created_at);
@@ -1239,7 +1278,7 @@ function conversationGroups(){
  return [...map.entries()].map(([peer,items])=>({peer,items:items.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))})).sort((a,b)=>new Date(b.items[b.items.length-1].created_at)-new Date(a.items[a.items.length-1].created_at));
 }
 async function renderMessages(){
- const el=$('messageList'),thread=$('messageThread');el.replaceChildren();thread.style.display='none';el.style.display='block';updateUnreadBadge();
+ const el=$('messageList'),thread=$('messageThread');el.replaceChildren();thread.className='';const chatSkin=localStorage.getItem('boyan-chat-skin')||'foam';thread.classList.add('chat-theme-'+chatSkin);thread.style.display='none';el.style.display='block';updateUnreadBadge();
  if(!user){el.innerHTML='<div class="empty">登录后查看你的云端消息。</div>';return}
  const groups=conversationGroups(),unread=unreadCount();
  const missingPeers=groups.map(g=>g.peer).filter(id=>!chatProfileCache[id]);
@@ -1896,6 +1935,10 @@ const method=e.target.closest('[data-method]');
 if(method){authMethod=method.dataset.method;syncAuth();return}
 const mode=e.target.closest('[data-authmode]');
 if(mode){authMode=mode.dataset.authmode;syncAuth();return}
+const bottleSkin=e.target.closest('[data-bottle-skin]');
+if(bottleSkin){localStorage.setItem('boyan-bottle-skin',bottleSkin.dataset.bottleSkin);document.querySelectorAll('[data-bottle-skin]').forEach(b=>b.classList.toggle('selected',b===bottleSkin));renderAll();return}
+const chatSkin=e.target.closest('[data-chat-skin]');
+if(chatSkin){localStorage.setItem('boyan-chat-skin',chatSkin.dataset.chatSkin);document.querySelectorAll('[data-chat-skin]').forEach(b=>b.classList.toggle('selected',b===chatSkin));return}
 const avatarFrame=e.target.closest('[data-avatar-frame]');
 if(avatarFrame){localStorage.setItem('boyan-avatar-frame',avatarFrame.dataset.avatarFrame);applyAvatarFrame();return}
 const oceanTheme=e.target.closest('[data-ocean-theme]');
@@ -2107,6 +2150,10 @@ function renderOceanCollection(){
   copy.append(strong,small);item.append(mark,copy);$('oceanBadgeList').append(item);
  });
  applyAvatarFrame();
+ const bottleSkin=localStorage.getItem('boyan-bottle-skin')||'classic';
+ const chatSkin=localStorage.getItem('boyan-chat-skin')||'foam';
+ document.querySelectorAll('[data-bottle-skin]').forEach(b=>b.classList.toggle('selected',b.dataset.bottleSkin===bottleSkin));
+ document.querySelectorAll('[data-chat-skin]').forEach(b=>b.classList.toggle('selected',b.dataset.chatSkin===chatSkin));
  const theme=localStorage.getItem('boyan-ocean-theme')||'sea';
  document.body.dataset.oceanTheme=theme;
  document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b.dataset.oceanTheme===theme));
