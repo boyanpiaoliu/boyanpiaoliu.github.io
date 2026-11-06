@@ -1022,8 +1022,17 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 <input id="registerNickname" maxlength="20" placeholder="给自己取个昵称">
 <label class="form-label" style="margin-top:12px">好友邀请码（选填）</label><input id="registerInviteCode" maxlength="12" placeholder="有朋友邀请你？填写他的数字 ID">
 </div>
+<div id="emailLoginOtpFields" style="display:none">
+<label class="form-label">邮箱登录验证码</label>
+<div class="fieldline">
+<input id="emailLoginOtpCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="请输入邮箱收到的6位验证码">
+<button class="btn" data-action="sendEmailLoginCode" id="sendEmailLoginCodeButton">发送验证码</button>
+</div>
+<button class="btn primary block" data-action="verifyEmailLoginCode">验证并登录</button>
+<p class="toastnote">输入邮箱后点击发送验证码。请检查收件箱、垃圾邮件和广告邮件文件夹。</p>
+</div>
 <div id="emailOtpFields" style="display:none">
-<label class="form-label">邮箱验证码</label>
+<label class="form-label">邮箱注册验证码</label>
 <div class="fieldline">
 <input id="emailOtpCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="请输入6位邮箱验证码">
 <button class="btn" data-action="resendConfirmation">重新发送</button>
@@ -1031,8 +1040,8 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 <button class="btn primary block" data-action="verifyEmailCode">验证邮箱并完成注册</button>
 <p class="toastnote">注册后请查看邮箱，输入邮件中的验证码完成验证。</p>
 </div>
-<button class="btn primary block" data-action="submitAuth" id="submitAuth">登录</button>
-<button class="btn ghost block" data-action="resendConfirmation" id="resendEmailButton">重新发送邮箱验证邮件</button>
+<button class="btn primary block" data-action="submitAuth" id="submitAuth">使用密码登录</button>
+<button class="btn ghost block" data-action="resendConfirmation" id="resendEmailButton" style="display:none">重新发送邮箱验证邮件</button>
 <button class="btn ghost block" data-action="forgotPassword" id="forgotPasswordButton">忘记密码？通过邮箱重置</button>
 <p class="toastnote">目前开放邮箱注册和密码登录。手机号注册暂时维护中，短信服务配置完成后再开放。</p>
 </div>
@@ -1941,7 +1950,9 @@ $('password').placeholder=authMode==='register'?'请设置至少8位密码':'请
 $('phoneFields').style.display='none';
 $('registerFields').style.display=authMode==='register'?'block':'none';
 $('emailOtpFields').style.display=authMode==='register'?'block':'none';
-$('resendEmailButton').style.display=authMode==='login'?'block':'none';
+$('emailLoginOtpFields').style.display=authMode==='login'?'block':'none';
+$('submitAuth').textContent=authMode==='login'?'使用密码登录':'注册';
+$('resendEmailButton').style.display='none';
 document.querySelectorAll('[data-authmode]').forEach(b=>b.classList.toggle('active',b.dataset.authmode===authMode));
 
 }
@@ -1957,6 +1968,33 @@ const {error}=await db.auth.signInWithOtp({phone,options:{shouldCreateUser:authM
 if(error)throw error;
 notify('验证码已发送','请查看手机短信，并输入收到的验证码。');
 }catch(e){showError(e)}
+}
+async function sendEmailLoginCode(){
+ const email=$('account').value.trim();
+ if(!/^\\S+@\\S+\\.\\S+$/.test(email)){notify('邮箱格式不正确','请先输入有效的邮箱地址。');return}
+ const button=$('sendEmailLoginCodeButton');
+ button.disabled=true;button.textContent='发送中…';
+ try{
+  const {error}=await db.auth.signInWithOtp({email,options:{shouldCreateUser:false}});
+  if(error)throw error;
+  notify('验证码已发送','请查看邮箱收件箱、垃圾邮件和广告邮件文件夹。');
+  button.textContent='重新发送';
+  let remain=60;const timer=setInterval(()=>{remain--;if(remain<=0){clearInterval(timer);button.disabled=false;button.textContent='重新发送'}else button.textContent=remain+'秒后重发'},1000);
+ }catch(e){button.disabled=false;button.textContent='发送验证码';showError(e)}
+}
+async function verifyEmailLoginCode(){
+ const email=$('account').value.trim();
+ const token=$('emailLoginOtpCode').value.trim();
+ if(!/^\\S+@\\S+\\.\\S+$/.test(email)){notify('邮箱格式不正确','请检查邮箱地址。');return}
+ if(!/^\\d{6}$/.test(token)){notify('验证码格式不正确','请输入邮件中的6位数字验证码。');return}
+ try{
+  const {data,error}=await db.auth.verifyOtp({email,token,type:'email'});
+  if(error)throw error;
+  user=data.user||data.session?.user||user;
+  await initSession();
+  showPage('profile');
+  notify('登录成功','邮箱验证通过，已进入泊言漂流瓶。');
+ }catch(e){showError(e)}
 }
 async function submitAuth(){
 const account=$('account').value.trim();
