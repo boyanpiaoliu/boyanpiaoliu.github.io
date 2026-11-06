@@ -574,6 +574,43 @@ header p{letter-spacing:.4px}
 .home-mood-row button span{font-size:22px}.home-mood-row button b{font-size:10px;font-weight:650}
 @media(min-width:600px){.home-feature-grid{gap:14px}.home-feature{min-height:140px;padding:17px}.scene-horizon{height:140px}}
 @media(prefers-reduced-motion:no-preference){.scene-cloud{animation:cloudDrift 18s ease-in-out infinite alternate}.scene-bird{animation:birdFloat 4s ease-in-out infinite alternate}@keyframes cloudDrift{from{transform:translateX(-5px)}to{transform:translateX(12px)}}@keyframes birdFloat{from{transform:translateY(0)}to{transform:translateY(-5px)}}}
+/* 海洋收藏馆与个性主题 */
+.collection-hero{position:relative;overflow:hidden;padding:22px 21px 18px;border-radius:27px;color:#fff;background:linear-gradient(145deg,#4f9dc0,#7ebbc7 55%,#b4d6d1);box-shadow:0 14px 28px rgba(69,139,166,.18);min-height:210px}
+.collection-hero:before,.collection-hero:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:220px;height:220px;right:-75px;top:-100px}
+.collection-hero:after{width:170px;height:170px;right:-42px;top:-72px}
+.collection-kicker{font-size:9px;letter-spacing:2px;font-weight:800;color:rgba(255,255,255,.76)}
+.collection-hero h2{font-size:25px;line-height:1.35;margin:13px 0 7px;letter-spacing:.5px;position:relative;z-index:1}
+.collection-hero p{font-size:11px;color:rgba(255,255,255,.82);margin:0;position:relative;z-index:1}
+.collection-orbit{position:absolute;right:24px;bottom:18px;width:100px;height:100px;border:1px solid rgba(255,255,255,.35);border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.10);box-shadow:inset 0 0 25px rgba(255,255,255,.12)}
+.collection-orbit span{font-size:35px;filter:drop-shadow(0 5px 5px rgba(30,90,110,.18))}
+.collection-orbit i,.collection-orbit b,.collection-orbit em{position:absolute;font-style:normal;color:#fff}.collection-orbit i{top:8px;left:15px}.collection-orbit b{right:-8px;bottom:13px;font-size:22px}.collection-orbit em{left:5px;bottom:19px}
+.collection-section-head{display:flex;align-items:end;justify-content:space-between;margin:23px 2px 11px}
+.collection-section-head>div span{font-size:9px;letter-spacing:1.7px;color:#8ba9b8;font-weight:800}
+.collection-section-head h3{font-size:16px;margin:3px 0 0;color:#344f65}
+.collection-section-head>small{font-size:9px;color:#a0adb7;padding-bottom:2px}
+.collection-theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.collection-theme{border:1px solid #e7edf1;border-radius:19px;padding:8px;background:#fff;text-align:left;display:flex;flex-direction:column;box-shadow:0 5px 14px rgba(65,100,124,.045);position:relative}
+.collection-theme.selected{border:1.5px solid #76b5ce;box-shadow:0 0 0 3px rgba(118,181,206,.12)}
+.collection-theme.selected:after{content:"✓";position:absolute;right:14px;top:14px;background:#fff;color:#4c9bb9;border-radius:50%;width:20px;height:20px;display:grid;place-items:center;font-size:12px;font-weight:800}
+.theme-art{height:83px;border-radius:13px;display:grid;place-items:center;font-size:32px;position:relative;overflow:hidden}
+.theme-art:before,.theme-art:after{content:"";position:absolute;width:140px;height:45px;border-radius:50%;background:rgba(255,255,255,.2);bottom:-25px;left:-15px}
+.theme-art:after{bottom:-33px;left:35px;background:rgba(255,255,255,.23)}
+.theme-art i{position:absolute;right:17px;top:12px;color:rgba(255,255,255,.9);font-size:14px}
+.theme-sea{background:linear-gradient(145deg,#a8d9e5,#5eabc3)}.theme-sunset{background:linear-gradient(145deg,#f5c9a8,#e99b91)}.theme-starlight{background:linear-gradient(145deg,#c6c3e7,#777cae)}.theme-island{background:linear-gradient(145deg,#bde3d1,#70b6a5)}
+.collection-theme b{font-size:12px;color:#455c6c;margin:9px 4px 3px}.collection-theme small{font-size:10px;color:#9aa8b2;margin:0 4px 5px}
+.collection-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.collection-stats>div{position:relative;overflow:hidden;border-radius:16px;padding:13px 9px;background:linear-gradient(145deg,#fff,#f4f9fb);border:1px solid #e9f0f3;display:flex;flex-direction:column;gap:5px}
+.collection-stats strong{font-size:21px;color:#4d8fa9}.collection-stats span{font-size:9px;color:#8799a7}.collection-stats i{position:absolute;right:7px;top:8px;font-style:normal;font-size:17px;opacity:.65}
+.ocean-badge-list{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ocean-badge{display:flex;align-items:center;gap:9px;padding:11px 9px;border:1px solid #e9eef1;border-radius:15px;background:#fff;min-width:0}
+.ocean-badge .badge-icon{width:38px;height:38px;flex:none;border-radius:13px;display:grid;place-items:center;background:#f0f5f7;font-size:20px;filter:grayscale(1);opacity:.55}
+.ocean-badge.earned .badge-icon{background:linear-gradient(145deg,#fff2d9,#f8dfb7);filter:none;opacity:1}
+.ocean-badge strong{font-size:10px;color:#526777;display:block}.ocean-badge small{font-size:9px;color:#9ba9b2;display:block;margin-top:3px;line-height:1.35}
+.collection-note{font-size:10px;color:#9aa8b2;line-height:1.7;margin:15px 3px 8px}
+body[data-ocean-theme="sunset"]{--bg:#fff7f1;--blue:#d98d78;--blue2:#fff0e8}
+body[data-ocean-theme="starlight"]{--bg:#f5f3fc;--blue:#777cae;--blue2:#eeecfa}
+body[data-ocean-theme="island"]{--bg:#f1faf5;--blue:#4e9b83;--blue2:#e7f5ed}
+body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 </style>
 </head>
 
@@ -693,6 +730,7 @@ header p{letter-spacing:.4px}
 <div class="row" data-action="favorites"><span class="icon">♡</span><span class="label">我的收藏</span><span class="arrow">›</span></div>
 <div class="row" data-action="editProfile"><span class="icon">✎</span><span class="label">编辑资料</span><span class="arrow">›</span></div>
 <div class="row" data-action="chatAppearance"><span class="icon">◉</span><span class="label">个性外观</span><span class="arrow">›</span></div>
+<div class="row" data-action="oceanCollection"><span class="icon">🏝️</span><span class="label">海洋收藏馆</span><span class="arrow">›</span></div>
 <div class="row" data-action="inviteCenter"><span class="icon">↗</span><span class="label">邀请好友</span><span class="arrow">›</span></div>
 <div class="row" data-action="membership"><span class="icon">✦</span><span class="label">泊言会员</span><span class="arrow">›</span></div>
 <div class="row friend-entry" data-action="friends"><span class="icon">♧</span><span class="label">好友与好友申请</span><span id="friendUnreadBadge" class="friend-unread-badge" style="display:none">0</span><span class="arrow">›</span></div>
@@ -843,6 +881,31 @@ header p{letter-spacing:.4px}
 <div class="member-plan"><strong>年度会员</strong><b>¥98</b><span>平均约 ¥8.2 / 月</span></div>
 </div>
 <p class="member-disclaimer">会员付费功能尚未开放。以上为拟定价格，正式购买将在完成支付接入及平台审核后开放。你可以通过邀请好友获得免费会员体验。</p>
+</section>
+<section class="page" id="oceanCollection">
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>海洋收藏馆</h2></div>
+<div class="collection-hero">
+ <span class="collection-kicker">YOUR LITTLE OCEAN</span>
+ <h2>收藏每一次<br>温柔的相遇</h2>
+ <p>用喜欢的海洋主题，装点属于你的泊言小天地。</p>
+ <div class="collection-orbit"><span>🐚</span><i>✦</i><b>🌊</b><em>✧</em></div>
+</div>
+<div class="collection-section-head"><div><span>PERSONAL STYLE</span><h3>海面主题</h3></div><small>选择后立即应用</small></div>
+<div class="collection-theme-grid">
+ <button class="collection-theme selected" data-ocean-theme="sea"><span class="theme-art theme-sea">🌊<i>✧</i></span><b>晴日海湾</b><small>清透蓝 · 默认</small></button>
+ <button class="collection-theme" data-ocean-theme="sunset"><span class="theme-art theme-sunset">🌅<i>✦</i></span><b>落日余晖</b><small>蜜桃橘 · 温柔</small></button>
+ <button class="collection-theme" data-ocean-theme="starlight"><span class="theme-art theme-starlight">🌙<i>✧</i></span><b>月光星海</b><small>雾紫色 · 静谧</small></button>
+ <button class="collection-theme" data-ocean-theme="island"><span class="theme-art theme-island">🏝️<i>✦</i></span><b>薄荷岛屿</b><small>薄荷绿 · 清新</small></button>
+</div>
+<div class="collection-section-head"><div><span>YOUR JOURNEY</span><h3>海洋足迹</h3></div><small>根据当前账号数据展示</small></div>
+<div class="collection-stats">
+ <div><strong id="collectionBottleCount">0</strong><span>投递的故事</span><i>🫧</i></div>
+ <div><strong id="collectionFavoriteCount">0</strong><span>珍藏的心意</span><i>🐚</i></div>
+ <div><strong id="collectionMessageCount">0</strong><span>收到与寄出的信</span><i>💌</i></div>
+</div>
+<div class="collection-section-head"><div><span>OCEAN BADGES</span><h3>航海纪念章</h3></div><small>达成条件即可点亮</small></div>
+<div class="ocean-badge-list" id="oceanBadgeList"></div>
+<p class="collection-note">主题装饰保存在当前设备中，不影响账号资料；纪念章根据已加载的真实数据计算，不代表可兑换的积分或会员权益。</p>
 </section>
 <section class="page" id="settings">
 <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>设置</h2></div>
@@ -1770,6 +1833,10 @@ const method=e.target.closest('[data-method]');
 if(method){authMethod=method.dataset.method;syncAuth();return}
 const mode=e.target.closest('[data-authmode]');
 if(mode){authMode=mode.dataset.authmode;syncAuth();return}
+const oceanTheme=e.target.closest('[data-ocean-theme]');
+if(oceanTheme){const theme=oceanTheme.dataset.oceanTheme;localStorage.setItem('boyan-ocean-theme',theme);document.body.dataset.oceanTheme=theme;document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b===oceanTheme));return}
+const oceanCollection=e.target.closest('[data-action="oceanCollection"]');
+if(oceanCollection){if(!user){openAuth();return}showPage('oceanCollection');renderOceanCollection();return}
 const forgot=e.target.closest('[data-action="forgotPassword"]');
 if(forgot){await forgotPassword();return}
 const verifyEmail=e.target.closest('[data-action="verifyEmailCode"]');
@@ -1897,6 +1964,32 @@ $('account')?.addEventListener('blur',e=>{
  e.target.value=e.target.value.trim().toLowerCase();
 });
 
+function renderOceanCollection(){
+ const own=bottles.filter(b=>b.user_id===user?.id).length;
+ const fav=favorites.length;
+ const msg=messages.length;
+ $('collectionBottleCount').textContent=own;
+ $('collectionFavoriteCount').textContent=fav;
+ $('collectionMessageCount').textContent=msg;
+ const badges=[
+  ['🐚','第一只漂流瓶','投递 1 个故事',own>=1],
+  ['🫧','拾起微光','收藏 1 段心意',fav>=1],
+  ['💌','海上回音','参与 1 次聊天',msg>=1],
+  ['🌊','故事收藏家','投递 5 个故事',own>=5],
+  ['⭐','温柔倾听者','收藏 5 段心意',fav>=5],
+  ['🕊️','远方的朋友','累计 10 条聊天消息',msg>=10]
+ ];
+ $('oceanBadgeList').replaceChildren();
+ badges.forEach(([icon,title,desc,earned])=>{
+  const item=document.createElement('div');item.className='ocean-badge'+(earned?' earned':'');
+  const mark=document.createElement('div');mark.className='badge-icon';mark.textContent=icon;
+  const copy=document.createElement('div');const strong=document.createElement('strong');strong.textContent=title;const small=document.createElement('small');small.textContent=earned?'已点亮 · '+desc:desc;
+  copy.append(strong,small);item.append(mark,copy);$('oceanBadgeList').append(item);
+ });
+ const theme=localStorage.getItem('boyan-ocean-theme')||'sea';
+ document.body.dataset.oceanTheme=theme;
+ document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b.dataset.oceanTheme===theme));
+}
 // 启动
 (async()=>{
 try{
