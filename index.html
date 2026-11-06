@@ -538,7 +538,7 @@ header p{letter-spacing:.4px}
 .phone-entry{display:flex;gap:8px;align-items:center;margin:7px 0}
 .phone-entry select{width:46%;max-width:190px;min-width:0;padding:14px 8px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);font-size:13px;appearance:auto}
 .phone-entry input{flex:1;min-width:0}
-</style>
+.auth-mode-switch{margin-left:auto;border:0;background:transparent;color:var(--blue,#4d83b5);font-size:14px;font-weight:600;padding:8px 2px;white-space:nowrap}.page-head{gap:10px}.page-head h2{flex:0 1 auto}</style>
 </head>
 
 <body>
@@ -714,12 +714,8 @@ header p{letter-spacing:.4px}
 </section>
 
 <section class="page" id="auth">
-<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2 id="authHeading">欢迎回来</h2></div>
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2 id="authHeading">欢迎回来</h2><button class="auth-mode-switch" id="authModeSwitch" data-authmode="register">没有账号？立即注册</button></div>
 <div class="card">
-<div class="tabs">
-<button class="active" data-authmode="login">登录</button>
-<button data-authmode="register">注册</button>
-</div>
 <div class="tabs">
 <button class="active" data-method="email">邮箱</button>
 <button data-method="phone">手机号</button>
@@ -874,6 +870,7 @@ let viewedProfileId=null;
 let reportTarget=null;
 let blockedUserIds=[];
 let activeChatPeer=null;
+let realtimeChannel=null;
 let chatProfileCache={};
 let activeRecorder=null;
 let recorderChunks=[];
@@ -1495,6 +1492,8 @@ notify('发送成功','你的消息已经发送。');
 function syncAuth(){
 const inviteFromUrl=new URLSearchParams(location.search).get('invite');if(inviteFromUrl&&$('registerInviteCode')&&!$('registerInviteCode').value)$('registerInviteCode').value=inviteFromUrl;
 $('authHeading').textContent=authMode==='login'?'欢迎回来':'创建账号';
+$('authModeSwitch').textContent=authMode==='login'?'没有账号？立即注册':'已有账号？返回登录';
+$('authModeSwitch').dataset.authmode=authMode==='login'?'register':'login';
 $('submitAuth').textContent=authMode==='login'?'登录':'注册';
 $('accountLabel').textContent=authMethod==='email'?'邮箱':'手机号';
 $('account').type=authMethod==='email'?'email':'tel';
@@ -1632,6 +1631,7 @@ else profile=null;
 syncProfile();
 await refreshAll();
 await refreshFriendRequestCount();
+setupRealtime();
 }
 async function logout(){
 if(!confirm('确定退出当前账号吗？'))return;
@@ -1728,8 +1728,46 @@ try{
 if(user)await loadProfile();else profile=null;
 syncProfile();
 await refreshAll();
+await refreshFriendRequestCount();
+await setupRealtime();
 }catch(e){console.error(e)}
 }
+});
+
+
+// 实时同步：新消息、已读状态和好友申请无需手动刷新
+async function setupRealtime(){
+ if(realtimeChannel){await db.removeChannel(realtimeChannel);realtimeChannel=null}
+ if(!user)return;
+ const currentUserId=user.id;
+ realtimeChannel=db.channel('boyan-live-'+currentUserId)
+  .on('postgres_changes',{event:'*',schema:'public',table:'messages'},async payload=>{
+   if(!user||user.id!==currentUserId)return;
+   const row=payload.new||payload.old||{};
+   if(row.sender_id!==currentUserId&&row.receiver_id!==currentUserId)return;
+   try{
+    await loadMessages();
+    if(activeChatPeer&&(row.sender_id===activeChatPeer||row.receiver_id===activeChatPeer)){
+     await openConversation(activeChatPeer);
+    }else if($('messages')?.classList.contains('active')){
+     renderMessages();
+    }else updateUnreadBadge();
+   }catch(e){console.warn('消息实时同步失败',e)}
+  })
+  .on('postgres_changes',{event:'*',schema:'public',table:'friend_requests',filter:'receiver_id=eq.'+currentUserId},async()=>{
+   if(!user||user.id!==currentUserId)return;
+   await refreshFriendRequestCount();
+   if($('friends')?.classList.contains('active'))await loadFriends();
+  })
+  .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('实时连接暂不可用，页面切回时会自动同步')});
+}
+document.addEventListener('visibilitychange',async()=>{
+ if(document.visibilityState!=='visible'||!user)return;
+ try{
+  await refreshAll();
+  await refreshFriendRequestCount();
+  if(activeChatPeer&&$('messageThread')?.style.display==='block')await openConversation(activeChatPeer);
+ }catch(e){console.warn('页面恢复同步失败',e)}
 });
 
 // 定时检查好友申请数量：不必先进入好友页面也能看到新申请
