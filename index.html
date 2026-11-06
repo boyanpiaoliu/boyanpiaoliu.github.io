@@ -611,6 +611,49 @@ body[data-ocean-theme="sunset"]{--bg:#fff7f1;--blue:#d98d78;--blue2:#fff0e8}
 body[data-ocean-theme="starlight"]{--bg:#f5f3fc;--blue:#777cae;--blue2:#eeecfa}
 body[data-ocean-theme="island"]{--bg:#f1faf5;--blue:#4e9b83;--blue2:#e7f5ed}
 body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
+/* 心情动态广场 */
+.community-hero{position:relative;overflow:hidden;border-radius:24px;padding:20px 18px 18px;background:linear-gradient(135deg,#f5e7e4,#e6e8f6 55%,#dceef0);margin:5px 0 15px}
+.community-hero>span{font-size:9px;letter-spacing:2px;color:#9b8da0;font-weight:800}
+.community-hero h2{font-size:21px;line-height:1.4;color:#4e6073;margin:12px 0 7px}
+.community-hero p{font-size:11px;color:#8796a4;margin:0;max-width:75%}
+.community-hero-art{position:absolute;right:12px;bottom:12px;font-size:25px;opacity:.85}
+.community-compose{border:1px solid #e9edf1;background:#fff;border-radius:20px;padding:14px;box-shadow:0 7px 20px rgba(65,95,120,.05)}
+.community-compose-title{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.compose-avatar{width:34px;height:34px;border-radius:12px;background:#eef5f7;display:grid;place-items:center;color:#6999aa}
+.community-compose-title strong{display:block;font-size:12px;color:#455b6d}
+.community-compose-title small{display:block;font-size:10px;color:#9ba9b2;margin-top:3px}
+.community-compose textarea{width:100%;min-height:82px;resize:vertical;border:0;outline:0;background:#f8fafb;border-radius:13px;padding:12px;font-size:12px;color:#455b6d}
+.community-compose-tools{display:flex;align-items:center;gap:8px;margin-top:10px}
+.community-compose-tools select{border:1px solid #e9edf1;background:#fff;border-radius:20px;padding:7px 9px;font-size:10px;color:#718595}
+.community-compose-tools span{font-size:10px;color:#a2adb6;margin-left:auto}
+.community-compose-tools button{border:0;border-radius:20px;padding:9px 13px;background:linear-gradient(120deg,#7cb4c8,#659bb7);color:#fff;font-size:11px;font-weight:700}
+.community-feed-head{display:flex;justify-content:space-between;align-items:end;margin:22px 2px 11px}
+.community-feed-head div{display:flex;flex-direction:column;gap:4px}
+.community-feed-head span{font-size:9px;letter-spacing:1.5px;color:#9bb1bb;font-weight:800}
+.community-feed-head strong{font-size:16px;color:#435b6d}
+.community-feed-head small{font-size:10px;color:#a0adb6}
+.community-post{background:#fff;border:1px solid #e9eef1;border-radius:19px;padding:14px;margin-bottom:11px;box-shadow:0 5px 15px rgba(63,97,122,.045)}
+.community-post-head{display:flex;align-items:center;gap:9px}
+.community-post-avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#d8edf2,#f4e4e6);font-size:17px;overflow:hidden;flex:none}
+.community-post-avatar img{width:100%;height:100%;object-fit:cover}
+.community-post-user{min-width:0;flex:1}
+.community-post-user strong{font-size:12px;color:#455b6d;display:block}
+.community-post-user small{font-size:9px;color:#a1adb6;display:block;margin-top:3px}
+.community-mood{font-size:9px;padding:5px 8px;border-radius:12px;background:#f4f7f8;color:#7995a4}
+.community-post-content{font-size:13px;line-height:1.8;color:#4b6071;white-space:pre-wrap;overflow-wrap:anywhere;margin:12px 1px}
+.community-post-actions{display:flex;justify-content:flex-end;border-top:1px solid #f0f3f5;padding-top:9px}
+.community-post-actions button{border:0;background:transparent;color:#8a9eaa;font-size:11px;padding:5px 9px}
+.community-post-actions button.liked{color:#e58b9d}
+.community-footnote{text-align:center;color:#a3afb7;font-size:10px;padding:12px 0}
+.community-refresh{border:0;background:#f0f6f8;color:#7298a8;border-radius:50%;width:32px;height:32px;font-size:19px}
+.avatar-frame-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.avatar-frame-option{border:1px solid #e8edf0;border-radius:14px;background:#fff;padding:8px 3px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.avatar-frame-option.selected{border-color:#78b4c8;box-shadow:0 0 0 2px rgba(120,180,200,.13)}
+.frame-preview{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:19px;background:#f0f6f8}
+.frame-pearl{border:3px double #e2cda6;box-shadow:0 0 0 3px #f8f0e2}.frame-sunset{border:3px solid #e9a58e;box-shadow:0 0 0 3px #f9e3d9}.frame-starlight{border:3px solid #9997c8;box-shadow:0 0 0 3px #e9e7f7}.frame-mint{border:3px solid #8fc7aa;box-shadow:0 0 0 3px #e3f3e9}
+.avatar-frame-option b{font-size:9px;color:#758b99}
+#avatar.frame-pearl,#avatar.frame-sunset,#avatar.frame-starlight,#avatar.frame-mint{box-shadow:0 0 0 4px #fff,0 0 0 7px currentColor}
+#avatar.frame-pearl{color:#d9bd8b}#avatar.frame-sunset{color:#e9a58e}#avatar.frame-starlight{color:#9997c8}#avatar.frame-mint{color:#8fc7aa}
 </style>
 </head>
 
@@ -730,7 +773,7 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 <div class="row" data-action="favorites"><span class="icon">♡</span><span class="label">我的收藏</span><span class="arrow">›</span></div>
 <div class="row" data-action="editProfile"><span class="icon">✎</span><span class="label">编辑资料</span><span class="arrow">›</span></div>
 <div class="row" data-action="chatAppearance"><span class="icon">◉</span><span class="label">个性外观</span><span class="arrow">›</span></div>
-<div class="row" data-action="oceanCollection"><span class="icon">🏝️</span><span class="label">海洋收藏馆</span><span class="arrow">›</span></div>
+<div class="row" data-action="oceanCollection"><span class="icon">🏝️</span><span class="label">海洋收藏馆</span><span class="arrow">›</span></div><div class="row" data-action="community"><span class="icon">🌷</span><span class="label">心情动态广场</span><span class="arrow">›</span></div>
 <div class="row" data-action="inviteCenter"><span class="icon">↗</span><span class="label">邀请好友</span><span class="arrow">›</span></div>
 <div class="row" data-action="membership"><span class="icon">✦</span><span class="label">泊言会员</span><span class="arrow">›</span></div>
 <div class="row friend-entry" data-action="friends"><span class="icon">♧</span><span class="label">好友与好友申请</span><span id="friendUnreadBadge" class="friend-unread-badge" style="display:none">0</span><span class="arrow">›</span></div>
@@ -882,6 +925,18 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 </div>
 <p class="member-disclaimer">会员付费功能尚未开放。以上为拟定价格，正式购买将在完成支付接入及平台审核后开放。你可以通过邀请好友获得免费会员体验。</p>
 </section>
+<section class="page" id="community">
+ <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>心情动态</h2><button class="community-refresh" data-action="loadCommunity">↻</button></div>
+ <div class="community-hero"><span>BOYAN MOMENTS</span><h2>把生活里的小小瞬间<br>分享给这片海</h2><p>一段心情、一张笑脸，都值得被温柔看见。</p><div class="community-hero-art">🌷　☁️　🌊</div></div>
+ <div class="community-compose">
+  <div class="community-compose-title"><span class="compose-avatar">✎</span><div><strong>今天有什么想分享？</strong><small>让远方的人听见你的声音</small></div></div>
+  <textarea id="communityContent" maxlength="500" placeholder="写下此刻的心情……"></textarea>
+  <div class="community-compose-tools"><select id="communityMood"><option>日常</option><option>开心</option><option>心事</option><option>治愈</option><option>分享</option></select><span id="communityCount">0 / 500</span><button data-action="publishCommunity">发布动态</button></div>
+ </div>
+ <div class="community-feed-head"><div><span>FROM THE COMMUNITY</span><strong>海边来信</strong></div><small>真实用户分享</small></div>
+ <div id="communityFeed"><div class="empty">正在加载动态…</div></div>
+ <p class="community-footnote">请尊重每一份分享。遇到不适内容，请使用举报功能。</p>
+</section>
 <section class="page" id="oceanCollection">
 <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>海洋收藏馆</h2></div>
 <div class="collection-hero">
@@ -896,6 +951,14 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
  <button class="collection-theme" data-ocean-theme="sunset"><span class="theme-art theme-sunset">🌅<i>✦</i></span><b>落日余晖</b><small>蜜桃橘 · 温柔</small></button>
  <button class="collection-theme" data-ocean-theme="starlight"><span class="theme-art theme-starlight">🌙<i>✧</i></span><b>月光星海</b><small>雾紫色 · 静谧</small></button>
  <button class="collection-theme" data-ocean-theme="island"><span class="theme-art theme-island">🏝️<i>✦</i></span><b>薄荷岛屿</b><small>薄荷绿 · 清新</small></button>
+</div>
+<div class="collection-section-head"><div><span>AVATAR DECORATION</span><h3>头像装扮</h3></div><small>选择喜欢的头像边框</small></div>
+<div class="avatar-frame-grid">
+ <button data-avatar-frame="none" class="avatar-frame-option"><span class="frame-preview frame-none">🌊</span><b>简约</b></button>
+ <button data-avatar-frame="pearl" class="avatar-frame-option"><span class="frame-preview frame-pearl">🐚</span><b>珍珠</b></button>
+ <button data-avatar-frame="sunset" class="avatar-frame-option"><span class="frame-preview frame-sunset">🌅</span><b>晚霞</b></button>
+ <button data-avatar-frame="starlight" class="avatar-frame-option"><span class="frame-preview frame-starlight">🌙</span><b>星光</b></button>
+ <button data-avatar-frame="mint" class="avatar-frame-option"><span class="frame-preview frame-mint">🍃</span><b>薄荷</b></button>
 </div>
 <div class="collection-section-head"><div><span>YOUR JOURNEY</span><h3>海洋足迹</h3></div><small>根据当前账号数据展示</small></div>
 <div class="collection-stats">
@@ -1833,6 +1896,8 @@ const method=e.target.closest('[data-method]');
 if(method){authMethod=method.dataset.method;syncAuth();return}
 const mode=e.target.closest('[data-authmode]');
 if(mode){authMode=mode.dataset.authmode;syncAuth();return}
+const avatarFrame=e.target.closest('[data-avatar-frame]');
+if(avatarFrame){localStorage.setItem('boyan-avatar-frame',avatarFrame.dataset.avatarFrame);applyAvatarFrame();return}
 const oceanTheme=e.target.closest('[data-ocean-theme]');
 if(oceanTheme){const theme=oceanTheme.dataset.oceanTheme;localStorage.setItem('boyan-ocean-theme',theme);document.body.dataset.oceanTheme=theme;document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b===oceanTheme));return}
 const oceanCollection=e.target.closest('[data-action="oceanCollection"]');
@@ -1874,6 +1939,9 @@ break;
 case'closeWrite':$('writeModal').classList.remove('show');break;
 case'pick':await pickBottle();break;
 case'submitBottle':await submitBottle();break;
+case'community':if(requireLogin()){showPage('community');await loadCommunity()}break;
+case'loadCommunity':await loadCommunity();break;
+case'publishCommunity':await publishCommunity();break;
 case'resendConfirmation':await resendConfirmation();break;
 case'toggleFavorite':await toggleFavorite();break;
 case'myBottles':await openMyBottles();break;
@@ -1956,6 +2024,7 @@ document.addEventListener('visibilitychange',async()=>{
 // 定时检查好友申请数量：不必先进入好友页面也能看到新申请
 setInterval(()=>{if(user)refreshFriendRequestCount()},20000);
 
+$('communityContent')?.addEventListener('input',e=>{$('communityCount').textContent=e.target.value.length+' / 500'});
 // 邮箱验证码仅允许输入数字，避免空格和非数字字符导致验证失败
 $('emailOtpCode')?.addEventListener('input',e=>{
  e.target.value=e.target.value.replace(/\\D/g,'').slice(0,6);
@@ -1964,6 +2033,57 @@ $('account')?.addEventListener('blur',e=>{
  e.target.value=e.target.value.trim().toLowerCase();
 });
 
+async function loadCommunity(){
+ if(!user){$('communityFeed').innerHTML='<div class="empty">登录后可以浏览和分享动态。</div>';return}
+ const {data,error}=await db.from('community_posts').select('id,user_id,content,mood,created_at,profiles(nickname,avatar_url)').order('created_at',{ascending:false}).limit(40);
+ if(error)throw error;
+ const ids=(data||[]).map(p=>p.id);
+ let liked=new Set();
+ if(ids.length){const {data:mine,error:likeError}=await db.from('community_likes').select('post_id').eq('user_id',user.id).in('post_id',ids);if(likeError)throw likeError;liked=new Set((mine||[]).map(x=>x.post_id))}
+ const counts={};
+ if(ids.length){const {data:all,error:countError}=await db.from('community_likes').select('post_id').in('post_id',ids);if(countError)throw countError;(all||[]).forEach(x=>counts[x.post_id]=(counts[x.post_id]||0)+1)}
+ const feed=$('communityFeed');feed.replaceChildren();
+ if(!data?.length){const empty=document.createElement('div');empty.className='empty';empty.textContent='这里还很安静，发布第一条动态吧。';feed.append(empty);return}
+ data.forEach(post=>{
+  const card=document.createElement('article');card.className='community-post';
+  const head=document.createElement('div');head.className='community-post-head';
+  const avatar=document.createElement('div');avatar.className='community-post-avatar';
+  if(post.profiles?.avatar_url){const img=document.createElement('img');img.src=post.profiles.avatar_url;img.alt='';avatar.append(img)}else avatar.textContent='🌊';
+  const who=document.createElement('div');who.className='community-post-user';const name=document.createElement('strong');name.textContent=post.profiles?.nickname||'海边的朋友';const time=document.createElement('small');time.textContent=dateText(post.created_at);who.append(name,time);
+  const mood=document.createElement('span');mood.className='community-mood';mood.textContent=post.mood||'日常';head.append(avatar,who,mood);
+  const content=document.createElement('p');content.className='community-post-content';content.textContent=post.content;
+  const actions=document.createElement('div');actions.className='community-post-actions';
+  const like=document.createElement('button');like.className=liked.has(post.id)?'liked':'';like.textContent=(liked.has(post.id)?'♥':'♡')+' '+(counts[post.id]||0)+' 喜欢';like.addEventListener('click',()=>toggleCommunityLike(post.id,liked.has(post.id)));
+  actions.append(like);
+  if(post.user_id===user.id){const del=document.createElement('button');del.textContent='删除';del.addEventListener('click',()=>deleteCommunityPost(post.id));actions.append(del)}
+  card.append(head,content,actions);feed.append(card);
+ });
+}
+async function publishCommunity(){
+ if(!user){openAuth();return}
+ const content=$('communityContent').value.trim();
+ if(!content){notify('还没有写内容','写下一点心情再发布吧。');return}
+ if(content.length>500){notify('内容太长','动态最多500字。');return}
+ const {error}=await db.from('community_posts').insert({user_id:user.id,content,mood:$('communityMood').value});
+ if(error){showError(error);return}
+ $('communityContent').value='';$('communityCount').textContent='0 / 500';
+ await loadCommunity();notify('发布成功','你的心情已经漂到海上。');
+}
+async function toggleCommunityLike(postId,isLiked){
+ if(!user){openAuth();return}
+ const result=isLiked?await db.from('community_likes').delete().eq('post_id',postId).eq('user_id',user.id):await db.from('community_likes').insert({post_id:postId,user_id:user.id});
+ if(result.error){showError(result.error);return}await loadCommunity();
+}
+async function deleteCommunityPost(postId){
+ if(!confirm('确定删除这条动态吗？'))return;
+ const {error}=await db.from('community_posts').delete().eq('id',postId).eq('user_id',user.id);
+ if(error){showError(error);return}await loadCommunity();
+}
+function applyAvatarFrame(){
+ const frame=localStorage.getItem('boyan-avatar-frame')||'none';
+ const avatar=$('avatar');if(avatar)avatar.className='avatar'+(frame==='none'?'':' frame-'+frame);
+ document.querySelectorAll('[data-avatar-frame]').forEach(b=>b.classList.toggle('selected',b.dataset.avatarFrame===frame));
+}
 function renderOceanCollection(){
  const own=bottles.filter(b=>b.user_id===user?.id).length;
  const fav=favorites.length;
@@ -1986,6 +2106,7 @@ function renderOceanCollection(){
   const copy=document.createElement('div');const strong=document.createElement('strong');strong.textContent=title;const small=document.createElement('small');small.textContent=earned?'已点亮 · '+desc:desc;
   copy.append(strong,small);item.append(mark,copy);$('oceanBadgeList').append(item);
  });
+ applyAvatarFrame();
  const theme=localStorage.getItem('boyan-ocean-theme')||'sea';
  document.body.dataset.oceanTheme=theme;
  document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b.dataset.oceanTheme===theme));
