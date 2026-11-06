@@ -716,10 +716,6 @@ header p{letter-spacing:.4px}
 <section class="page" id="auth">
 <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2 id="authHeading">欢迎回来</h2><button class="auth-mode-switch" id="authModeSwitch" data-authmode="register">没有账号？立即注册</button></div>
 <div class="card">
-<div class="tabs">
-<button class="active" data-method="email">邮箱</button>
-<button data-method="phone">手机号</button>
-</div>
 <label class="form-label" id="accountLabel">邮箱</label>
 <input id="account" type="email" placeholder="请输入邮箱">
 <div id="passwordFields">
@@ -764,7 +760,7 @@ header p{letter-spacing:.4px}
 </div>
 <button class="btn primary block" data-action="submitAuth" id="submitAuth">登录</button>
 <button class="btn ghost block" data-action="resendConfirmation">重新发送邮箱验证邮件</button>
-<p class="toastnote">邮箱使用密码登录；手机号使用真实短信验证码。手机号功能需要在 Supabase 配置短信服务。</p>
+<p class="toastnote">目前开放邮箱注册和密码登录。手机号注册暂时维护中，短信服务配置完成后再开放。</p>
 </div>
 </section>
 
@@ -1498,13 +1494,14 @@ $('submitAuth').textContent=authMode==='login'?'登录':'注册';
 $('accountLabel').textContent='邮箱';
 $('account').type='email';
 $('account').placeholder='请输入邮箱';
-$('accountLabel').style.display=authMethod==='email'?'block':'none';
+authMethod='email';
+$('accountLabel').style.display='block';
 $('account').style.display=authMethod==='email'?'block':'none';
-$('passwordFields').style.display=authMethod==='email'?'block':'none';
-$('phoneFields').style.display=authMethod==='phone'?'block':'none';
+$('passwordFields').style.display='block';
+$('phoneFields').style.display='none';
 $('registerFields').style.display=authMode==='register'?'block':'none';
 document.querySelectorAll('[data-authmode]').forEach(b=>b.classList.toggle('active',b.dataset.authmode===authMode));
-document.querySelectorAll('[data-method]').forEach(b=>b.classList.toggle('active',b.dataset.method===authMethod));
+
 }
 function openAuth(){
 authMode='login';authMethod='email';syncAuth();showPage('auth');
