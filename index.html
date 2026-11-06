@@ -758,8 +758,17 @@ header p{letter-spacing:.4px}
 <input id="registerNickname" maxlength="20" placeholder="给自己取个昵称">
 <label class="form-label" style="margin-top:12px">好友邀请码（选填）</label><input id="registerInviteCode" maxlength="12" placeholder="有朋友邀请你？填写他的数字 ID">
 </div>
+<div id="emailOtpFields" style="display:none">
+<label class="form-label">邮箱验证码</label>
+<div class="fieldline">
+<input id="emailOtpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="请输入邮箱收到的验证码">
+<button class="btn" data-action="resendConfirmation">重新发送</button>
+</div>
+<button class="btn primary block" data-action="verifyEmailCode">验证邮箱并完成注册</button>
+<p class="toastnote">注册后请查看邮箱，输入邮件中的验证码完成验证。</p>
+</div>
 <button class="btn primary block" data-action="submitAuth" id="submitAuth">登录</button>
-<button class="btn ghost block" data-action="resendConfirmation">重新发送邮箱验证邮件</button>
+<button class="btn ghost block" data-action="resendConfirmation" id="resendEmailButton">重新发送邮箱验证邮件</button>
 <button class="btn ghost block" data-action="forgotPassword" id="forgotPasswordButton">忘记密码？通过邮箱重置</button>
 <p class="toastnote">目前开放邮箱注册和密码登录。手机号注册暂时维护中，短信服务配置完成后再开放。</p>
 </div>
@@ -1528,6 +1537,8 @@ $('account').style.display=authMethod==='email'?'block':'none';
 $('passwordFields').style.display='block';
 $('phoneFields').style.display='none';
 $('registerFields').style.display=authMode==='register'?'block':'none';
+$('emailOtpFields').style.display=authMode==='register'?'block':'none';
+$('resendEmailButton').style.display=authMode==='login'?'block':'none';
 document.querySelectorAll('[data-authmode]').forEach(b=>b.classList.toggle('active',b.dataset.authmode===authMode));
 
 }
@@ -1561,7 +1572,8 @@ options:{
 });
 if(error)throw error;
 if(!data.session){
-notify('注册成功','请到邮箱查收验证邮件，完成验证后再登录。');
+notify('验证码已发送','请查看邮箱，输入邮件中的验证码完成注册。');
+$('emailOtpCode').focus();
 }else{
 notify('注册成功','账号已创建并登录。');
 }
@@ -1581,6 +1593,21 @@ await initSession();
 showPage('profile');
 notify('登录成功','你的账号已经连接云端。');
 }catch(e){showError(e)}
+}
+// 验证邮箱注册验证码
+async function verifyEmailCode(){
+ const email=$('account').value.trim();
+ const token=$('emailOtpCode').value.trim();
+ if(!email||!email.includes('@')){notify('邮箱不正确','请填写注册时使用的邮箱。');return}
+ if(!token){notify('请输入验证码','请填写邮箱收到的验证码。');return}
+ try{
+  const {data,error}=await db.auth.verifyOtp({email,token,type:'signup'});
+  if(error)throw error;
+  user=data.user||data.session?.user||user;
+  await initSession();
+  showPage('profile');
+  notify('邮箱验证成功','账号已经完成验证，可以开始使用泊言漂流瓶。');
+ }catch(e){showError(e)}
 }
 // 重新发送邮箱验证邮件
 async function resendConfirmation(){
@@ -1688,6 +1715,8 @@ const mode=e.target.closest('[data-authmode]');
 if(mode){authMode=mode.dataset.authmode;syncAuth();return}
 const forgot=e.target.closest('[data-action="forgotPassword"]');
 if(forgot){await forgotPassword();return}
+const verifyEmail=e.target.closest('[data-action="verifyEmailCode"]');
+if(verifyEmail){await verifyEmailCode();return}
 const filter=e.target.closest('[data-filter]');
 if(filter){
 activeFilter=filter.dataset.filter;
