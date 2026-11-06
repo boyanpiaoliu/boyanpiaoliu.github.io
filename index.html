@@ -1056,16 +1056,17 @@ const peerId=document.createElement('span');peerId.className='thread-peer-id';pe
   if(m.message_type==='flash_image'&&m.flash_opened_at&&m.receiver_id===user.id){body.textContent='这张闪照已查看';}
   else if(m.message_type==='flash_image'&&m.sender_id===user.id&&m.flash_opened_at){body.textContent='闪照已被查看';}
   else{
-   const {data:signed,error:signedError}=await db.storage.from('message-media').createSignedUrl(m.media_path,3600);
-   if(signedError){body.textContent='媒体暂时无法加载';}
-   else if(m.message_type==='image'||m.message_type==='flash_image'){
-    if(m.message_type==='flash_image'&&m.receiver_id===user.id){
-     const reveal=document.createElement('button');reveal.className='chat-flash';reveal.textContent='◉ 点击查看闪照（仅一次）';
-     reveal.addEventListener('click',async()=>{try{const {error}=await db.from('messages').update({flash_opened_at:new Date().toISOString()}).eq('id',m.id).eq('receiver_id',user.id).is('flash_opened_at',null);if(error)throw error;const img=document.createElement('img');img.className='chat-media';img.src=signed.signedUrl;img.alt='闪照';reveal.replaceWith(img);setTimeout(()=>{img.remove();const note=document.createElement('div');note.className='chat-media-note';note.textContent='闪照已阅';bubble.append(note)},5000);await loadMessages()}catch(err){showError(err)}});
-     body.append(reveal);
-    }else{const img=document.createElement('img');img.className='chat-media';img.src=signed.signedUrl;img.alt='聊天图片';body.append(img)}
-   }else if(m.message_type==='video'){const video=document.createElement('video');video.className='chat-video';video.src=signed.signedUrl;video.controls=true;video.playsInline=true;body.append(video)}
-   else{const audio=document.createElement('audio');audio.className='chat-audio';audio.src=signed.signedUrl;audio.controls=true;body.append(audio)}
+   if(m.message_type==='flash_image'&&m.receiver_id===user.id){
+    const reveal=document.createElement('button');reveal.className='chat-flash';reveal.textContent='◉ 点击查看闪照（仅一次）';
+    reveal.addEventListener('click',async()=>{try{const {data:opened,error}=await db.rpc('open_flash_message',{p_message_id:m.id});if(error)throw error;if(!opened){reveal.textContent='闪照已查看';reveal.disabled=true;return}const {data:signed,error:signedError}=await db.storage.from('message-media').createSignedUrl(m.media_path,60);if(signedError)throw signedError;const img=document.createElement('img');img.className='chat-media';img.src=signed.signedUrl;img.alt='闪照';reveal.replaceWith(img);setTimeout(()=>{img.remove();const note=document.createElement('div');note.className='chat-media-note';note.textContent='闪照已阅';bubble.append(note)},5000);await loadMessages()}catch(err){showError(err)}});
+    body.append(reveal);
+   }else{
+    const {data:signed,error:signedError}=await db.storage.from('message-media').createSignedUrl(m.media_path,3600);
+    if(signedError){body.textContent='媒体暂时无法加载';}
+    else if(m.message_type==='image'||m.message_type==='flash_image'){const img=document.createElement('img');img.className='chat-media';img.src=signed.signedUrl;img.alt='聊天图片';body.append(img)}
+    else if(m.message_type==='video'){const video=document.createElement('video');video.className='chat-video';video.src=signed.signedUrl;video.controls=true;video.playsInline=true;body.append(video)}
+    else{const audio=document.createElement('audio');audio.className='chat-audio';audio.src=signed.signedUrl;audio.controls=true;body.append(audio)}
+   }
   }
  }else{body.textContent=m.is_retracted?'这条消息已撤回':m.content}
  bubble.append(body);
@@ -1406,7 +1407,7 @@ function openMessage(receiver){
 if(!requireLogin())return;
 if(receiver===user.id){notify('提示','不能给自己发送消息。');return}
 messageReceiver=receiver;
-$('messageTarget').textContent='正在给瓶子主人写信';
+$('messageTarget').textContent='发送一条消息';
 $('messageText').value='';
 $('messageModal').classList.add('show');
 }
