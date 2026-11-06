@@ -1509,7 +1509,7 @@ function openAuth(){
 authMode='login';authMethod='email';syncAuth();showPage('auth');
 }
 async function sendCode(){
-const digits=$('phoneNumber').value.replace(/\\D/g,'');
+const digits=$('phoneNumber').value.replace(/\D/g,'');
 const phone=$('phoneCountry').value+digits;
 if(digits.length<5||digits.length>15){notify('手机号格式不正确','请检查国家/地区区号和手机号码。');return}
 try{
@@ -1544,7 +1544,7 @@ const {error}=await db.auth.signInWithPassword({email:account,password});
 if(error)throw error;
 }
 }else{
-const digits=$('phoneNumber').value.replace(/\\D/g,'');
+const digits=$('phoneNumber').value.replace(/\D/g,'');
 const phone=$('phoneCountry').value+digits;
 const token=$('verifyCode').value.trim();
 if(digits.length<5||digits.length>15||!token){notify('信息不完整','请选择国家/地区并输入正确手机号和短信验证码。');return}
