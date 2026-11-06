@@ -2374,8 +2374,8 @@ async function loadGrowthCenter(){
  $('growthLevel').textContent='Lv.'+level;$('growthXp').textContent=xp;$('growthShells').textContent=wallet.shells||0;
  $('growthProgressBar').style.width=progress+'%';$('growthProgressText').textContent='距离下一级还差 '+(100-progress)+' 经验';
  const dates=(checkinRes.data||[]).map(x=>x.checkin_date);
- let streak=0;const d=new Date();let cursor=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
- const today=cursor.toISOString().slice(0,10);
+ let streak=0;const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ const [yy,mm,dd]=today.split('-').map(Number);let cursor=new Date(Date.UTC(yy,mm-1,dd));
  if(dates.includes(today)){}else cursor.setUTCDate(cursor.getUTCDate()-1);
  while(dates.includes(cursor.toISOString().slice(0,10))){streak++;cursor.setUTCDate(cursor.getUTCDate()-1)}
  $('growthStreak').textContent=streak?'已连续签到 '+streak+' 天，保持这份小小的坚持。':'今天还没有签到，领取你的第一份贝壳。';
