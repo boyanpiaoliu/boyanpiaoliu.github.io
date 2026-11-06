@@ -534,6 +534,10 @@ header p{letter-spacing:.4px}
 .conversation-friend-code{display:block;margin-top:3px;font-size:10px;font-weight:500;color:#91a3b3}
 .conversation-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 
+
+.phone-entry{display:flex;gap:8px;align-items:center;margin:7px 0}
+.phone-entry select{width:46%;max-width:190px;min-width:0;padding:14px 8px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);font-size:13px;appearance:auto}
+.phone-entry input{flex:1;min-width:0}
 </style>
 </head>
 
@@ -727,6 +731,30 @@ header p{letter-spacing:.4px}
 <input id="password" type="password" placeholder="请输入密码" autocomplete="current-password">
 </div>
 <div id="phoneFields" style="display:none">
+<label class="form-label">手机号</label>
+<div class="phone-entry">
+<select id="phoneCountry" aria-label="选择国家或地区区号">
+<option value="+86" selected>🇨🇳 中国 +86</option>
+<option value="+1">🇺🇸 美国/加拿大 +1</option>
+<option value="+81">🇯🇵 日本 +81</option>
+<option value="+852">🇭🇰 中国香港 +852</option>
+<option value="+853">🇲🇴 中国澳门 +853</option>
+<option value="+886">🇹🇼 中国台湾 +886</option>
+<option value="+65">🇸🇬 新加坡 +65</option>
+<option value="+82">🇰🇷 韩国 +82</option>
+<option value="+44">🇬🇧 英国 +44</option>
+<option value="+61">🇦🇺 澳大利亚 +61</option>
+<option value="+60">🇲🇾 马来西亚 +60</option>
+<option value="+66">🇹🇭 泰国 +66</option>
+<option value="+91">🇮🇳 印度 +91</option>
+<option value="+49">🇩🇪 德国 +49</option>
+<option value="+33">🇫🇷 法国 +33</option>
+<option value="+971">🇦🇪 阿联酋 +971</option>
+<option value="+7">🇷🇺 俄罗斯 +7</option>
+<option value="+55">🇧🇷 巴西 +55</option>
+</select>
+<input id="phoneNumber" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="请输入手机号码">
+</div>
 <label class="form-label">短信验证码</label>
 <div class="fieldline">
 <input id="verifyCode" inputmode="numeric" placeholder="请输入验证码">
@@ -1470,7 +1498,7 @@ $('authHeading').textContent=authMode==='login'?'欢迎回来':'创建账号';
 $('submitAuth').textContent=authMode==='login'?'登录':'注册';
 $('accountLabel').textContent=authMethod==='email'?'邮箱':'手机号';
 $('account').type=authMethod==='email'?'email':'tel';
-$('account').placeholder=authMethod==='email'?'请输入邮箱':'请输入国际格式手机号，例如 +8613800000000';
+$('account').placeholder='请输入邮箱';
 $('passwordFields').style.display=authMethod==='email'?'block':'none';
 $('phoneFields').style.display=authMethod==='phone'?'block':'none';
 $('registerFields').style.display=authMode==='register'?'block':'none';
@@ -1481,8 +1509,9 @@ function openAuth(){
 authMode='login';authMethod='email';syncAuth();showPage('auth');
 }
 async function sendCode(){
-const phone=$('account').value.trim();
-if(!phone.startsWith('+')){notify('手机号格式不正确','请使用国际格式，例如 +8613800000000。');return}
+const digits=$('phoneNumber').value.replace(/\\D/g,'');
+const phone=$('phoneCountry').value+digits;
+if(digits.length<5||digits.length>15){notify('手机号格式不正确','请检查国家/地区区号和手机号码。');return}
 try{
 const {error}=await db.auth.signInWithOtp({phone,options:{shouldCreateUser:authMode==='register'}});
 if(error)throw error;
@@ -1501,7 +1530,7 @@ const {data,error}=await db.auth.signUp({
 email:account,password,
 options:{
   data:{nickname,referral_code:$("registerInviteCode").value.trim()},
-  emailRedirectTo:'https://yaya1022.github.io/'
+  emailRedirectTo:'https://boyanpiaoliu.github.io/'
 }
 });
 if(error)throw error;
@@ -1515,9 +1544,10 @@ const {error}=await db.auth.signInWithPassword({email:account,password});
 if(error)throw error;
 }
 }else{
-const phone=account;
+const digits=$('phoneNumber').value.replace(/\\D/g,'');
+const phone=$('phoneCountry').value+digits;
 const token=$('verifyCode').value.trim();
-if(!phone||!token){notify('信息不完整','请输入手机号和短信验证码。');return}
+if(digits.length<5||digits.length>15||!token){notify('信息不完整','请选择国家/地区并输入正确手机号和短信验证码。');return}
 const {error}=await db.auth.verifyOtp({phone,token,type:'sms'});
 if(error)throw error;
 }
@@ -1540,7 +1570,7 @@ async function resendConfirmation(){
       type:'signup',
       email:email,
       options:{
-        emailRedirectTo:'https://yaya1022.github.io/'
+        emailRedirectTo:'https://boyanpiaoliu.github.io/'
       }
     });
 
