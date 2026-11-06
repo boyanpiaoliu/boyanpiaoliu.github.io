@@ -507,9 +507,11 @@ header p{letter-spacing:.4px}
 .report-card textarea{min-height:90px;resize:vertical}
 
 
-.hero-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;position:relative;z-index:2}
+.hero-premium{height:390px}
+.hero-actions{display:flex;flex-direction:column;align-items:flex-start;gap:9px;position:relative;z-index:2;margin-top:17px}
 .hero-actions .hero-cta{margin:0;white-space:nowrap}
-.hero-pick{border:1px solid rgba(255,255,255,.68);background:rgba(255,255,255,.18);color:#fff;border-radius:15px;padding:14px 15px;font-size:12px;font-weight:700;backdrop-filter:blur(10px);white-space:nowrap}
+.hero-pick{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.13);color:#fff;border-radius:14px;padding:9px 14px;font-size:11px;font-weight:700;backdrop-filter:blur(10px);white-space:nowrap}
+@media(max-width:380px){.hero-premium{height:385px}}
 .home-quick-two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .chat-media{display:block;max-width:min(230px,65vw);max-height:260px;border-radius:12px;object-fit:cover}
 .chat-audio{width:min(230px,62vw);height:38px}
@@ -524,6 +526,10 @@ header p{letter-spacing:.4px}
 .message-thread-head{display:flex;align-items:center;gap:10px}
 .message-thread-head strong{flex:1;text-align:center;font-size:14px}
 .message-thread-head .thread-peer-id{display:block;font-size:10px;color:#8b9eae;font-weight:500;margin-top:3px}
+
+
+.conversation-friend-code{display:block;margin-top:3px;font-size:10px;font-weight:500;color:#91a3b3}
+.conversation-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 
 </style>
 </head>
@@ -816,6 +822,7 @@ let viewedProfileId=null;
 let reportTarget=null;
 let blockedUserIds=[];
 let activeChatPeer=null;
+let chatProfileCache={};
 let activeRecorder=null;
 let recorderChunks=[];
 let recordingStream=null;
@@ -997,10 +1004,12 @@ function conversationGroups(){
  messages.forEach(m=>{const peer=m.sender_id===user.id?m.receiver_id:m.sender_id;if(!peer)return;if(!map.has(peer))map.set(peer,[]);map.get(peer).push(m)});
  return [...map.entries()].map(([peer,items])=>({peer,items:items.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))})).sort((a,b)=>new Date(b.items[b.items.length-1].created_at)-new Date(a.items[a.items.length-1].created_at));
 }
-function renderMessages(){
+async function renderMessages(){
  const el=$('messageList'),thread=$('messageThread');el.replaceChildren();thread.style.display='none';el.style.display='block';updateUnreadBadge();
  if(!user){el.innerHTML='<div class="empty">登录后查看你的云端消息。</div>';return}
  const groups=conversationGroups(),unread=unreadCount();
+ const missingPeers=groups.map(g=>g.peer).filter(id=>!chatProfileCache[id]);
+ if(missingPeers.length){const {data:chatProfiles,error:chatProfileError}=await db.rpc('get_chat_profiles',{p_peer_ids:missingPeers});if(chatProfileError)console.warn('聊天资料读取失败',chatProfileError);(chatProfiles||[]).forEach(p=>chatProfileCache[p.id]=p)}
  $('messageSummary').innerHTML='<span><strong>'+groups.length+'</strong>段对话</span><span><strong>'+unread+'</strong>条未读来信</span>';
  if(!groups.length){el.innerHTML='<div class="empty">海面暂时很安静，收到回信后会显示在这里。</div>';return}
  groups.forEach(g=>{
@@ -1009,7 +1018,10 @@ function renderMessages(){
  const avatar=document.createElement('div');avatar.className='conversation-avatar';avatar.textContent='💌';
  const main=document.createElement('div');main.className='conversation-main';
  const top=document.createElement('div');top.className='conversation-top';
- const name=document.createElement('strong');name.textContent='漂流者 '+g.peer.slice(0,8);
+ const peerProfile=chatProfileCache[g.peer]||{};
+ const name=document.createElement('strong');name.textContent=peerProfile.nickname||'用户';
+ const friendCode=document.createElement('small');friendCode.className='conversation-friend-code';friendCode.textContent='ID：'+(peerProfile.friend_code||'暂未设置');name.append(friendCode);
+ if(peerProfile.avatar_url){avatar.textContent='';const avatarImg=document.createElement('img');avatarImg.src=peerProfile.avatar_url;avatarImg.alt='好友头像';avatar.append(avatarImg)}else avatar.textContent=(peerProfile.nickname||'友').slice(0,1);
  const time=document.createElement('span');time.className='conversation-time';time.textContent=dateText(last.created_at);top.append(name,time);
  const preview=document.createElement('div');preview.className='conversation-preview';preview.textContent=(last.sender_id===user.id?'我：':'对方：')+({image:'[图片]',flash_image:'[闪照]',video:'[视频]',audio:'[语音]'}[last.message_type]||last.content||'[消息]');
  main.append(top,preview);c.append(avatar,main);
@@ -1029,8 +1041,8 @@ async function openConversation(peer){
  messages=messages.map(m=>m.sender_id===peer&&m.receiver_id===user.id?{...m,is_read:true}:m);
  updateUnreadBadge();
  const items=messages.filter(m=>(m.sender_id===peer||m.receiver_id===peer)&&!m.is_retracted).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
- const {data:friendProfiles}=await db.rpc('get_my_friends');
- const peerProfile=(friendProfiles||[]).find(f=>f.id===peer)||null;
+ let peerProfile=chatProfileCache[peer]||null;
+ if(!peerProfile){const {data:chatProfiles,error:chatProfileError}=await db.rpc('get_chat_profiles',{p_peer_ids:[peer]});if(chatProfileError)throw chatProfileError;peerProfile=(chatProfiles||[])[0]||null;if(peerProfile)chatProfileCache[peer]=peerProfile;}
  $('messageList').style.display='none';const thread=$('messageThread');thread.style.display='block';thread.replaceChildren();
  const head=document.createElement('div');head.className='message-thread-head';
  const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',async()=>{replyTargetMessage=null;await loadMessages();renderMessages()});
