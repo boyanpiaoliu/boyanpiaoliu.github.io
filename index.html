@@ -744,6 +744,27 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 .growth-shop-item button{border:0;border-radius:14px;padding:7px 10px;background:#edf6f8;color:#5e91a5;font-size:10px;width:100%}
 .growth-shop-item button:disabled{background:#f1f3f4;color:#9aa6ac}
 .growth-footnote{font-size:9px;color:#a5b0b7;text-align:center;padding:16px 5px}
+/* 海洋伙伴与每日任务 */
+.pet-section{border:1px solid #e8eff1;border-radius:21px;padding:14px;background:linear-gradient(145deg,#fbfefe,#f2f8fa);margin:8px 0 18px}
+.pet-choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pet-choice-grid button{border:1px solid #e6edf0;background:#fff;border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.pet-choice-grid button.selected{border-color:#78b5cb;box-shadow:0 0 0 2px rgba(120,181,203,.14)}
+.pet-choice-grid span{font-size:27px}.pet-choice-grid b{font-size:11px;color:#5d7889}.pet-choice-grid small{font-size:9px;color:#9aaab3}
+#petNameInput{width:100%;border:1px solid #e6edf0;border-radius:13px;padding:11px;margin:11px 0 8px;font-size:11px;background:#fff}
+.pet-adoption>.btn,.pet-owned>.btn{width:100%}
+.pet-scene{min-height:115px;border-radius:17px;background:radial-gradient(circle at 50% 25%,#fff 0,#eaf6f8 60%,#dcecf2 100%);display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:13px}
+.pet-scene>span{font-size:55px;filter:drop-shadow(0 6px 7px rgba(70,120,140,.18));animation:petFloat 3s ease-in-out infinite}
+@keyframes petFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pet-scene strong{display:block;font-size:16px;color:#56788a}.pet-scene small{display:block;font-size:10px;color:#94a8b3;margin-top:5px}
+.pet-progress{display:grid;gap:6px;margin:10px 2px 13px}
+.pet-progress>div{display:flex;justify-content:space-between;font-size:10px;color:#8ca0ac}
+.pet-progress>div b{color:#63899a}.pet-progress>i,.pet-progress>i em{height:6px;border-radius:9px;display:block}.pet-progress>i{background:#e6eef1;overflow:hidden}.pet-progress>i em{background:linear-gradient(90deg,#8bc5d0,#a6c4dc);width:50%}
+.ocean-daily-tasks{display:grid;gap:8px;margin-bottom:17px}
+.ocean-task{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #edf0f2;border-radius:15px;background:#fff}
+.ocean-task-icon{width:36px;height:36px;border-radius:12px;background:#eff6f8;display:grid;place-items:center;font-size:18px;flex:none}
+.ocean-task-copy{flex:1;min-width:0}.ocean-task-copy strong{display:block;font-size:10px;color:#5e7888}.ocean-task-copy small{display:block;font-size:9px;color:#9aabb4;margin-top:4px}
+.ocean-task button{border:0;border-radius:13px;padding:7px 10px;background:#eaf4f7;color:#5d91a5;font-size:9px;white-space:nowrap}
+.ocean-task button:disabled{background:#f1f4f5;color:#9ba8ae}
 </style>
 </head>
 
@@ -1023,7 +1044,26 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
   <div class="growth-stats"><div><strong id="growthLevel">Lv.1</strong><small>海洋等级</small></div><div><strong id="growthXp">0</strong><small>成长经验</small></div><div><strong id="growthShells">0</strong><small>贝壳余额</small></div></div>
   <div class="growth-progress"><i id="growthProgressBar"></i></div><small id="growthProgressText">距离下一级还差 100 经验</small>
  </div>
- <div class="growth-checkin card"><div><div><span class="growth-kicker">DAILY MOMENT</span><h3>每日签到</h3><p id="growthStreak">连续签到从今天开始</p></div><span class="growth-reward">+5 🐚　+10 XP</span></div><button class="btn primary" id="growthCheckinButton" data-action="claimDaily">签到领取奖励</button></div>
+ <div class="pet-section">
+ <div class="growth-shop-head"><div><span class="growth-kicker">YOUR OCEAN FRIEND</span><h3>海洋伙伴</h3></div><small>陪你一起成长</small></div>
+ <div id="petAdoption" class="pet-adoption">
+  <div class="pet-choice-grid">
+   <button data-pet-choice="dolphin"><span>🐬</span><b>小海豚</b><small>活泼友善</small></button>
+   <button data-pet-choice="turtle"><span>🐢</span><b>小海龟</b><small>安静温柔</small></button>
+   <button data-pet-choice="seal"><span>🦭</span><b>小海豹</b><small>软萌陪伴</small></button>
+  </div>
+  <input id="petNameInput" maxlength="12" placeholder="给海洋伙伴取个名字（最多12字）">
+  <button class="btn primary" data-action="adoptPet">领养我的海洋伙伴</button>
+ </div>
+ <div id="petOwned" class="pet-owned" style="display:none">
+  <div class="pet-scene"><span id="petEmoji">🐬</span><div><strong id="petName">小海星</strong><small id="petDescription">正在海里等你</small></div></div>
+  <div class="pet-progress"><div><span>亲密度</span><b id="petAffection">50 / 100</b></div><i><em id="petAffectionBar"></em></i><div><span>成长经验</span><b id="petXp">0 XP</b></div></div>
+  <button class="btn primary" data-action="feedPet">喂养伙伴 · 3 🐚</button>
+ </div>
+</div>
+<div class="growth-shop-head"><div><span class="growth-kicker">DAILY QUESTS</span><h3>今日海洋任务</h3></div><small>每项完成可领取3贝壳+5 XP</small></div>
+<div id="oceanDailyTasks" class="ocean-daily-tasks"></div>
+<div class="growth-checkin card"><div><div><span class="growth-kicker">DAILY MOMENT</span><h3>每日签到</h3><p id="growthStreak">连续签到从今天开始</p></div><span class="growth-reward">+5 🐚　+10 XP</span></div><button class="btn primary" id="growthCheckinButton" data-action="claimDaily">签到领取奖励</button></div>
  <div class="growth-shop-head"><div><span class="growth-kicker">SHELL COLLECTION</span><h3>贝壳装扮铺</h3></div><small>签到积累贝壳兑换</small></div>
  <div class="growth-shop-grid" id="growthShop"></div>
  <div class="growth-footnote">贝壳和经验为站内虚拟成长值，不可提现、转让或兑换现金。</div>
@@ -2038,6 +2078,8 @@ const bottleSkin=e.target.closest('[data-bottle-skin]');
 if(bottleSkin){localStorage.setItem('boyan-bottle-skin',bottleSkin.dataset.bottleSkin);document.querySelectorAll('[data-bottle-skin]').forEach(b=>b.classList.toggle('selected',b===bottleSkin));renderAll();return}
 const chatSkin=e.target.closest('[data-chat-skin]');
 if(chatSkin){localStorage.setItem('boyan-chat-skin',chatSkin.dataset.chatSkin);document.querySelectorAll('[data-chat-skin]').forEach(b=>b.classList.toggle('selected',b===chatSkin));return}
+const petChoice=e.target.closest('[data-pet-choice]');
+if(petChoice){selectedPetType=petChoice.dataset.petChoice;document.querySelectorAll('[data-pet-choice]').forEach(b=>b.classList.toggle('selected',b===petChoice));return}
 const profileTheme=e.target.closest('[data-profile-theme]');
 if(profileTheme){if(!user){openAuth();return}const theme=profileTheme.dataset.profileTheme;const {data,error}=await db.from('profiles').update({profile_theme:theme}).eq('id',user.id).select().single();if(error){showError(error);return}profile=data;applyProfileTheme();document.querySelectorAll('[data-profile-theme]').forEach(b=>b.classList.toggle('selected',b===profileTheme));notify('主页装扮已保存','这套背景已经同步到你的账号。');return}
 const avatarFrame=e.target.closest('[data-avatar-frame]');
@@ -2089,6 +2131,9 @@ case'community':if(requireLogin()){activeCommunityFilter='all';document.querySel
 case'notifications':if(requireLogin()){showPage('notifications');await loadNotifications()}break;
 case'growthCenter':if(requireLogin()){showPage('growthCenter');await loadGrowthCenter()}break;
 case'claimDaily':await claimDailyReward();break;
+case'adoptPet':await adoptOceanPet();break;
+case'feedPet':await feedOceanPet();break;
+case'claimOceanTask':await claimOceanTask(a.dataset.task);break;
 case'buyOceanItem':await buyOceanItem(a.dataset.item);break;
 case'useOceanItem':await useOceanItem(a.dataset.item);break;
 case'loadNotifications':await loadNotifications();break;
@@ -2267,14 +2312,63 @@ const oceanShopItems=[
  {code:'theme_island',name:'薄荷岛屿',icon:'🏝️',cost:60,desc:'清新薄荷绿色主页'},
  {code:'theme_blossom',name:'樱花微风',icon:'🌸',cost:60,desc:'柔和樱花粉主页'}
 ];
+let selectedPetType='dolphin';
+const petMeta={dolphin:{emoji:'🐬',desc:'活泼友善的小海豚'},turtle:{emoji:'🐢',desc:'安静温柔的小海龟'},seal:{emoji:'🦭',desc:'软萌可爱的小海豹'}};
+function renderPet(pet){
+ $('petAdoption').style.display=pet?'none':'block';$('petOwned').style.display=pet?'block':'none';
+ if(!pet)return;
+ const meta=petMeta[pet.pet_type]||petMeta.dolphin;
+ $('petEmoji').textContent=meta.emoji;$('petName').textContent=pet.pet_name;$('petDescription').textContent=meta.desc+' · 正在陪伴你';
+ $('petAffection').textContent=pet.affection+' / 100';$('petAffectionBar').style.width=pet.affection+'%';$('petXp').textContent=pet.pet_xp+' XP';
+}
+async function adoptOceanPet(){
+ if(!requireLogin())return;
+ const name=$('petNameInput').value.trim()||'小海星';
+ const {data,error}=await db.rpc('adopt_ocean_pet',{p_pet_type:selectedPetType,p_pet_name:name});
+ if(error){showError(error);return}
+ notify('领养成功','你的海洋伙伴「'+data.pet_name+'」已经来到身边。');await loadGrowthCenter();
+}
+async function feedOceanPet(){
+ if(!requireLogin())return;
+ const {data,error}=await db.rpc('feed_ocean_pet');if(error){showError(error);return}
+ const result=data?.[0];if(!result?.success)return;
+ notify('喂养成功','伙伴亲密度提升了，成长经验 +5。');await loadGrowthCenter();
+}
+async function loadOceanDailyTasks(){
+ const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ const start=today+'T00:00:00+08:00',end=today+'T23:59:59.999+08:00';
+ const [b,p,m,c]=await Promise.all([
+  db.from('bottles').select('id',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',start).lte('created_at',end),
+  db.from('community_posts').select('id',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',start).lte('created_at',end),
+  db.from('messages').select('id',{count:'exact',head:true}).eq('sender_id',user.id).eq('is_retracted',false).gte('created_at',start).lte('created_at',end),
+  db.from('ocean_task_claims').select('task_code').eq('user_id',user.id).eq('task_date',today)
+ ]);
+ for(const x of [b,p,m,c])if(x.error)throw x.error;
+ const done=new Set((c.data||[]).map(x=>x.task_code));
+ const tasks=[
+  {code:'send_bottle',icon:'🍾',title:'投递一只漂流瓶',desc:'把今天的心事交给海风',eligible:(b.count||0)>0},
+  {code:'post_moment',icon:'🌷',title:'分享一条动态',desc:'在动态广场记录生活',eligible:(p.count||0)>0},
+  {code:'send_message',icon:'💌',title:'发送一条消息',desc:'向朋友传递一句问候',eligible:(m.count||0)>0}
+ ];
+ const root=$('oceanDailyTasks');root.replaceChildren();
+ tasks.forEach(t=>{
+  const row=document.createElement('div');row.className='ocean-task';
+  const icon=document.createElement('div');icon.className='ocean-task-icon';icon.textContent=t.icon;
+  const copy=document.createElement('div');copy.className='ocean-task-copy';const title=document.createElement('strong');title.textContent=t.title;const desc=document.createElement('small');desc.textContent=done.has(t.code)?'今日奖励已领取':t.eligible?'已完成 · 可领取 3 🐚 + 5 XP':'完成后可领取 3 🐚 + 5 XP';copy.append(title,desc);
+  const btn=document.createElement('button');btn.dataset.action='claimOceanTask';btn.dataset.task=t.code;btn.disabled=done.has(t.code)||!t.eligible;btn.textContent=done.has(t.code)?'已领取':t.eligible?'领取奖励':'去完成';
+  row.append(icon,copy,btn);root.append(row);
+ });
+}
 async function loadGrowthCenter(){
  if(!requireLogin())return;
- const [walletRes,inventoryRes,checkinRes]=await Promise.all([
+ const [petRes,walletRes,inventoryRes,checkinRes]=await Promise.all([
+  db.from('ocean_pets').select('*').eq('user_id',user.id).maybeSingle(),
   db.from('ocean_wallets').select('shells,xp').eq('user_id',user.id).maybeSingle(),
   db.from('ocean_inventory').select('item_code').eq('user_id',user.id),
   db.from('ocean_checkins').select('checkin_date').eq('user_id',user.id).order('checkin_date',{ascending:false}).limit(35)
  ]);
- for(const x of [walletRes,inventoryRes,checkinRes])if(x.error)throw x.error;
+ for(const x of [petRes,walletRes,inventoryRes,checkinRes])if(x.error)throw x.error;
+ renderPet(petRes.data);await loadOceanDailyTasks();
  const wallet=walletRes.data||{shells:0,xp:0},owned=new Set((inventoryRes.data||[]).map(x=>x.item_code));
  const xp=wallet.xp||0,level=Math.floor(xp/100)+1,progress=xp%100;
  $('growthLevel').textContent='Lv.'+level;$('growthXp').textContent=xp;$('growthShells').textContent=wallet.shells||0;
@@ -2296,6 +2390,13 @@ async function loadGrowthCenter(){
   buy.textContent=owned.has(item.code)?'使用装扮':(wallet.shells||0)>=item.cost?'兑换':'贝壳不足';buy.disabled=(wallet.shells||0)<item.cost&&!owned.has(item.code);if(owned.has(item.code))buy.dataset.action='useOceanItem';
   card.append(art,title,desc,buy);shop.append(card);
  });
+}
+async function claimOceanTask(code){
+ if(!requireLogin())return;
+ const {data,error}=await db.rpc('claim_ocean_daily_task',{p_task_code:code});
+ if(error){showError(error);return}
+ if(!data?.[0]?.success){notify('奖励已领取','每项每日任务只能领取一次。');return}
+ notify('任务奖励到账','获得 3 枚贝壳和 5 点经验。');await loadGrowthCenter();
 }
 async function claimDailyReward(){
  if(!requireLogin())return;
