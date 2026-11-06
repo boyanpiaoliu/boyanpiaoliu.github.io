@@ -765,6 +765,25 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 .ocean-task-copy{flex:1;min-width:0}.ocean-task-copy strong{display:block;font-size:10px;color:#5e7888}.ocean-task-copy small{display:block;font-size:9px;color:#9aabb4;margin-top:4px}
 .ocean-task button{border:0;border-radius:13px;padding:7px 10px;background:#eaf4f7;color:#5d91a5;font-size:9px;white-space:nowrap}
 .ocean-task button:disabled{background:#f1f4f5;color:#9ba8ae}
+/* 海洋小屋场景 */
+.cottage-section{padding:14px;border:1px solid #e7eff1;border-radius:21px;background:linear-gradient(145deg,#fbfefe,#f0f8fa);margin:10px 0 18px}
+.cottage-room{height:190px;border-radius:17px;position:relative;overflow:hidden;background:linear-gradient(180deg,#dff2f7 0%,#c4e4ec 57%,#9bcbd7 58%,#76afbf 100%);box-shadow:inset 0 -18px 35px rgba(69,137,153,.12)}
+.cottage-sun{position:absolute;right:20px;top:13px;font-size:20px;opacity:.85}
+.cottage-bubbles{position:absolute;top:35px;left:20px;color:rgba(255,255,255,.8);font-size:18px;letter-spacing:6px}
+.cottage-window{position:absolute;right:17px;top:55px;width:70px;height:66px;border:5px solid rgba(255,255,255,.75);border-radius:35px 35px 12px 12px;background:linear-gradient(180deg,#a5d9e6,#4f9eb7);display:grid;place-items:center;font-size:26px;box-shadow:0 4px 12px rgba(61,127,146,.12)}
+.cottage-floor{position:absolute;bottom:-24px;left:-5%;width:110%;height:55px;border-radius:50%;background:rgba(255,255,255,.25)}
+.cottage-pet{position:absolute;left:38%;bottom:34px;font-size:48px;filter:drop-shadow(0 5px 5px rgba(52,110,127,.2));animation:petFloat 3s ease-in-out infinite}
+.cottage-decor-layer{position:absolute;inset:0;pointer-events:none}
+.cottage-decor{position:absolute;font-size:25px;filter:drop-shadow(0 3px 3px rgba(60,100,120,.14))}
+.cottage-decor[data-item="coral_plant"]{left:12px;bottom:22px}.cottage-decor[data-item="shell_lamp"]{right:27px;bottom:24px}.cottage-decor[data-item="starfish_rug"]{left:45%;bottom:8px}.cottage-decor[data-item="sea_window"]{right:20px;top:45px}.cottage-decor[data-item="pearl_table"]{left:15px;top:74px}
+.cottage-actions{display:flex;gap:7px;overflow-x:auto;padding:10px 0 2px}
+.cottage-actions button{white-space:nowrap;border:1px solid #e3edf0;border-radius:15px;padding:8px 10px;background:#fff;color:#688596;font-size:9px}
+.cottage-visitors-head{display:flex;justify-content:space-between;align-items:center;margin:13px 0 8px}
+.cottage-visitors-head strong{font-size:11px;color:#5d7888}.cottage-visitors-head small{font-size:9px;color:#9aaab3}
+.cottage-friends{display:flex;gap:8px;overflow-x:auto}
+.cottage-friend{flex:none;min-width:86px;border:1px solid #e8eef0;border-radius:14px;background:#fff;padding:9px 8px;text-align:center;color:#627e8d}
+.cottage-friend span{display:block;font-size:23px}.cottage-friend b{display:block;font-size:9px;margin-top:5px}
+.cottage-visit-note{text-align:center;color:#9aabb3;font-size:10px;margin:14px 0}
 </style>
 </head>
 
@@ -1036,7 +1055,14 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 </div>
 <p class="member-disclaimer">会员付费功能尚未开放。以上为拟定价格，正式购买将在完成支付接入及平台审核后开放。你可以通过邀请好友获得免费会员体验。</p>
 </section>
-<section class="page" id="growthCenter">
+<section class="page" id="cottageVisit">
+ <div class="page-head"><button class="back" data-action="backGrowth">‹ 返回</button><h2 id="visitCottageTitle">海洋小屋</h2></div>
+ <div class="cottage-room visit-room" id="visitCottageRoom">
+  <div class="cottage-sun">☀️</div><div class="cottage-bubbles">○　·　○　　·</div>
+  <div class="cottage-window">🌊</div><div class="cottage-floor"></div><div class="cottage-pet" id="visitCottagePet">🐬</div><div class="cottage-decor-layer" id="visitCottageDecor"></div>
+ </div>
+ <p class="cottage-visit-note">每一间小屋，都收藏着一份独特的海边心情。</p>
+</section><section class="page" id="growthCenter">
  <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>海洋成长中心</h2></div>
  <div class="growth-hero">
   <div class="growth-orb">🐚</div><div class="growth-eyebrow">YOUR OCEAN JOURNEY</div>
@@ -1044,7 +1070,25 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
   <div class="growth-stats"><div><strong id="growthLevel">Lv.1</strong><small>海洋等级</small></div><div><strong id="growthXp">0</strong><small>成长经验</small></div><div><strong id="growthShells">0</strong><small>贝壳余额</small></div></div>
   <div class="growth-progress"><i id="growthProgressBar"></i></div><small id="growthProgressText">距离下一级还差 100 经验</small>
  </div>
- <div class="pet-section">
+ <div class="cottage-section">
+ <div class="growth-shop-head"><div><span class="growth-kicker">MY LITTLE OCEAN HOME</span><h3>我的海洋小屋</h3></div><small>布置一处心灵港湾</small></div>
+ <div class="cottage-room" id="cottageRoom">
+  <div class="cottage-sun">☀️</div><div class="cottage-bubbles">○　·　○　　·</div>
+  <div class="cottage-window">🌊</div><div class="cottage-floor"></div>
+  <div class="cottage-pet" id="cottagePet">🐬</div>
+  <div class="cottage-decor-layer" id="cottageDecor"></div>
+ </div>
+ <div class="cottage-actions" id="cottageActions">
+  <button data-action="decorateCottage" data-item="coral_plant">🪸 珊瑚盆栽</button>
+  <button data-action="decorateCottage" data-item="shell_lamp">🐚 贝壳灯</button>
+  <button data-action="decorateCottage" data-item="starfish_rug">⭐ 海星地毯</button>
+  <button data-action="decorateCottage" data-item="sea_window">🪟 海景窗</button>
+  <button data-action="decorateCottage" data-item="pearl_table">真珠小桌</button>
+ </div>
+ <div class="cottage-visitors-head"><strong>去朋友的小屋看看</strong><small>访问你关注的海洋伙伴</small></div>
+ <div id="cottageFriends" class="cottage-friends"><div class="empty">正在寻找朋友的小屋…</div></div>
+</div>
+<div class="pet-section">
  <div class="growth-shop-head"><div><span class="growth-kicker">YOUR OCEAN FRIEND</span><h3>海洋伙伴</h3></div><small>陪你一起成长</small></div>
  <div id="petAdoption" class="pet-adoption">
   <div class="pet-choice-grid">
@@ -1277,7 +1321,7 @@ function closeGeneric(){$('genericModal').classList.remove('show')}
 function showPage(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
 document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications','growthCenter'].includes(id)?'none':'flex';
+$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications','growthCenter','cottageVisit'].includes(id)?'none':'flex';
 window.scrollTo(0,0);
 }
 function escapeText(value){return String(value??'')}
@@ -2130,6 +2174,9 @@ case'submitBottle':await submitBottle();break;
 case'community':if(requireLogin()){activeCommunityFilter='all';document.querySelectorAll('[data-community-filter]').forEach(b=>b.classList.toggle('active',b.dataset.communityFilter==='all'));showPage('community');await loadCommunity()}break;
 case'notifications':if(requireLogin()){showPage('notifications');await loadNotifications()}break;
 case'growthCenter':if(requireLogin()){showPage('growthCenter');await loadGrowthCenter()}break;
+case'decorateCottage':await decorateCottage(a.dataset.item);break;
+case'visitCottage':await visitCottage(a.dataset.user);break;
+case'backGrowth':showPage('growthCenter');break;
 case'claimDaily':await claimDailyReward();break;
 case'adoptPet':await adoptOceanPet();break;
 case'feedPet':await feedOceanPet();break;
@@ -2315,6 +2362,8 @@ const oceanShopItems=[
 let selectedPetType='dolphin';
 const petMeta={dolphin:{emoji:'🐬',desc:'活泼友善的小海豚'},turtle:{emoji:'🐢',desc:'安静温柔的小海龟'},seal:{emoji:'🦭',desc:'软萌可爱的小海豹'}};
 function renderPet(pet){
+ const emoji=pet?(petMeta[pet.pet_type]||petMeta.dolphin).emoji:'🐚';
+ const ownPet=$('cottagePet');if(ownPet)ownPet.textContent=emoji;
  $('petAdoption').style.display=pet?'none':'block';$('petOwned').style.display=pet?'block':'none';
  if(!pet)return;
  const meta=petMeta[pet.pet_type]||petMeta.dolphin;
@@ -2359,6 +2408,54 @@ async function loadOceanDailyTasks(){
   row.append(icon,copy,btn);root.append(row);
  });
 }
+const cottageDecorItems={coral_plant:{emoji:'🪸',name:'珊瑚盆栽'},shell_lamp:{emoji:'🐚',name:'贝壳灯'},starfish_rug:{emoji:'⭐',name:'海星地毯'},sea_window:{emoji:'🪟',name:'海景窗'},pearl_table:{emoji:'真珠小桌',name:'珍珠小桌'}};
+async function loadOceanCottage(ownerId,isOwn=false,targetPrefix=''){
+ const [petRes,decorRes]=await Promise.all([
+  db.from('ocean_pets').select('pet_type,pet_name').eq('user_id',ownerId).maybeSingle(),
+  db.from('ocean_cottage_decor').select('item_code,position').eq('user_id',ownerId).order('position')
+ ]);
+ if(petRes.error)throw petRes.error;if(decorRes.error)throw decorRes.error;
+ const pet=petRes.data;const emoji=pet?(petMeta[pet.pet_type]||petMeta.dolphin).emoji:'🐚';
+ const petNode=$(targetPrefix+'CottagePet');if(petNode)petNode.textContent=emoji;
+ const layer=$(targetPrefix+'CottageDecor');if(layer){layer.replaceChildren();(decorRes.data||[]).forEach(d=>{const item=cottageDecorItems[d.item_code];if(!item)return;const node=document.createElement('span');node.className='cottage-decor';node.dataset.item=d.item_code;node.textContent=item.emoji;node.title=item.name;layer.append(node)})}
+ if(isOwn){
+  const actions=$('cottageActions');actions.querySelectorAll('[data-item]').forEach(btn=>{const owned=(decorRes.data||[]).some(d=>d.item_code===btn.dataset.item);btn.textContent=owned?'✓ 已摆放 '+cottageDecorItems[btn.dataset.item].name:'＋ '+cottageDecorItems[btn.dataset.item].name;btn.disabled=owned});
+ }
+ return pet;
+}
+async function decorateCottage(code){
+ if(!requireLogin())return;
+ const item=cottageDecorItems[code];if(!item)return;
+ const {error}=await db.from('ocean_cottage_decor').insert({user_id:user.id,item_code:code,position:Object.keys(cottageDecorItems).indexOf(code)+1});
+ if(error){if(error.code==='23505')notify('已经摆放','这件装饰已经在你的小屋里了。');else showError(error);return}
+ await loadOceanCottage(user.id,true);notify('布置完成','你的海洋小屋又多了一件装饰。');
+}
+async function loadCottageFriends(){
+ const root=$('cottageFriends');root.replaceChildren();
+ const {data:rows,error}=await db.from('follows').select('following_id').eq('follower_id',user.id).limit(20);
+ if(error)throw error;
+ if(!rows?.length){root.innerHTML='<div class="empty">关注一些朋友，就能来他们的小屋串门。</div>';return}
+ for(const row of rows){
+  const [personRes,petRes]=await Promise.all([
+   db.rpc('search_profile_by_id',{p_id:row.following_id}),
+   db.from('ocean_pets').select('pet_type').eq('user_id',row.following_id).maybeSingle()
+  ]);
+  if(personRes.error)continue;
+  const person=personRes.data?.[0];if(!person)continue;
+  const pet=petRes.data;const btn=document.createElement('button');btn.className='cottage-friend';btn.dataset.action='visitCottage';btn.dataset.user=row.following_id;
+  const icon=document.createElement('span');icon.textContent=pet?(petMeta[pet.pet_type]||petMeta.dolphin).emoji:'🏡';
+  const name=document.createElement('b');name.textContent=person.nickname||'海边朋友';btn.append(icon,name);root.append(btn);
+ }
+ if(!root.children.length)root.innerHTML='<div class="empty">暂时没有可以参观的小屋。</div>';
+}
+async function visitCottage(ownerId){
+ if(!requireLogin()||!ownerId||ownerId===user.id)return;
+ const {data,error}=await db.rpc('search_profile_by_id',{p_id:ownerId});
+ if(error){showError(error);return}
+ const person=data?.[0];if(!person){notify('暂时无法访问','没有找到这位用户。');return}
+ $('visitCottageTitle').textContent=(person.nickname||'海边朋友')+' 的海洋小屋';
+ showPage('cottageVisit');await loadOceanCottage(ownerId,false,'visit');
+}
 async function loadGrowthCenter(){
  if(!requireLogin())return;
  const [petRes,walletRes,inventoryRes,checkinRes]=await Promise.all([
@@ -2368,7 +2465,7 @@ async function loadGrowthCenter(){
   db.from('ocean_checkins').select('checkin_date').eq('user_id',user.id).order('checkin_date',{ascending:false}).limit(35)
  ]);
  for(const x of [petRes,walletRes,inventoryRes,checkinRes])if(x.error)throw x.error;
- renderPet(petRes.data);await loadOceanDailyTasks();
+ renderPet(petRes.data);await loadOceanCottage(user.id,true);await loadCottageFriends();await loadOceanDailyTasks();
  const wallet=walletRes.data||{shells:0,xp:0},owned=new Set((inventoryRes.data||[]).map(x=>x.item_code));
  const xp=wallet.xp||0,level=Math.floor(xp/100)+1,progress=xp%100;
  $('growthLevel').textContent='Lv.'+level;$('growthXp').textContent=xp;$('growthShells').textContent=wallet.shells||0;
