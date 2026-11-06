@@ -717,6 +717,33 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 .notification-copy small{font-size:9px;color:#9baab3;display:block;margin-top:3px}
 .notification-dot{width:7px;height:7px;border-radius:50%;background:#e89a9d;flex:none}
 .notification-empty{padding:38px 12px;text-align:center;color:#9baab3;font-size:11px}
+/* 海洋成长中心 */
+.growth-hero{padding:23px 19px 18px;border-radius:24px;background:radial-gradient(circle at 80% 8%,rgba(255,255,255,.8),transparent 29%),linear-gradient(145deg,#e4f4f5,#dceaf5 58%,#f4e9e9);text-align:center;color:#56788a;margin:8px 0 13px;overflow:hidden}
+.growth-orb{width:54px;height:54px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:rgba(255,255,255,.7);box-shadow:0 7px 20px rgba(101,148,166,.12)}
+.growth-eyebrow,.growth-kicker{font-size:9px;letter-spacing:2px;color:#88a9b7;font-weight:750}
+.growth-hero h2{font-size:17px;margin:8px 0 5px;color:#496b7c}
+.growth-hero>p{font-size:10px;color:#8aa0ad;margin:0}
+.growth-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:19px 0 14px}
+.growth-stats>div{padding:10px 4px;border-radius:13px;background:rgba(255,255,255,.55)}
+.growth-stats strong{display:block;font-size:17px;color:#567f93}.growth-stats small{display:block;font-size:9px;color:#91a5b0;margin-top:3px}
+.growth-progress{height:6px;background:rgba(255,255,255,.7);border-radius:9px;overflow:hidden;margin:0 2px 7px}
+.growth-progress i{display:block;width:0;height:100%;border-radius:9px;background:linear-gradient(90deg,#8fc7d4,#a7b8df);transition:width .3s}
+.growth-hero>small{font-size:9px;color:#829ba9}
+.growth-checkin{padding:16px!important;margin-bottom:19px}
+.growth-checkin>div{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.growth-checkin h3,.growth-shop-head h3{font-size:14px;color:#587386;margin:4px 0}
+.growth-checkin p{font-size:10px;color:#9aaab3;margin:0}
+.growth-reward{font-size:10px;color:#78a3a9;background:#eff8f5;padding:7px 9px;border-radius:12px;white-space:nowrap}
+.growth-checkin .btn{width:100%;margin-top:13px}
+.growth-shop-head{display:flex;justify-content:space-between;align-items:end;margin:0 2px 10px}
+.growth-shop-head small{font-size:9px;color:#9aaab3}
+.growth-shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.growth-shop-item{border:1px solid #edf0f2;border-radius:17px;background:#fff;padding:13px 10px;text-align:center}
+.growth-shop-art{height:61px;display:grid;place-items:center;font-size:30px;border-radius:12px;background:linear-gradient(145deg,#f2f8fa,#f8f3f1);margin-bottom:9px}
+.growth-shop-item strong{display:block;font-size:11px;color:#607b8b}.growth-shop-item small{display:block;font-size:9px;color:#9aaab3;margin:5px 0 9px}
+.growth-shop-item button{border:0;border-radius:14px;padding:7px 10px;background:#edf6f8;color:#5e91a5;font-size:10px;width:100%}
+.growth-shop-item button:disabled{background:#f1f3f4;color:#9aa6ac}
+.growth-footnote{font-size:9px;color:#a5b0b7;text-align:center;padding:16px 5px}
 </style>
 </head>
 
@@ -836,7 +863,7 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 <div class="row" data-action="favorites"><span class="icon">♡</span><span class="label">我的收藏</span><span class="arrow">›</span></div>
 <div class="row" data-action="editProfile"><span class="icon">✎</span><span class="label">编辑资料</span><span class="arrow">›</span></div>
 <div class="row" data-action="chatAppearance"><span class="icon">◉</span><span class="label">个性外观</span><span class="arrow">›</span></div>
-<div class="row" data-action="oceanCollection"><span class="icon">🏝️</span><span class="label">海洋收藏馆</span><span class="arrow">›</span></div><div class="row" data-action="community"><span class="icon">🌷</span><span class="label">心情动态广场</span><span class="arrow">›</span></div><div class="row" data-action="notifications"><span class="icon">🔔</span><span class="label">互动通知</span><span id="communityNoticeBadge" class="friend-unread-badge" style="display:none">0</span><span class="arrow">›</span></div>
+<div class="row" data-action="oceanCollection"><span class="icon">🏝️</span><span class="label">海洋收藏馆</span><span class="arrow">›</span></div><div class="row" data-action="growthCenter"><span class="icon">🐚</span><span class="label">海洋成长中心</span><span class="arrow">›</span></div><div class="row" data-action="community"><span class="icon">🌷</span><span class="label">心情动态广场</span><span class="arrow">›</span></div><div class="row" data-action="notifications"><span class="icon">🔔</span><span class="label">互动通知</span><span id="communityNoticeBadge" class="friend-unread-badge" style="display:none">0</span><span class="arrow">›</span></div>
 <div class="row" data-action="inviteCenter"><span class="icon">↗</span><span class="label">邀请好友</span><span class="arrow">›</span></div>
 <div class="row" data-action="membership"><span class="icon">✦</span><span class="label">泊言会员</span><span class="arrow">›</span></div>
 <div class="row friend-entry" data-action="friends"><span class="icon">♧</span><span class="label">好友与好友申请</span><span id="friendUnreadBadge" class="friend-unread-badge" style="display:none">0</span><span class="arrow">›</span></div>
@@ -987,6 +1014,19 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 <div class="member-plan"><strong>年度会员</strong><b>¥98</b><span>平均约 ¥8.2 / 月</span></div>
 </div>
 <p class="member-disclaimer">会员付费功能尚未开放。以上为拟定价格，正式购买将在完成支付接入及平台审核后开放。你可以通过邀请好友获得免费会员体验。</p>
+</section>
+<section class="page" id="growthCenter">
+ <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>海洋成长中心</h2></div>
+ <div class="growth-hero">
+  <div class="growth-orb">🐚</div><div class="growth-eyebrow">YOUR OCEAN JOURNEY</div>
+  <h2>每一次停留，都值得被記錄</h2><p>签到积累贝壳，成长解锁海边装扮。</p>
+  <div class="growth-stats"><div><strong id="growthLevel">Lv.1</strong><small>海洋等级</small></div><div><strong id="growthXp">0</strong><small>成长经验</small></div><div><strong id="growthShells">0</strong><small>贝壳余额</small></div></div>
+  <div class="growth-progress"><i id="growthProgressBar"></i></div><small id="growthProgressText">距离下一级还差 100 经验</small>
+ </div>
+ <div class="growth-checkin card"><div><div><span class="growth-kicker">DAILY MOMENT</span><h3>每日签到</h3><p id="growthStreak">连续签到从今天开始</p></div><span class="growth-reward">+5 🐚　+10 XP</span></div><button class="btn primary" id="growthCheckinButton" data-action="claimDaily">签到领取奖励</button></div>
+ <div class="growth-shop-head"><div><span class="growth-kicker">SHELL COLLECTION</span><h3>贝壳装扮铺</h3></div><small>签到积累贝壳兑换</small></div>
+ <div class="growth-shop-grid" id="growthShop"></div>
+ <div class="growth-footnote">贝壳和经验为站内虚拟成长值，不可提现、转让或兑换现金。</div>
 </section>
 <section class="page" id="notifications">
  <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>互动通知</h2><button class="community-refresh" data-action="loadNotifications">↻</button></div>
@@ -1197,7 +1237,7 @@ function closeGeneric(){$('genericModal').classList.remove('show')}
 function showPage(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
 document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications'].includes(id)?'none':'flex';
+$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications','growthCenter'].includes(id)?'none':'flex';
 window.scrollTo(0,0);
 }
 function escapeText(value){return String(value??'')}
@@ -2047,6 +2087,9 @@ case'pick':await pickBottle();break;
 case'submitBottle':await submitBottle();break;
 case'community':if(requireLogin()){activeCommunityFilter='all';document.querySelectorAll('[data-community-filter]').forEach(b=>b.classList.toggle('active',b.dataset.communityFilter==='all'));showPage('community');await loadCommunity()}break;
 case'notifications':if(requireLogin()){showPage('notifications');await loadNotifications()}break;
+case'growthCenter':if(requireLogin()){showPage('growthCenter');await loadGrowthCenter()}break;
+case'claimDaily':await claimDailyReward();break;
+case'buyOceanItem':await buyOceanItem(a.dataset.item);break;
 case'loadNotifications':await loadNotifications();break;
 case'loadCommunity':await loadCommunity();break;
 case'publishCommunity':await publishCommunity();break;
@@ -2213,6 +2256,60 @@ async function publishCommunity(){
  if(error){showError(error);return}
  $('communityContent').value='';$('communityImageInput').value='';$('communityImageName').textContent='支持 JPG、PNG、WEBP，最大 5MB';$('communityCount').textContent='0 / 500';
  await loadCommunity();notify('发布成功','你的心情已经漂到海上。');
+}
+const oceanShopItems=[
+ {code:'frame_pearl',name:'珍珠光环',icon:'🫧',cost:30,desc:'清透珍珠头像框'},
+ {code:'frame_coral',name:'珊瑚花环',icon:'🪸',cost:50,desc:'海底珊瑚头像装饰'},
+ {code:'frame_starlight',name:'星河环绕',icon:'✨',cost:80,desc:'星光闪烁头像框'},
+ {code:'theme_sunset',name:'落日余晖',icon:'🌅',cost:60,desc:'温柔蜜桃色主页'},
+ {code:'theme_starlight',name:'月光星海',icon:'🌙',cost:80,desc:'静谧梦幻紫色主页'},
+ {code:'theme_island',name:'薄荷岛屿',icon:'🏝️',cost:60,desc:'清新薄荷绿色主页'},
+ {code:'theme_blossom',name:'樱花微风',icon:'🌸',cost:60,desc:'柔和樱花粉主页'}
+];
+async function loadGrowthCenter(){
+ if(!requireLogin())return;
+ const [walletRes,inventoryRes,checkinRes]=await Promise.all([
+  db.from('ocean_wallets').select('shells,xp').eq('user_id',user.id).maybeSingle(),
+  db.from('ocean_inventory').select('item_code').eq('user_id',user.id),
+  db.from('ocean_checkins').select('checkin_date').eq('user_id',user.id).order('checkin_date',{ascending:false}).limit(35)
+ ]);
+ for(const x of [walletRes,inventoryRes,checkinRes])if(x.error)throw x.error;
+ const wallet=walletRes.data||{shells:0,xp:0},owned=new Set((inventoryRes.data||[]).map(x=>x.item_code));
+ const xp=wallet.xp||0,level=Math.floor(xp/100)+1,progress=xp%100;
+ $('growthLevel').textContent='Lv.'+level;$('growthXp').textContent=xp;$('growthShells').textContent=wallet.shells||0;
+ $('growthProgressBar').style.width=progress+'%';$('growthProgressText').textContent='距离下一级还差 '+(100-progress)+' 经验';
+ const dates=(checkinRes.data||[]).map(x=>x.checkin_date);
+ let streak=0;const d=new Date();let cursor=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+ const today=cursor.toISOString().slice(0,10);
+ if(dates.includes(today)){}else cursor.setUTCDate(cursor.getUTCDate()-1);
+ while(dates.includes(cursor.toISOString().slice(0,10))){streak++;cursor.setUTCDate(cursor.getUTCDate()-1)}
+ $('growthStreak').textContent=streak?'已连续签到 '+streak+' 天，保持这份小小的坚持。':'今天还没有签到，领取你的第一份贝壳。';
+ const checked=dates.includes(today),btn=$('growthCheckinButton');btn.disabled=checked;btn.textContent=checked?'今日已签到 ✓':'签到领取奖励';
+ const shop=$('growthShop');shop.replaceChildren();
+ oceanShopItems.forEach(item=>{
+  const card=document.createElement('div');card.className='growth-shop-item';
+  const art=document.createElement('div');art.className='growth-shop-art';art.textContent=item.icon;
+  const title=document.createElement('strong');title.textContent=item.name;
+  const desc=document.createElement('small');desc.textContent=item.desc+' · '+item.cost+' 🐚';
+  const buy=document.createElement('button');buy.dataset.action='buyOceanItem';buy.dataset.item=item.code;
+  buy.textContent=owned.has(item.code)?'已拥有':(wallet.shells||0)>=item.cost?'兑换':'贝壳不足';buy.disabled=owned.has(item.code);
+  card.append(art,title,desc,buy);shop.append(card);
+ });
+}
+async function claimDailyReward(){
+ if(!requireLogin())return;
+ const {data,error}=await db.rpc('claim_ocean_daily_reward');if(error){showError(error);return}
+ const result=data?.[0];if(!result){notify('签到未完成','请稍后重试。');return}
+ await loadGrowthCenter();
+ notify(result.success?'签到成功':'今天已经签到过了',result.success?'获得 5 枚贝壳和 10 点经验，继续积累你的海洋旅程。':'每日奖励每天只能领取一次。');
+}
+async function buyOceanItem(code){
+ if(!requireLogin())return;
+ const item=oceanShopItems.find(x=>x.code===code);if(!item)return;
+ if(!confirm('确定花费 '+item.cost+' 枚贝壳兑换「'+item.name+'」吗？'))return;
+ const {data,error}=await db.rpc('buy_ocean_item',{p_item_code:code});if(error){showError(error);return}
+ if(!data?.[0]?.success){notify('暂时无法兑换','你已经拥有这件装扮，或贝壳余额不足。');return}
+ await loadGrowthCenter();notify('兑换成功','「'+item.name+'」已加入你的装扮库存。');
 }
 async function toggleFollow(targetId,isFollowing){
  if(!user){openAuth();return}
