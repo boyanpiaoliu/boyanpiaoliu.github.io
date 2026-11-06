@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#f4f8fc">
-<title>漂流瓶</title>
+<title>泊言漂流瓶</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -508,10 +508,13 @@ header p{letter-spacing:.4px}
 
 
 .hero-premium{height:390px}
-.hero-actions{display:flex;flex-direction:column;align-items:flex-start;gap:9px;position:relative;z-index:2;margin-top:17px}
-.hero-actions .hero-cta{margin:0;white-space:nowrap}
-.hero-pick{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.13);color:#fff;border-radius:14px;padding:9px 14px;font-size:11px;font-weight:700;backdrop-filter:blur(10px);white-space:nowrap}
-@media(max-width:380px){.hero-premium{height:385px}}
+.hero-actions{display:flex;flex-direction:row;align-items:center;gap:9px;flex-wrap:nowrap;position:relative;z-index:3;margin-top:18px}
+.hero-actions .hero-cta{margin:0;white-space:nowrap;padding:13px 15px;font-size:12px;min-height:46px}
+.hero-cta b{display:none}
+.hero-pick{border:1px solid rgba(255,255,255,.62);background:rgba(255,255,255,.16);color:#fff;border-radius:17px;padding:13px 15px;min-height:46px;font-size:12px;font-weight:700;backdrop-filter:blur(12px);white-space:nowrap}
+.hero-bottle{position:absolute;z-index:2;right:13px;bottom:66px;width:112px;height:155px;transform:rotate(17deg);filter:drop-shadow(0 12px 12px rgba(23,67,102,.23));animation:floatBottle 4.5s ease-in-out infinite}
+.hero-bottle svg{display:block;width:100%;height:100%;overflow:visible}
+@media(max-width:380px){.hero-premium{height:375px}.hero-actions{gap:7px}.hero-actions .hero-cta,.hero-pick{padding-left:11px;padding-right:11px;font-size:11px}.hero-bottle{width:94px;height:135px;right:7px;bottom:62px}}
 .home-quick-two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .chat-media{display:block;max-width:min(230px,65vw);max-height:260px;border-radius:12px;object-fit:cover}
 .chat-audio{width:min(230px,62vw);height:38px}
@@ -544,8 +547,29 @@ header p{letter-spacing:.4px}
 <div class="hero hero-premium">
 <div class="hero-sky"><span class="hero-star star-one">✦</span><span class="hero-star star-two">✧</span><span class="hero-moon">☼</span><span class="hero-bird">⌁</span></div>
 <div class="hero-copy"><span class="hero-kicker">A MESSAGE TO THE OCEAN</span><h2>大海正在<br>等待你的故事</h2><p>把心事装进漂流瓶，让它飘向未知的远方。</p>
-<div class="hero-actions"><button class="hero-cta" data-action="write"><span>✧</span> 投递漂流瓶 <b>→</b></button><button class="hero-pick" data-action="pick">收取漂流瓶 <b>↓</b></button></div></div>
-<div class="hero-bottle" aria-hidden="true">🍾</div>
+<div class="hero-actions"><button class="hero-cta" data-action="write"><span>✧</span> 投递漂流瓶</button><button class="hero-pick" data-action="pick">收取漂流瓶</button></div></div>
+<div class="hero-bottle" aria-hidden="true">
+<svg viewBox="0 0 120 170" role="img" aria-label="">
+ <defs>
+  <linearGradient id="glassBottle" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".86"/><stop offset=".24" stop-color="#d9f4ff" stop-opacity=".55"/><stop offset=".52" stop-color="#79c7e7" stop-opacity=".28"/><stop offset=".78" stop-color="#e9fbff" stop-opacity=".68"/><stop offset="1" stop-color="#5b9fc6" stop-opacity=".72"/></linearGradient>
+  <linearGradient id="corkBottle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e9bd83"/><stop offset=".5" stop-color="#bd8250"/><stop offset="1" stop-color="#8f5b38"/></linearGradient>
+  <linearGradient id="paperBottle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8e8"/><stop offset="1" stop-color="#e9d4ae"/></linearGradient>
+ </defs>
+ <g transform="rotate(-8 60 85)">
+  <path d="M48 22h24v21c0 8 22 20 25 38l4 61c1 15-9 23-21 23H40c-12 0-22-8-21-23l4-61c3-18 25-30 25-38z" fill="url(#glassBottle)" stroke="#eafaff" stroke-width="3"/>
+  <path d="M48 22h24v21c0 8 22 20 25 38l4 61c1 15-9 23-21 23H40c-12 0-22-8-21-23l4-61c3-18 25-30 25-38z" fill="none" stroke="#75b9d8" stroke-opacity=".58" stroke-width="1.5"/>
+  <path d="M43 9h34v22H43z" rx="5" fill="url(#corkBottle)" stroke="#a96f42" stroke-width="1.5"/>
+  <path d="M48 13v14m9-14v14m9-14v14" stroke="#f4d1a1" stroke-opacity=".45" stroke-width="2"/>
+  <path d="M31 96c17-10 41-9 65 2l2 31c-19-7-47-8-69 0z" fill="url(#paperBottle)" stroke="#d9c39d" stroke-width="1.2"/>
+  <path d="M38 108c13-6 32-6 48-1" fill="none" stroke="#c6a77c" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M35 33c-9 14-16 32-17 53l-1 44c0 8 3 14 9 18" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+  <path d="M82 48c10 10 17 19 19 33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+  <path d="M27 143c17 8 49 10 68 1" fill="none" stroke="#e8fbff" stroke-width="2" opacity=".7"/>
+  <path d="M55 101c-7 5-9 10-7 15 5 4 11 4 16 0 2-5-1-10-9-15zm0 0c-2 7-2 12 0 16m-7-9 14 3" fill="none" stroke="#b78a58" stroke-width="1.8" stroke-linecap="round"/>
+ </g>
+ <path d="M14 51l-4 7m9-13-1 5" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+ <circle cx="97" cy="28" r="3" fill="#fff" opacity=".8"/>
+</svg></div>
 <div class="hero-wave wave-back"></div><div class="hero-wave wave-front"></div>
 <div class="hero-caption"><span>01</span><i></i><span>每一段心事，都值得被听见</span></div>
 </div>
