@@ -461,6 +461,45 @@ header p{letter-spacing:.4px}
 .member-plan.featured{border-color:#8db7c9;background:#f4f9fb}
 .member-disclaimer{font-size:10px;line-height:1.7;color:#98a7b0;padding:0 4px}
 
+
+/* Home refresh: calm, editorial, less template-like */
+#home{padding-top:14px}
+#home .hero-premium{
+ height:auto;min-height:286px;display:flex;justify-content:flex-start;align-items:stretch;
+ padding:34px 24px 25px;border-radius:24px;overflow:hidden;
+ background:linear-gradient(135deg,#d8eaf0 0%,#a9cbd7 48%,#739caf 100%);
+ color:#294b60;box-shadow:0 10px 26px rgba(58,91,110,.10);
+}
+#home .hero-premium:before,#home .hero-premium:after{display:none}
+#home .hero-premium .hero-sky{display:none}
+#home .hero-premium .hero-copy{max-width:100%;align-self:flex-start}
+#home .hero-premium .hero-kicker{font-size:9px;letter-spacing:2px;color:#52778a;font-weight:700}
+#home .hero-premium h2{font-size:27px;line-height:1.42;letter-spacing:.5px;margin:18px 0 9px;color:#24465b;text-shadow:none}
+#home .hero-premium p{max-width:250px;font-size:12px;line-height:1.9;color:#45687a}
+#home .hero-premium .hero-cta{margin-top:19px;padding:12px 15px;border-radius:13px;background:#f8fbfc;color:#355c72;box-shadow:0 4px 12px rgba(40,75,94,.08);font-size:12px}
+#home .hero-premium .hero-cta span{color:#8caebd}
+#home .hero-premium .hero-bottle{font-size:52px;right:18px;bottom:22px;opacity:.72;filter:drop-shadow(0 6px 6px rgba(35,67,84,.12))}
+#home .home-quick-four{gap:9px;margin:13px 0 20px}
+#home .home-quick-four .quick-card{padding:13px 3px 12px;border-radius:15px;background:#fff;border:1px solid #e8eef1;box-shadow:0 3px 12px rgba(46,76,94,.035)}
+#home .home-quick-four .qicon{width:39px;height:39px;margin-bottom:7px;font-size:19px}
+#home .home-quick-four .quick-card strong{font-size:11px;color:#3e596a}
+#home .home-quick-four .quick-card span{font-size:9px;color:#98a8b2}
+#home .home-quote{margin:0 0 22px;padding:15px 17px;border-radius:15px;background:#f4f7f8;color:#506b7a;box-shadow:none;border:1px solid #eaf0f2}
+#home .home-quote:after{content:"";display:none}
+#home .quote-label{color:#8da1ac;font-size:8px;letter-spacing:1.3px}
+#home .home-quote p{margin:9px 0 0;font-size:13px;line-height:1.8;color:#587181}
+#home .quote-wave{display:none}
+#home .home-section-head{margin:21px 2px 11px}
+#home .home-section-head .section-title{font-size:17px;font-weight:750;color:#34566b}
+#home #homeFeed .list-item{margin-bottom:9px;padding:15px 16px;border:1px solid #e9eff2;border-radius:15px;background:#fff;box-shadow:none}
+#home .home-tip{margin-top:16px;background:#f4f7f8;border:1px solid #e9eff1;box-shadow:none}
+@media(max-width:380px){
+ #home .hero-premium{min-height:270px;padding:28px 19px 22px}
+ #home .hero-premium h2{font-size:24px}
+ #home .hero-premium .hero-bottle{font-size:44px;right:12px}
+ #home .home-quick-four{gap:6px}
+}
+
 </style>
 </head>
 
@@ -882,7 +921,7 @@ renderAll();
 }catch(e){showError(e)}
 }
 function renderAll(){
-renderList('homeFeed',bottles.filter(b=>b.is_public).slice(0,3));
+renderList('homeFeed',[...bottles.filter(b=>b.is_public),...demoBottles].slice(0,3),'海面暂时很安静，写下第一只漂流瓶吧。');
 renderDiscover();
 renderMessages();
 renderStats();
