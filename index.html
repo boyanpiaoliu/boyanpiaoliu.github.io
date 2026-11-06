@@ -506,6 +506,25 @@ header p{letter-spacing:.4px}
 .report-card select,.report-card textarea{width:100%;margin:12px 0 0;padding:12px;border:1px solid #e2eaf0;border-radius:12px;background:#f9fbfc;color:#40586a;font:inherit}
 .report-card textarea{min-height:90px;resize:vertical}
 
+
+.hero-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;position:relative;z-index:2}
+.hero-actions .hero-cta{margin:0;white-space:nowrap}
+.hero-pick{border:1px solid rgba(255,255,255,.68);background:rgba(255,255,255,.18);color:#fff;border-radius:15px;padding:14px 15px;font-size:12px;font-weight:700;backdrop-filter:blur(10px);white-space:nowrap}
+.home-quick-two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.chat-media{display:block;max-width:min(230px,65vw);max-height:260px;border-radius:12px;object-fit:cover}
+.chat-audio{width:min(230px,62vw);height:38px}
+.chat-video{width:min(240px,68vw);max-height:260px;border-radius:12px}
+.chat-flash{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.3);color:inherit;border-radius:12px;padding:14px 18px;font-weight:650}
+.chat-media-note{font-size:11px;color:#8095a6;margin-top:5px}
+.message-composer{flex-wrap:wrap}
+.message-composer input{flex:1 1 55%;min-width:130px}
+.message-tools{display:flex;gap:6px;align-items:center}
+.message-tools button{border:1px solid #dce7ef;background:#f6f9fc;color:#52728a;border-radius:11px;padding:9px 11px;font-size:12px}
+.message-tools button.recording{background:#fff0f0;color:#c45d68;border-color:#f0c4c8}
+.message-thread-head{display:flex;align-items:center;gap:10px}
+.message-thread-head strong{flex:1;text-align:center;font-size:14px}
+.message-thread-head .thread-peer-id{display:block;font-size:10px;color:#8b9eae;font-weight:500;margin-top:3px}
+
 </style>
 </head>
 
@@ -519,14 +538,12 @@ header p{letter-spacing:.4px}
 <div class="hero hero-premium">
 <div class="hero-sky"><span class="hero-star star-one">✦</span><span class="hero-star star-two">✧</span><span class="hero-moon">☼</span><span class="hero-bird">⌁</span></div>
 <div class="hero-copy"><span class="hero-kicker">A MESSAGE TO THE OCEAN</span><h2>大海正在<br>等待你的故事</h2><p>把心事装进漂流瓶，让它飘向未知的远方。</p>
-<button class="hero-cta" data-action="write"><span>✧</span> 立即投递一只漂流瓶 <b>→</b></button></div>
+<div class="hero-actions"><button class="hero-cta" data-action="write"><span>✧</span> 投递漂流瓶 <b>→</b></button><button class="hero-pick" data-action="pick">收取漂流瓶 <b>↓</b></button></div></div>
 <div class="hero-bottle" aria-hidden="true">🍾</div>
 <div class="hero-wave wave-back"></div><div class="hero-wave wave-front"></div>
 <div class="hero-caption"><span>01</span><i></i><span>每一段心事，都值得被听见</span></div>
 </div>
-<div class="home-quick home-quick-four">
-<div class="quick-card" data-action="write"><div class="qicon">🫧</div><strong>扔瓶子</strong><span>写下此刻心情</span></div>
-<div class="quick-card" data-action="pick"><div class="qicon">🌊</div><strong>收瓶子</strong><span>遇见陌生故事</span></div>
+<div class="home-quick home-quick-two">
 <div class="quick-card" data-action="favorites"><div class="qicon">☆</div><strong>我的收藏</strong><span>珍藏温暖话语</span></div>
 <div class="quick-card" data-page="messages"><div class="qicon">✉</div><strong>海上来信</strong><span>查看回复消息</span></div>
 </div>
@@ -753,6 +770,9 @@ header p{letter-spacing:.4px}
 </div>
 </div>
 
+<input id="chatImageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+<input id="chatFlashInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+<input id="chatVideoInput" type="file" accept="video/mp4,video/quicktime" hidden>
 <div class="modal" id="genericModal">
 <div class="modalbox">
 <h2 id="modalTitle">提示</h2>
@@ -795,6 +815,10 @@ let selectedBubbleColor=null;
 let viewedProfileId=null;
 let reportTarget=null;
 let blockedUserIds=[];
+let activeChatPeer=null;
+let activeRecorder=null;
+let recorderChunks=[];
+let recordingStream=null;
 // 官方体验示例漂流瓶
 const demoBottles=[
 {
@@ -995,6 +1019,7 @@ function renderMessages(){
 }
 async function openConversation(peer){
  if(!user)return;
+ activeChatPeer=peer;
  try{
  const {error}=await db.rpc('mark_conversation_read',{p_peer:peer});if(error)throw error;
  // 先同步本地状态，避免旧缓存继续显示红点
@@ -1009,7 +1034,8 @@ async function openConversation(peer){
  $('messageList').style.display='none';const thread=$('messageThread');thread.style.display='block';thread.replaceChildren();
  const head=document.createElement('div');head.className='message-thread-head';
  const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',async()=>{replyTargetMessage=null;await loadMessages();renderMessages()});
- const title=document.createElement('strong');title.textContent='与 '+(peerProfile?.nickname||'好友')+' 的对话';head.append(back,title);thread.append(head);
+ const title=document.createElement('strong');title.textContent=(peerProfile?.nickname||'好友');
+const peerId=document.createElement('span');peerId.className='thread-peer-id';peerId.textContent='ID：'+(peerProfile?.friend_code||'—');title.append(peerId);head.append(back,title);thread.append(head);
  items.forEach(m=>{
  const mine=m.sender_id===user.id;
  const line=document.createElement('div');line.className='chat-line '+(mine?'mine':'theirs');
@@ -1025,7 +1051,24 @@ async function openConversation(peer){
   const quoted=items.find(x=>x.id===m.reply_to_id);
   if(quoted){const q=document.createElement('div');q.className='chat-quote';q.textContent='引用：'+quoted.content;bubble.append(q)}
  }
- const body=document.createElement('div');body.textContent=m.is_retracted?'这条消息已撤回':m.content;bubble.append(body);
+ const body=document.createElement('div');
+ if(m.message_type==='image'||m.message_type==='flash_image'||m.message_type==='video'||m.message_type==='audio'){
+  if(m.message_type==='flash_image'&&m.flash_opened_at&&m.receiver_id===user.id){body.textContent='这张闪照已查看';}
+  else if(m.message_type==='flash_image'&&m.sender_id===user.id&&m.flash_opened_at){body.textContent='闪照已被查看';}
+  else{
+   const {data:signed,error:signedError}=await db.storage.from('message-media').createSignedUrl(m.media_path,3600);
+   if(signedError){body.textContent='媒体暂时无法加载';}
+   else if(m.message_type==='image'||m.message_type==='flash_image'){
+    if(m.message_type==='flash_image'&&m.receiver_id===user.id){
+     const reveal=document.createElement('button');reveal.className='chat-flash';reveal.textContent='◉ 点击查看闪照（仅一次）';
+     reveal.addEventListener('click',async()=>{try{const {error}=await db.from('messages').update({flash_opened_at:new Date().toISOString()}).eq('id',m.id).eq('receiver_id',user.id).is('flash_opened_at',null);if(error)throw error;const img=document.createElement('img');img.className='chat-media';img.src=signed.signedUrl;img.alt='闪照';reveal.replaceWith(img);setTimeout(()=>{img.remove();const note=document.createElement('div');note.className='chat-media-note';note.textContent='闪照已阅';bubble.append(note)},5000);await loadMessages()}catch(err){showError(err)}});
+     body.append(reveal);
+    }else{const img=document.createElement('img');img.className='chat-media';img.src=signed.signedUrl;img.alt='聊天图片';body.append(img)}
+   }else if(m.message_type==='video'){const video=document.createElement('video');video.className='chat-video';video.src=signed.signedUrl;video.controls=true;video.playsInline=true;body.append(video)}
+   else{const audio=document.createElement('audio');audio.className='chat-audio';audio.src=signed.signedUrl;audio.controls=true;body.append(audio)}
+  }
+ }else{body.textContent=m.is_retracted?'这条消息已撤回':m.content}
+ bubble.append(body);
  const bubbleColor=person?.bubble_color;if(bubbleColor){bubble.style.background=bubbleColor;bubble.style.color='#30485d'}
  content.append(bubble);
  const time=document.createElement('time');time.className='chat-meta-time';time.textContent=dateText(m.created_at);content.append(time);
@@ -1059,9 +1102,44 @@ async function openConversation(peer){
  const composer=document.createElement('div');composer.className='message-composer';
  const input=document.createElement('input');input.maxLength=500;input.placeholder='写下你的回复…';input.id='threadReply';
  const send=document.createElement('button');send.textContent='发送';send.addEventListener('click',()=>sendThreadReply(peer));
- composer.append(input,send);thread.append(composer);thread.scrollIntoView({behavior:'smooth',block:'end'});updateUnreadBadge();
+ const tools=document.createElement('div');tools.className='message-tools';
+ const imageBtn=document.createElement('button');imageBtn.textContent='图片';imageBtn.addEventListener('click',()=>$('chatImageInput').click());
+ const flashBtn=document.createElement('button');flashBtn.textContent='闪照';flashBtn.addEventListener('click',()=>$('chatFlashInput').click());
+ const videoBtn=document.createElement('button');videoBtn.textContent='视频';videoBtn.addEventListener('click',()=>$('chatVideoInput').click());
+ const audioBtn=document.createElement('button');audioBtn.textContent='语音';audioBtn.addEventListener('click',()=>toggleVoiceRecording(peer,audioBtn));
+ tools.append(imageBtn,flashBtn,videoBtn,audioBtn);composer.append(input,send,tools);thread.append(composer);thread.scrollIntoView({behavior:'smooth',block:'end'});updateUnreadBadge();
  }catch(e){showError(e)}
 }
+
+async function uploadChatMedia(peer,file,type){
+ if(!requireLogin()||!peer||!file)return;
+ const limits={image:10*1024*1024,flash_image:10*1024*1024,video:25*1024*1024,audio:5*1024*1024};
+ if(file.size>limits[type]){notify('文件过大',type==='video'?'视频不能超过25MB。':type==='audio'?'语音不能超过5MB。':'图片不能超过10MB。');return}
+ const allowed={image:['image/jpeg','image/png','image/webp','image/gif'],flash_image:['image/jpeg','image/png','image/webp'],video:['video/mp4','video/quicktime'],audio:['audio/mp4','audio/mpeg','audio/webm','audio/aac','audio/wav','audio/ogg']};
+ if(!allowed[type].includes(file.type)){notify('格式不支持','请使用常见的 JPG、PNG、WEBP、MP4 或支持的音频格式。');return}
+ try{
+  const ext=(file.name.split('.').pop()||({image:'jpg',flash_image:'jpg',video:'mp4',audio:'m4a'}[type])).replace(/[^a-zA-Z0-9]/g,'').slice(0,8);
+  const path=user.id+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  const {error:uploadError}=await db.storage.from('message-media').upload(path,file,{contentType:file.type,upsert:false});if(uploadError)throw uploadError;
+  const {error}=await db.from('messages').insert({sender_id:user.id,receiver_id:peer,content:'',is_read:false,message_type:type,media_path:path,media_mime:file.type});
+  if(error){await db.storage.from('message-media').remove([path]);throw error}
+  await loadMessages();await openConversation(peer);
+ }catch(e){showError(e)}
+}
+async function toggleVoiceRecording(peer,button){
+ if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){notify('设备暂不支持','当前浏览器不支持语音录制，请更新 Safari 后重试。');return}
+ if(activeRecorder&&activeRecorder.state==='recording'){activeRecorder.stop();button.textContent='语音';button.classList.remove('recording');return}
+ try{
+  recordingStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  const mime=['audio/mp4','audio/webm;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t));
+  activeRecorder=new MediaRecorder(recordingStream,mime?{mimeType:mime}:{});
+  recorderChunks=[];activeRecorder.ondataavailable=e=>{if(e.data.size)recorderChunks.push(e.data)};
+  activeRecorder.onstop=async()=>{const blob=new Blob(recorderChunks,{type:activeRecorder.mimeType||'audio/mp4'});const ext=blob.type.includes('webm')?'webm':'m4a';const file=new File([blob],'voice.'+ext,{type:blob.type});recordingStream?.getTracks().forEach(t=>t.stop());recordingStream=null;activeRecorder=null;if(blob.size)await uploadChatMedia(peer,file,'audio')};
+  activeRecorder.start();button.textContent='结束录音';button.classList.add('recording');
+  setTimeout(()=>{if(activeRecorder?.state==='recording'){activeRecorder.stop();button.textContent='语音';button.classList.remove('recording')}},60000);
+ }catch(e){recordingStream?.getTracks().forEach(t=>t.stop());recordingStream=null;notify('无法使用麦克风','请在浏览器设置中允许泊言使用麦克风。')}
+}
+
 async function retractMessage(id,peer){
  if(!confirm('确定撤回这条消息吗？发送后2分钟内可以撤回。'))return;
  try{const {error}=await db.rpc('retract_message',{p_message_id:id});if(error)throw error;replyTargetMessage=null;await loadMessages();await openConversation(peer);notify('已撤回','这条消息已从双方对话中撤回。')}
@@ -1497,6 +1575,11 @@ syncProfile();renderAll();showPage('profile');
 }
 
 // 事件
+
+$('chatImageInput').addEventListener('change',e=>{if(e.target.files?.[0])uploadChatMedia(messageReceiver||activeChatPeer,e.target.files[0],'image');e.target.value=''});
+$('chatFlashInput').addEventListener('change',e=>{if(e.target.files?.[0])uploadChatMedia(messageReceiver||activeChatPeer,e.target.files[0],'flash_image');e.target.value=''});
+$('chatVideoInput').addEventListener('change',e=>{if(e.target.files?.[0])uploadChatMedia(messageReceiver||activeChatPeer,e.target.files[0],'video');e.target.value=''});
+
 document.addEventListener('click',async e=>{
 const nav=e.target.closest('[data-page]');
 if(nav){
