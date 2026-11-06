@@ -1747,9 +1747,9 @@ async function setupRealtime(){
    if(row.sender_id!==currentUserId&&row.receiver_id!==currentUserId)return;
    try{
     await loadMessages();
-    if(activeChatPeer&&(row.sender_id===activeChatPeer||row.receiver_id===activeChatPeer)){
+    if(payload.eventType==='INSERT'&&activeChatPeer&&(row.sender_id===activeChatPeer||row.receiver_id===activeChatPeer)){
      await openConversation(activeChatPeer);
-    }else if($('messages')?.classList.contains('active')){
+    }else if(!activeChatPeer&&$('messages')?.classList.contains('active')){
      renderMessages();
     }else updateUnreadBadge();
    }catch(e){console.warn('消息实时同步失败',e)}
@@ -1764,9 +1764,9 @@ async function setupRealtime(){
 document.addEventListener('visibilitychange',async()=>{
  if(document.visibilityState!=='visible'||!user)return;
  try{
-  await refreshAll();
-  await refreshFriendRequestCount();
+  await loadBottles();await loadFavorites();await loadMessages();await refreshFriendRequestCount();
   if(activeChatPeer&&$('messageThread')?.style.display==='block')await openConversation(activeChatPeer);
+  else renderAll();
  }catch(e){console.warn('页面恢复同步失败',e)}
 });
 
