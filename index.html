@@ -761,7 +761,7 @@ header p{letter-spacing:.4px}
 <div id="emailOtpFields" style="display:none">
 <label class="form-label">邮箱验证码</label>
 <div class="fieldline">
-<input id="emailOtpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="请输入邮箱收到的验证码">
+<input id="emailOtpCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="请输入6位邮箱验证码">
 <button class="btn" data-action="resendConfirmation">重新发送</button>
 </div>
 <button class="btn primary block" data-action="verifyEmailCode">验证邮箱并完成注册</button>
@@ -1535,6 +1535,8 @@ authMethod='email';
 $('accountLabel').style.display='block';
 $('account').style.display=authMethod==='email'?'block':'none';
 $('passwordFields').style.display='block';
+$('password').autocomplete=authMode==='register'?'new-password':'current-password';
+$('password').placeholder=authMode==='register'?'请设置至少8位密码':'请输入登录密码';
 $('phoneFields').style.display='none';
 $('registerFields').style.display=authMode==='register'?'block':'none';
 $('emailOtpFields').style.display=authMode==='register'?'block':'none';
@@ -1560,7 +1562,9 @@ const account=$('account').value.trim();
 try{
 if(authMethod==='email'){
 const password=$('password').value;
-if(!account||password.length<6){notify('信息不完整','请输入邮箱和至少6位密码。');return}
+if(!/^\\S+@\\S+\\.\\S+$/.test(account)){notify('邮箱格式不正确','请输入有效的邮箱地址。');return}
+if(authMode==='register'&&password.length<8){notify('密码长度不足','注册密码至少需要8位，建议混合字母和数字。');return}
+if(authMode==='login'&&password.length<6){notify('信息不完整','请输入邮箱和密码。');return}
 if(authMode==='register'){
 const nickname=$('registerNickname').value.trim()||account.split('@')[0];
 const {data,error}=await db.auth.signUp({
@@ -1599,7 +1603,7 @@ async function verifyEmailCode(){
  const email=$('account').value.trim();
  const token=$('emailOtpCode').value.trim();
  if(!email||!email.includes('@')){notify('邮箱不正确','请填写注册时使用的邮箱。');return}
- if(!token){notify('请输入验证码','请填写邮箱收到的验证码。');return}
+ if(!/^\\d{6}$/.test(token)){notify('验证码格式不正确','请输入邮箱收到的6位数字验证码。');return}
  try{
   const {data,error}=await db.auth.verifyOtp({email,token,type:'signup'});
   if(error)throw error;
@@ -1831,6 +1835,14 @@ document.addEventListener('visibilitychange',async()=>{
 
 // 定时检查好友申请数量：不必先进入好友页面也能看到新申请
 setInterval(()=>{if(user)refreshFriendRequestCount()},20000);
+
+// 邮箱验证码仅允许输入数字，避免空格和非数字字符导致验证失败
+$('emailOtpCode')?.addEventListener('input',e=>{
+ e.target.value=e.target.value.replace(/\\D/g,'').slice(0,6);
+});
+$('account')?.addEventListener('blur',e=>{
+ e.target.value=e.target.value.trim().toLowerCase();
+});
 
 // 启动
 (async()=>{
