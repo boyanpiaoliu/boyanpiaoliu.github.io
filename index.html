@@ -1197,7 +1197,7 @@ function closeGeneric(){$('genericModal').classList.remove('show')}
 function showPage(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
 document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends'].includes(id)?'none':'flex';
+$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications'].includes(id)?'none':'flex';
 window.scrollTo(0,0);
 }
 function escapeText(value){return String(value??'')}
@@ -2227,7 +2227,7 @@ async function refreshCommunityNoticeBadge(){
 }
 async function loadNotifications(){
  if(!requireLogin())return;
- const {data,error}=await db.from('community_notifications').select('id,actor_id,notification_type,post_id,comment_id,is_read,created_at,profiles:actor_id(nickname,avatar_url)').order('created_at',{ascending:false}).limit(60);
+ const {data,error}=await db.from('community_notifications').select('id,actor_id,notification_type,post_id,comment_id,is_read,created_at,profiles!community_notifications_actor_id_fkey(nickname,avatar_url)').order('created_at',{ascending:false}).limit(60);
  if(error){showError(error);return}
  const list=$('notificationList');list.replaceChildren();
  if(!data?.length){const empty=document.createElement('div');empty.className='notification-empty';empty.textContent='暂时没有新的互动。等一份来自海边的回应吧。';list.append(empty);await refreshCommunityNoticeBadge();return}
