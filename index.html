@@ -1101,7 +1101,8 @@ async function loadInviteCenter(){
 }
 async function loadMembership(){
  if(!requireLogin())return;
- const until=profile?.membership_until?new Date(profile.membership_until):null;
+ const {data,error}=await db.from('profiles').select('membership_until').eq('id',user.id).maybeSingle();if(error)throw error;
+ const until=data?.membership_until?new Date(data.membership_until):null;
  $('memberStatus').textContent=until&&until>Date.now()?'会员有效期至 '+until.toLocaleDateString('zh-CN'):'当前为普通用户 · 可通过邀请好友领取体验会员';
 }
 async function copyInvite(){
@@ -1269,6 +1270,7 @@ notify('发送成功','你的消息已经发送。');
 
 // 登录注册
 function syncAuth(){
+const inviteFromUrl=new URLSearchParams(location.search).get('invite');if(inviteFromUrl&&$('registerInviteCode')&&!$('registerInviteCode').value)$('registerInviteCode').value=inviteFromUrl;
 $('authHeading').textContent=authMode==='login'?'欢迎回来':'创建账号';
 $('submitAuth').textContent=authMode==='login'?'登录':'注册';
 $('accountLabel').textContent=authMethod==='email'?'邮箱':'手机号';
