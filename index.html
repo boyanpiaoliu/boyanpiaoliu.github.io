@@ -417,6 +417,15 @@ header p{letter-spacing:.4px}
 .orientation-visibility input{width:16px;height:16px;accent-color:#6b9fbd}
 .orientation-note{font-size:10px;line-height:1.6;color:#95a7b5;margin:8px 0 0}
 
+
+.heart-match-panel{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 17px;margin:14px 0;border-radius:18px;background:linear-gradient(115deg,#edf7fb,#f8f1f6);border:1px solid #e5eef3}
+.heart-match-panel strong{font-size:15px;color:#3e6179}
+.heart-match-panel p{font-size:11px;color:#8a9eac;margin:5px 0 0}
+.heart-match-panel button,.heart-match-actions button{border:0;border-radius:12px;padding:10px 13px;background:#dcecf5;color:#426d87;font-size:11px;white-space:nowrap}
+.heart-match-actions{display:flex;gap:8px;margin-top:16px}
+.heart-match-actions button{flex:1}
+.heart-match-actions button.primary{background:#dcecf5;color:#426d87}
+
 </style>
 </head>
 
@@ -457,6 +466,7 @@ header p{letter-spacing:.4px}
 <div class="section-title">发现故事</div>
 <p class="sub">海面很大，总有一段心情，刚好与你相遇。</p>
 </div>
+<div class="heart-match-panel"><div><strong>心动匹配</strong><p>根据彼此的意愿，遇见合适的人</p></div><button data-action="heartMatch">开始匹配 →</button></div>
 <div class="discover-banner">
 <div class="discover-banner-copy"><span>远方来信 · 不期而遇</span><strong>今天，想听听谁的故事？</strong><small>轻轻点开一只漂流瓶，读一段陌生心事。</small></div>
 <div class="discover-wave">🌊</div>
@@ -613,6 +623,7 @@ header p{letter-spacing:.4px}
 </section>
 
 <div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>账号 ID</span><strong id="profileViewAccountId">—</strong></div><div><span>性别</span><strong id="profileViewGender">未设置</strong></div></div><div class="profile-view-extra"><section><span>性取向</span><p id="profileViewOrientation">未公开</p></section></div><div class="profile-view-extra"><section><span>个性签名</span><p id="profileViewSignature">这个人还没有填写个性签名</p></section><section><span>最近的动态</span><p id="profileViewActivity">暂时没有公开动态</p><small id="profileViewActivityTime"></small></section></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button></div></div>
+<div id="heartMatchModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card heart-match-card"><button class="profile-view-close" data-action="closeHeartMatch">×</button><div class="profile-view-avatar" id="heartMatchAvatar">🌊</div><h3 id="heartMatchName">遇见一位漂流者</h3><p id="heartMatchId"></p><p id="heartMatchSignature">也许你们会有共同话题</p><div class="heart-match-actions"><button data-action="heartMatchAgain">再找一位</button><button id="heartMatchAdd" class="primary">申请加好友</button></div></div></div>
 </main>
 
 <nav id="mainNav">
@@ -1005,6 +1016,23 @@ async function loadFriends(){
   row.append(av,info,msg);friendBox.append(row);
  });
 }
+
+async function startHeartMatch(){
+ if(!requireLogin())return;
+ try{
+  const {data,error}=await db.rpc('find_heart_match');if(error)throw error;
+  const person=data?.[0];
+  if(!person){notify('暂时没有合适的人','稍后再来试试，海面上可能会有新相遇。');return}
+  const av=$('heartMatchAvatar');av.replaceChildren();
+  if(person.avatar_url){const img=document.createElement('img');img.src=person.avatar_url;img.alt='头像';av.append(img)}else av.textContent=(person.nickname||'漂').slice(0,1);
+  $('heartMatchName').textContent=person.nickname||'漂流者';
+  $('heartMatchId').textContent='好友 ID：'+(person.friend_code||'');
+  $('heartMatchSignature').textContent=person.signature||'也许你们会有共同话题';
+  $('heartMatchAdd').onclick=async()=>{const {error:e}=await db.from('friend_requests').insert({sender_id:user.id,receiver_id:person.id,status:'pending'});if(e){showError(e);return}$('heartMatchModal').style.display='none';notify('申请已发送','好友申请已送达，等待对方确认。')};
+  $('heartMatchModal').style.display='flex';
+ }catch(e){showError(e)}
+}
+
 async function searchFriend(){
  if(!requireLogin())return;
  const raw=$('friendSearchId').value.trim();
@@ -1328,6 +1356,9 @@ renderDiscover();return;
 }
 const color=e.target.closest('[data-bubble-color]');
 if(color){selectedBubbleColor=color.dataset.bubbleColor;document.querySelectorAll('[data-bubble-color]').forEach(b=>b.classList.toggle('selected',b===color));return}
+const closeMatch=e.target.closest('[data-action="closeHeartMatch"]');if(closeMatch){$('heartMatchModal').style.display='none';return}
+const matchAgain=e.target.closest('[data-action="heartMatchAgain"]');if(matchAgain){startHeartMatch();return}
+const match=e.target.closest('[data-action="heartMatch"]');if(match){startHeartMatch();return}
 const closeProfile=e.target.closest('[data-action="closeProfileView"]');if(closeProfile){$('profileViewModal').style.display='none';return}
 const avatarTarget=e.target.closest('.chat-avatar');if(avatarTarget?.dataset.profileId){await showUserProfile(avatarTarget.dataset.profileId);return}
 const ownAvatar=e.target.closest('#avatar');if(ownAvatar&&user){await showUserProfile(user.id);return}
