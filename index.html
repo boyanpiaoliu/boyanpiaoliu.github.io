@@ -426,6 +426,41 @@ header p{letter-spacing:.4px}
 .heart-match-actions button{flex:1}
 .heart-match-actions button.primary{background:#dcecf5;color:#426d87}
 
+
+/* Home: calmer editorial layout, less decorative/AI-like */
+.hero-premium{min-height:220px;border-radius:22px;padding:25px 20px;background:linear-gradient(145deg,#d8edf4,#8dbdd0 58%,#527f9b);box-shadow:none}
+.hero-premium .hero-sky,.hero-premium .hero-star,.hero-premium .hero-moon,.hero-premium .hero-bird,.hero-premium .hero-wave,.hero-premium .hero-caption{display:none}
+.hero-premium .hero-copy{position:relative;z-index:2;align-self:flex-start;text-align:left;max-width:82%}
+.hero-premium .hero-kicker{font-size:9px;letter-spacing:1.8px;color:#f3fbff;opacity:.85}
+.hero-premium h2{font-size:25px;line-height:1.45;margin:12px 0 8px;text-align:left}
+.hero-premium p{font-size:12px;line-height:1.8;max-width:240px;text-align:left}
+.hero-premium .hero-cta{margin-top:17px;border:0;border-radius:12px;background:rgba(255,255,255,.92);color:#416a82;padding:11px 14px;font-size:11px}
+.hero-premium .hero-bottle{font-size:48px;right:16px;bottom:28px;opacity:.8}
+.home-quick{gap:8px;margin:14px 0 18px}
+.quick-card{border-radius:14px;background:#fff;border:1px solid #e9eef1;box-shadow:none;padding:12px 5px}
+.home-quote{border-radius:16px;background:#f5f8f9;border:0;padding:15px 17px}
+.home-quote .quote-wave{display:none}
+.home-quote p{font-size:13px;color:#657c8a;line-height:1.8}
+.home-tip{background:#f4f7f8;border-radius:14px}
+.invite-hero,.member-hero{border-radius:22px;padding:25px 20px;background:linear-gradient(140deg,#dcecf1,#91b8c8);color:#365b70}
+.invite-hero>span,.member-hero>span{font-size:9px;letter-spacing:2px;opacity:.7}
+.invite-hero h2,.member-hero h2{font-size:24px;line-height:1.5;margin:13px 0}
+.invite-hero p,.member-hero p{font-size:12px;line-height:1.7;color:#52768a}
+.invite-code{background:#ffffffb8;border:1px dashed #8baebd;border-radius:12px;padding:13px;text-align:center;font-size:22px;letter-spacing:5px;font-weight:700;color:#345a70;margin:15px 0 4px}
+.invite-stats{display:grid;grid-template-columns:1fr 1fr;text-align:center}
+.invite-stats>div{display:flex;flex-direction:column;gap:5px;padding:8px}
+.invite-stats strong{font-size:22px;color:#426b81}
+.invite-stats span{font-size:11px;color:#91a2ac}
+.member-benefits{list-style:none;padding:0;margin:8px 0}
+.member-benefits li{padding:10px 0;border-bottom:1px solid #edf1f3;font-size:13px;color:#627b8a}
+.member-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
+.member-plan{display:flex;flex-direction:column;gap:8px;padding:13px 9px;border:1px solid #e6edf1;border-radius:15px;background:#fff}
+.member-plan strong{font-size:11px;color:#6e8491}
+.member-plan b{font-size:21px;color:#3e6277}
+.member-plan span{font-size:9px;color:#9aaab3}
+.member-plan.featured{border-color:#8db7c9;background:#f4f9fb}
+.member-disclaimer{font-size:10px;line-height:1.7;color:#98a7b0;padding:0 4px}
+
 </style>
 </head>
 
@@ -509,6 +544,8 @@ header p{letter-spacing:.4px}
 <div class="row" data-action="favorites"><span class="icon">♡</span><span class="label">我的收藏</span><span class="arrow">›</span></div>
 <div class="row" data-action="editProfile"><span class="icon">✎</span><span class="label">编辑资料</span><span class="arrow">›</span></div>
 <div class="row" data-action="chatAppearance"><span class="icon">◉</span><span class="label">个性外观</span><span class="arrow">›</span></div>
+<div class="row" data-action="inviteCenter"><span class="icon">↗</span><span class="label">邀请好友</span><span class="arrow">›</span></div>
+<div class="row" data-action="membership"><span class="icon">✦</span><span class="label">泊言会员</span><span class="arrow">›</span></div>
 <div class="row friend-entry" data-action="friends"><span class="icon">♧</span><span class="label">好友与好友申请</span><span id="friendUnreadBadge" class="friend-unread-badge" style="display:none">0</span><span class="arrow">›</span></div>
 <div class="row" data-action="settings"><span class="icon">⚙</span><span class="label">设置</span><span class="arrow">›</span></div>
 <div class="row" data-action="logout" id="logoutRow" style="display:none"><span class="icon">↪</span><span class="label danger">退出登录</span><span class="arrow">›</span></div>
@@ -607,6 +644,7 @@ header p{letter-spacing:.4px}
 <div id="registerFields" style="display:none">
 <label class="form-label">设置昵称</label>
 <input id="registerNickname" maxlength="20" placeholder="给自己取个昵称">
+<label class="form-label" style="margin-top:12px">好友邀请码（选填）</label><input id="registerInviteCode" maxlength="12" placeholder="有朋友邀请你？填写他的数字 ID">
 </div>
 <button class="btn primary block" data-action="submitAuth" id="submitAuth">登录</button>
 <button class="btn ghost block" data-action="resendConfirmation">重新发送邮箱验证邮件</button>
@@ -614,6 +652,23 @@ header p{letter-spacing:.4px}
 </div>
 </section>
 
+<section class="page" id="inviteCenter">
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>邀请好友</h2></div>
+<div class="invite-hero"><span>SHARE A LITTLE OCEAN</span><h2>把泊言分享给<br>值得认识的人</h2><p>好友通过你的邀请码注册，双方都能获得会员体验奖励。</p><div class="invite-code" id="inviteCode">登录后生成</div><button class="btn primary block" data-action="copyInvite">复制邀请码</button></div>
+<div class="card invite-stats"><div><strong id="inviteCount">0</strong><span>成功邀请</span></div><div><strong id="inviteDays">0 天</strong><span>累计奖励</span></div></div>
+<div class="card"><div class="section-title">邀请奖励</div><p>每邀请 1 位新用户完成注册，邀请双方各获得 3 天会员体验。每个账号仅可使用一次邀请码，邀请记录以服务器验证为准。</p></div>
+</section>
+<section class="page" id="membership">
+<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>泊言会员</h2></div>
+<div class="member-hero"><span>BOYAN MEMBERSHIP</span><h2>让每一次相遇<br>多一点特别</h2><p id="memberStatus">当前为普通用户</p></div>
+<div class="card"><div class="section-title">会员权益</div><ul class="member-benefits"><li>✦ 专属会员身份标识</li><li>✦ 更多心动匹配机会</li><li>✦ 专属头像框与主页装饰</li><li>✦ 更多个性外观选择</li></ul></div>
+<div class="member-plans">
+<div class="member-plan"><strong>月度会员</strong><b>¥12</b><span>适合短期体验</span></div>
+<div class="member-plan featured"><strong>季度会员</strong><b>¥30</b><span>平均 ¥10 / 月</span></div>
+<div class="member-plan"><strong>年度会员</strong><b>¥98</b><span>平均约 ¥8.2 / 月</span></div>
+</div>
+<p class="member-disclaimer">会员付费功能尚未开放。以上为拟定价格，正式购买将在完成支付接入及平台审核后开放。你可以通过邀请好友获得免费会员体验。</p>
+</section>
 <section class="page" id="settings">
 <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>设置</h2></div>
 <div class="card">
@@ -1033,6 +1088,30 @@ async function startHeartMatch(){
  }catch(e){showError(e)}
 }
 
+
+async function loadInviteCenter(){
+ if(!requireLogin())return;
+ $('inviteCode').textContent=profile?.friend_code||'暂未生成';
+ try{
+  const {data,error}=await db.rpc('get_referral_summary');if(error)throw error;
+  const x=data?.[0]||{};
+  $('inviteCount').textContent=x.invite_count||0;
+  $('inviteDays').textContent=(x.earned_days||0)+' 天';
+ }catch(e){showError(e)}
+}
+async function loadMembership(){
+ if(!requireLogin())return;
+ const until=profile?.membership_until?new Date(profile.membership_until):null;
+ $('memberStatus').textContent=until&&until>Date.now()?'会员有效期至 '+until.toLocaleDateString('zh-CN'):'当前为普通用户 · 可通过邀请好友领取体验会员';
+}
+async function copyInvite(){
+ if(!requireLogin())return;
+ const code=profile?.friend_code||'';
+ const link=location.origin+location.pathname+'?invite='+encodeURIComponent(code);
+ try{await navigator.clipboard.writeText('来泊言漂流瓶认识新朋友！注册时填写我的邀请码：'+code+'\n'+link);notify('邀请内容已复制','发送给朋友，注册时填写你的邀请码即可。')}
+ catch(e){notify('复制失败','请手动复制邀请码：'+code)}
+}
+
 async function searchFriend(){
  if(!requireLogin())return;
  const raw=$('friendSearchId').value.trim();
@@ -1224,7 +1303,7 @@ const nickname=$('registerNickname').value.trim()||account.split('@')[0];
 const {data,error}=await db.auth.signUp({
 email:account,password,
 options:{
-  data:{nickname},
+  data:{nickname,referral_code:$("registerInviteCode").value.trim()},
   emailRedirectTo:'https://yaya1022.github.io/'
 }
 });
@@ -1321,7 +1400,7 @@ async function initSession(){
 const {data,error}=await db.auth.getSession();
 if(error)throw error;
 user=data.session?.user||null;
-if(user)await loadProfile();
+if(user){await loadProfile();const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}}
 else profile=null;
 syncProfile();
 await refreshAll();
@@ -1356,6 +1435,9 @@ renderDiscover();return;
 }
 const color=e.target.closest('[data-bubble-color]');
 if(color){selectedBubbleColor=color.dataset.bubbleColor;document.querySelectorAll('[data-bubble-color]').forEach(b=>b.classList.toggle('selected',b===color));return}
+const invitePage=e.target.closest('[data-action="inviteCenter"]');if(invitePage){showPage('inviteCenter');await loadInviteCenter();return}
+const memberPage=e.target.closest('[data-action="membership"]');if(memberPage){showPage('membership');await loadMembership();return}
+const copyInviteButton=e.target.closest('[data-action="copyInvite"]');if(copyInviteButton){await copyInvite();return}
 const closeMatch=e.target.closest('[data-action="closeHeartMatch"]');if(closeMatch){$('heartMatchModal').style.display='none';return}
 const matchAgain=e.target.closest('[data-action="heartMatchAgain"]');if(matchAgain){startHeartMatch();return}
 const match=e.target.closest('[data-action="heartMatch"]');if(match){startHeartMatch();return}
