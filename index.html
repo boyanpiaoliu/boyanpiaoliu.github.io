@@ -760,6 +760,7 @@ header p{letter-spacing:.4px}
 </div>
 <button class="btn primary block" data-action="submitAuth" id="submitAuth">登录</button>
 <button class="btn ghost block" data-action="resendConfirmation">重新发送邮箱验证邮件</button>
+<button class="btn ghost block" data-action="forgotPassword" id="forgotPasswordButton">忘记密码？通过邮箱重置</button>
 <p class="toastnote">目前开放邮箱注册和密码登录。手机号注册暂时维护中，短信服务配置完成后再开放。</p>
 </div>
 </section>
@@ -1484,6 +1485,33 @@ notify('发送成功','你的消息已经发送。');
 }catch(e){showError(e)}
 }
 
+
+// 通过邮箱发送密码重置链接
+async function forgotPassword(){
+ const email=$('account').value.trim();
+ if(!email||!/^\S+@\S+\.\S+$/.test(email)){
+  notify('请先填写邮箱','请输入注册账号时使用的邮箱，再点击忘记密码。');return;
+ }
+ try{
+  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://boyanpiaoliu.github.io/'});
+  if(error)throw error;
+  notify('重置邮件已发送','请查看邮箱收件箱和垃圾邮件文件夹，点击邮件中的链接后返回网站设置新密码。');
+ }catch(e){showError(e)}
+}
+async function completePasswordRecovery(){
+ const next=prompt('请输入新密码（至少6位）');
+ if(next===null)return;
+ if(next.length<6){notify('密码长度不足','新密码至少需要6位，请重新通过邮件链接进入修改。');return}
+ const confirmNext=prompt('请再次输入新密码');
+ if(confirmNext!==next){notify('两次密码不一致','请重新通过邮箱中的重置链接设置密码。');return}
+ try{
+  const {error}=await db.auth.updateUser({password:next});
+  if(error)throw error;
+  notify('密码修改成功','现在可以使用新密码登录泊言漂流瓶。');
+  showPage('profile');
+ }catch(e){showError(e)}
+}
+
 // 登录注册
 function syncAuth(){
 const inviteFromUrl=new URLSearchParams(location.search).get('invite');if(inviteFromUrl&&$('registerInviteCode')&&!$('registerInviteCode').value)$('registerInviteCode').value=inviteFromUrl;
@@ -1658,6 +1686,8 @@ const method=e.target.closest('[data-method]');
 if(method){authMethod=method.dataset.method;syncAuth();return}
 const mode=e.target.closest('[data-authmode]');
 if(mode){authMode=mode.dataset.authmode;syncAuth();return}
+const forgot=e.target.closest('[data-action="forgotPassword"]');
+if(forgot){await forgotPassword();return}
 const filter=e.target.closest('[data-filter]');
 if(filter){
 activeFilter=filter.dataset.filter;
@@ -1721,6 +1751,7 @@ case'closeGeneric':closeGeneric();break;
 
 // 实时监听登录状态
 db.auth.onAuthStateChange(async(event,session)=>{
+if(event==='PASSWORD_RECOVERY'){await completePasswordRecovery();return}
 if(event==='SIGNED_IN'||event==='SIGNED_OUT'){
 user=session?.user||null;
 try{
