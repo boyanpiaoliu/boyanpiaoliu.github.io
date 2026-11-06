@@ -2118,6 +2118,11 @@ async function setupRealtime(){
    await refreshFriendRequestCount();
    if($('friends')?.classList.contains('active'))await loadFriends();
   })
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'community_notifications',filter:'recipient_id=eq.'+currentUserId},async()=>{
+   if(!user||user.id!==currentUserId)return;
+   await refreshCommunityNoticeBadge();
+   if($('notifications')?.classList.contains('active'))await loadNotifications();
+  })
   .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('实时连接暂不可用，页面切回时会自动同步')});
 }
 document.addEventListener('visibilitychange',async()=>{
