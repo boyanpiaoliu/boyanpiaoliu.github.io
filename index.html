@@ -514,6 +514,11 @@ header p{letter-spacing:.4px}
 
 .hero-premium{height:390px}
 .hero-actions{display:flex;flex-direction:row;align-items:center;gap:9px;flex-wrap:nowrap;position:relative;z-index:3;margin-top:18px}
+/* 两个首页主操作按钮统一高度与垂直基线 */
+.hero-actions{align-items:center!important;gap:12px!important}
+.hero-actions .hero-cta,.hero-actions .hero-pick{box-sizing:border-box!important;height:54px!important;min-height:54px!important;margin:0!important;padding:0 16px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;vertical-align:middle!important;line-height:1!important;transform:none!important}
+.hero-actions .hero-cta{gap:8px!important}
+
 .hero-actions .hero-cta{margin:0;white-space:nowrap;padding:13px 15px;font-size:12px;min-height:46px}
 .hero-cta b{display:none}
 .hero-pick{border:1px solid rgba(255,255,255,.62);background:rgba(255,255,255,.16);color:#fff;border-radius:17px;padding:13px 15px;min-height:46px;font-size:12px;font-weight:700;backdrop-filter:blur(12px);white-space:nowrap}
@@ -1344,9 +1349,12 @@ const floatingBack=document.getElementById('globalFloatingBack');
 const currentPage=document.getElementById(id);
 const canGoBack=!!(currentPage&&currentPage.querySelector('.page-head .back, [data-action="backDetail"]'));
 if(floatingBack){
- floatingBack.classList.toggle('is-visible',canGoBack);
- floatingBack.style.setProperty('display',canGoBack?'flex':'none','important');
- floatingBack.style.setProperty('visibility',canGoBack?'visible':'hidden','important');
+ floatingBack.classList.add('is-visible');
+ floatingBack.style.setProperty('display','flex','important');
+ floatingBack.style.setProperty('visibility','visible','important');
+ floatingBack.textContent=canGoBack?'‹':(id==='home'?'↑':'⌂');
+ floatingBack.dataset.action=canGoBack?'backProfile':(id==='home'?'scrollTop':'backHome');
+ floatingBack.setAttribute('aria-label',canGoBack?'返回上一层':(id==='home'?'返回顶部':'返回首页'));
 }
 document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
 $('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications','growthCenter','cottageVisit'].includes(id)?'none':'flex';
@@ -2284,6 +2292,8 @@ case'copyFriendId':await copyFriendId();break;
 case'saveProfile':await saveProfile();break;
 case'logout':await logout();break;
 case'backProfile':showPage('profile');break;
+case'scrollTop':window.scrollTo({top:0,behavior:'smooth'});break;
+case'backHome':showPage('home');break;
 case'backDetail':showPage('discover');break;
 case'settings':showPage('settings');break;
 case'about':notify('关于漂流瓶','让心事随海风漂流，让陌生故事温柔相遇。');break;
