@@ -2401,7 +2401,7 @@ if(error)throw error;
 if(!data?.id)throw new Error('数据库没有返回漂流瓶编号，请检查投递记录。');
 
 $('bottleText').value='';
-$('writeModal').classList.remove('show');
+closeWriteModal();
 notify('投递成功','你的漂流瓶已经投进云端大海。');
 try{await refreshAll()}catch(refreshError){console.error('投递成功后的列表刷新失败：',refreshError)}
 }catch(e){
@@ -2716,23 +2716,48 @@ $('conversationSearch')?.addEventListener('input',()=>renderMessages());
 $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conversationSearch');if(input){input.value='';renderMessages();input.focus()}});
 
 
-/* 投递弹窗按钮直接绑定，避免全局点击委托造成按钮无响应 */
+/* 投递弹窗：Safari 触摸与点击双重兼容 */
+function closeWriteModal(){
+const modal=$('writeModal');
+if(!modal)return;
+modal.classList.remove('show');
+modal.setAttribute('aria-hidden','true');
+modal.style.display='none';
+$('bottleText').value='';
+}
+window.closeWriteModal=closeWriteModal;
+
+function openWriteModal(){
+const modal=$('writeModal');
+if(!modal)return;
+modal.style.display='flex';
+modal.classList.add('show');
+modal.setAttribute('aria-hidden','false');
+}
+window.openWriteModal=openWriteModal;
+
 const submitBottleButton=$('submitBottleButton');
 const closeWriteButton=$('closeWriteButton');
+if(submitBottleButton){
 submitBottleButton.onclick=async function(e){
- e.preventDefault();
- e.stopPropagation();
- await submitBottle();
+if(e){e.preventDefault();e.stopPropagation()}
+await submitBottle();
 };
-closeWriteButton.addEventListener('click',function(e){
- e.preventDefault();e.stopPropagation();
- $('writeModal').classList.remove('show');
- $('bottleText').value='';
-});
-$('writeModal').addEventListener('click',function(e){
- if(e.target===$('writeModal'))$('writeModal').classList.remove('show');
-});
-
+}
+if(closeWriteButton){
+const dismissWrite=function(e){
+if(e){e.preventDefault();e.stopPropagation()}
+closeWriteModal();
+};
+closeWriteButton.onclick=dismissWrite;
+closeWriteButton.addEventListener('click',dismissWrite,true);
+closeWriteButton.addEventListener('touchend',dismissWrite,{capture:true,passive:false});
+closeWriteButton.addEventListener('pointerup',dismissWrite,true);
+}
+const writeModal=$('writeModal');
+if(writeModal){
+writeModal.addEventListener('click',function(e){if(e.target===writeModal)closeWriteModal()},true);
+}
 /* 行内回信区：直接绑定按钮事件，不再使用模态弹窗 */
 const inlineReplySend=$('inlineReplySend'),inlineReplyCancel=$('inlineReplyCancel');
 inlineReplySend.addEventListener('click',async function(){
@@ -2846,9 +2871,9 @@ const a=e.target.closest('[data-action]');
 if(!a)return;
 switch(a.dataset.action){
 case'write':
-if(requireLogin())$('writeModal').classList.add('show');
+if(requireLogin())openWriteModal();
 break;
-case'closeWrite':$('writeModal').classList.remove('show');break;
+case'closeWrite':closeWriteModal();break;
 case'pick':await pickBottle();break;
 case'submitBottle':await submitBottle();break;
 case'community':if(requireLogin()){activeCommunityFilter='all';document.querySelectorAll('[data-community-filter]').forEach(b=>b.classList.toggle('active',b.dataset.communityFilter==='all'));showPage('community');await loadCommunity()}break;
