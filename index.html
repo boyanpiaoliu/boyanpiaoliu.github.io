@@ -1690,6 +1690,13 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 #profileViewModal .profile-page-top{width:100%!important;min-height:250px!important;height:auto!important;padding-top:calc(env(safe-area-inset-top) + 58px)!important;padding-bottom:24px!important;box-sizing:border-box!important}
 #profileViewModal .profile-page-notes{min-height:calc(100dvh - 250px)!important;padding:30px 28px 70px!important}
 #profileViewModal .profile-page-extra{padding-bottom:calc(30px + env(safe-area-inset-bottom))!important}
+
+/* 聊天页顶部按钮：返回箭头和资料入口都保持清晰可点击 */
+#messageThread .message-thread-head .thread-back{left:10px!important;right:auto!important;width:52px!important;height:54px!important;display:grid!important;place-items:center!important;font-size:0!important;padding:0!important;background:transparent!important}
+#messageThread .message-thread-head .thread-back::before{content:'‹';font-size:48px!important;line-height:1!important;font-family:Arial,sans-serif!important;font-weight:300!important;color:#fff!important;text-shadow:0 1px 3px rgba(91,65,125,.18)}
+#messageThread .message-thread-head .thread-more{left:auto!important;right:12px!important;width:48px!important;height:48px!important;display:grid!important;place-items:center!important;font-size:23px!important;line-height:1!important;letter-spacing:2px!important;padding:0!important;color:#fff!important;background:transparent!important;z-index:2!important}
+#messageThread .chat-date-divider{display:block!important;width:100%!important;box-sizing:border-box!important;text-align:center!important;color:#26212e!important;font-size:12px!important;font-weight:600!important;line-height:1.3!important;padding:16px 0 12px!important;margin:0!important}
+#messageThread .chat-meta-time{display:none!important}
 </style>
 </head>
 
@@ -2517,9 +2524,14 @@ async function openConversation(peer){
  const peerId=document.createElement('span');peerId.className='thread-peer-id';peerId.textContent='IP · 未知';title.append(peerId);
  const more=document.createElement('button');more.className='thread-more';more.textContent='···';more.setAttribute('aria-label','更多');more.addEventListener('click',()=>showUserProfile(peer));
  head.append(back,title,more);thread.append(head);
- const dateDivider=document.createElement('div');dateDivider.className='chat-date-divider';dateDivider.textContent=items.length?dateText(items[0].created_at):'';thread.append(dateDivider);
+ let previousMessageTime=null;
  $('mainNav').style.display='none';
  for(const m of items){
+ const currentMessageTime=new Date(m.created_at).getTime();
+ if(previousMessageTime===null||currentMessageTime-previousMessageTime>5*60*1000){
+  const dateDivider=document.createElement('div');dateDivider.className='chat-date-divider';dateDivider.textContent=dateText(m.created_at);thread.append(dateDivider);
+ }
+ previousMessageTime=currentMessageTime;
  const mine=m.sender_id===user.id;
  const line=document.createElement('div');line.className='chat-line '+(mine?'mine':'theirs');
  const avatar=document.createElement('div');avatar.className='chat-avatar';
@@ -2555,7 +2567,7 @@ async function openConversation(peer){
  bubble.append(body);
  const bubbleColor=person?.bubble_color;if(bubbleColor){bubble.style.background=bubbleColor;bubble.style.color='#443657'}
  content.append(bubble);
- const time=document.createElement('time');time.className='chat-meta-time';time.textContent=dateText(m.created_at);content.append(time);
+ // 时间统一显示在消息组上方：五分钟内连续消息共用一个时间标记。
  if(mine&&!m.is_retracted){const receipt=document.createElement('span');receipt.className='chat-read-receipt';receipt.textContent=m.is_read?'已读':'已发送';content.append(receipt)}
  if(!m.is_retracted){
   let pressTimer=null, longPressed=false;
