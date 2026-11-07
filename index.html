@@ -1190,6 +1190,15 @@ html,body{max-width:100%;overflow-x:hidden!important}
  .modalbox textarea{min-height:96px!important}
 }
 
+
+/* 回信弹窗层级与触控修正 */
+#writeModal{z-index:1000!important}
+#messageModal{z-index:1010!important;pointer-events:auto!important}
+#messageModal .modalbox{position:relative;z-index:1;pointer-events:auto!important}
+#messageModal button,#messageModal textarea{position:relative;z-index:2;pointer-events:auto!important;touch-action:manipulation}
+#messageModal button{cursor:pointer;-webkit-appearance:none;appearance:none}
+#messageModal button:disabled{opacity:.65}
+
 </style>
 </head>
 
@@ -2601,6 +2610,28 @@ function showChatImage(src){
 }
 $('conversationSearch')?.addEventListener('input',()=>renderMessages());
 $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conversationSearch');if(input){input.value='';renderMessages();input.focus()}});
+
+
+/* 回信弹窗独立点击处理：确保 iOS Safari 中发送与取消始终可触发 */
+document.addEventListener('click',async function(e){
+ const send=e.target.closest('#messageModal [data-action="submitMessage"]');
+ const cancel=e.target.closest('#messageModal [data-action="closeMessage"]');
+ if(!send&&!cancel)return;
+ e.preventDefault();
+ e.stopPropagation();
+ e.stopImmediatePropagation();
+ if(send){
+  if(send.dataset.busy==='1')return;
+  send.dataset.busy='1';
+  send.disabled=true;
+  try{await submitMessage()}
+  finally{send.dataset.busy='0';send.disabled=false}
+ }else{
+  $('messageModal').classList.remove('show');
+  messageReceiver=null;
+  $('messageText').value='';
+ }
+},true);
 
 // 事件
 
