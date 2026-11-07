@@ -607,6 +607,10 @@ header p{letter-spacing:.4px}
 .ocean-badge.earned .badge-icon{background:linear-gradient(145deg,#fff2d9,#f8dfb7);filter:none;opacity:1}
 .ocean-badge strong{font-size:10px;color:#526777;display:block}.ocean-badge small{font-size:9px;color:#9ba9b2;display:block;margin-top:3px;line-height:1.35}
 .collection-note{font-size:10px;color:#9aa8b2;line-height:1.7;margin:15px 3px 8px}
+.collection-save-wrap{margin:20px 0 24px;padding:15px;border:1px solid #e2edf2;border-radius:18px;background:linear-gradient(145deg,#fff,#f1f8fb);text-align:center}
+.collection-save-wrap p{margin:0 0 12px;color:#8296a5;font-size:11px;line-height:1.6}
+.collection-save-btn{width:100%;border:0;border-radius:15px;padding:14px 18px;background:linear-gradient(110deg,#4f8fbd,#78b3ce);color:#fff;font-size:15px;font-weight:750;box-shadow:0 8px 18px rgba(79,143,189,.2)}
+.collection-save-btn:active{transform:scale(.985);opacity:.9}
 body[data-ocean-theme="sunset"]{--bg:#fff7f1;--blue:#d98d78;--blue2:#fff0e8}
 body[data-ocean-theme="starlight"]{--bg:#f5f3fc;--blue:#777cae;--blue2:#eeecfa}
 body[data-ocean-theme="island"]{--bg:#f1faf5;--blue:#4e9b83;--blue2:#e7f5ed}
@@ -1148,7 +1152,7 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
  <p>用喜欢的海洋主题，装点属于你的泊言小天地。</p>
  <div class="collection-orbit"><span>🐚</span><i>✦</i><b>🌊</b><em>✧</em></div>
 </div>
-<div class="collection-section-head"><div><span>PERSONAL STYLE</span><h3>海面主题</h3></div><small>选择后立即应用</small></div>
+<div class="collection-section-head"><div><span>PERSONAL STYLE</span><h3>海面主题</h3></div><small>选择后点击保存</small></div>
 <div class="collection-theme-grid">
  <button class="collection-theme selected" data-ocean-theme="sea"><span class="theme-art theme-sea">🌊<i>✧</i></span><b>晴日海湾</b><small>清透蓝 · 默认</small></button>
  <button class="collection-theme" data-ocean-theme="sunset"><span class="theme-art theme-sunset">🌅<i>✦</i></span><b>落日余晖</b><small>蜜桃橘 · 温柔</small></button>
@@ -1189,6 +1193,7 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
  <button data-profile-theme="island"><span class="profile-theme-art ptheme-island">🏝️</span><b>薄荷岛屿</b></button>
  <button data-profile-theme="blossom"><span class="profile-theme-art ptheme-blossom">🌸</span><b>樱花微风</b></button>
 </div>
+<div class="collection-save-wrap"><p>选好喜欢的海洋主题、漂流瓶、聊天背景和装扮后，点击保存统一生效。</p><button type="button" class="collection-save-btn" data-action="saveOceanDecor">保存我的外观</button></div>
 <div class="collection-section-head"><div><span>YOUR JOURNEY</span><h3>海洋足迹</h3></div><small>根据当前账号数据展示</small></div>
 <div class="collection-stats">
  <div><strong id="collectionBottleCount">0</strong><span>投递的故事</span><i>🫧</i></div>
@@ -2157,17 +2162,40 @@ if(method){authMethod=method.dataset.method;syncAuth();return}
 const mode=e.target.closest('[data-authmode]');
 if(mode){authMode=mode.dataset.authmode;syncAuth();return}
 const bottleSkin=e.target.closest('[data-bottle-skin]');
-if(bottleSkin){localStorage.setItem('boyan-bottle-skin',bottleSkin.dataset.bottleSkin);document.querySelectorAll('[data-bottle-skin]').forEach(b=>b.classList.toggle('selected',b===bottleSkin));renderAll();return}
+if(bottleSkin){document.querySelectorAll('[data-bottle-skin]').forEach(b=>b.classList.toggle('selected',b===bottleSkin));return}
 const chatSkin=e.target.closest('[data-chat-skin]');
-if(chatSkin){localStorage.setItem('boyan-chat-skin',chatSkin.dataset.chatSkin);document.querySelectorAll('[data-chat-skin]').forEach(b=>b.classList.toggle('selected',b===chatSkin));return}
+if(chatSkin){document.querySelectorAll('[data-chat-skin]').forEach(b=>b.classList.toggle('selected',b===chatSkin));return}
 const petChoice=e.target.closest('[data-pet-choice]');
 if(petChoice){selectedPetType=petChoice.dataset.petChoice;document.querySelectorAll('[data-pet-choice]').forEach(b=>b.classList.toggle('selected',b===petChoice));return}
 const profileTheme=e.target.closest('[data-profile-theme]');
-if(profileTheme){if(!user){openAuth();return}const theme=profileTheme.dataset.profileTheme;const {data,error}=await db.from('profiles').update({profile_theme:theme}).eq('id',user.id).select().single();if(error){showError(error);return}profile=data;applyProfileTheme();document.querySelectorAll('[data-profile-theme]').forEach(b=>b.classList.toggle('selected',b===profileTheme));notify('主页装扮已保存','这套背景已经同步到你的账号。');return}
+if(profileTheme){document.querySelectorAll('[data-profile-theme]').forEach(b=>b.classList.toggle('selected',b===profileTheme));return}
 const avatarFrame=e.target.closest('[data-avatar-frame]');
-if(avatarFrame){localStorage.setItem('boyan-avatar-frame',avatarFrame.dataset.avatarFrame);applyAvatarFrame();return}
+if(avatarFrame){document.querySelectorAll('[data-avatar-frame]').forEach(b=>b.classList.toggle('selected',b===avatarFrame));return}
 const oceanTheme=e.target.closest('[data-ocean-theme]');
-if(oceanTheme){const theme=oceanTheme.dataset.oceanTheme;localStorage.setItem('boyan-ocean-theme',theme);document.body.dataset.oceanTheme=theme;document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b===oceanTheme));return}
+if(oceanTheme){document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b===oceanTheme));return}
+const saveOceanDecor=e.target.closest('[data-action="saveOceanDecor"]');
+if(saveOceanDecor){
+ const pick=(selector,attr,fallback)=>document.querySelector(selector+'.selected')?.dataset[attr]||fallback;
+ const theme=pick('[data-ocean-theme]','oceanTheme','sea');
+ const bottle=pick('[data-bottle-skin]','bottleSkin','classic');
+ const chat=pick('[data-chat-skin]','chatSkin','foam');
+ const frame=pick('[data-avatar-frame]','avatarFrame','none');
+ const profileTheme=pick('[data-profile-theme]','profileTheme',profile?.profile_theme||'sea');
+ localStorage.setItem('boyan-ocean-theme',theme);
+ localStorage.setItem('boyan-bottle-skin',bottle);
+ localStorage.setItem('boyan-chat-skin',chat);
+ localStorage.setItem('boyan-avatar-frame',frame);
+ document.body.dataset.oceanTheme=theme;
+ applyAvatarFrame();
+ renderAll();
+ if(user){
+  const {data,error}=await db.from('profiles').update({profile_theme:profileTheme}).eq('id',user.id).select().single();
+  if(error){notify('本设备外观已保存','主页背景同步失败，请稍后重试。');return}
+  profile=data;applyProfileTheme();
+ }
+ notify('外观保存成功','你选择的海洋主题和装饰已经生效。');
+ return
+}
 const oceanCollection=e.target.closest('[data-action="oceanCollection"]');
 if(oceanCollection){if(!user){openAuth();return}showPage('oceanCollection');renderOceanCollection();return}
 const forgot=e.target.closest('[data-action="forgotPassword"]');
