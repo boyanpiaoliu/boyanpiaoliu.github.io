@@ -1683,6 +1683,13 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 #messageThread .message-tools button{display:flex!important;align-items:center!important;justify-content:center!important;min-width:68px!important;height:42px!important;padding:0 14px!important;border:0!important;border-radius:12px!important;background:#fff!important;color:#8f70ce!important;font-size:12px!important}
 #messageThread .quote-compose{grid-column:1/-1!important;grid-row:0!important;margin:0 0 8px!important}
 @media(min-width:700px){#messageThread{max-width:520px;margin:0 auto}.message-thread-head{margin-left:calc((520px - 100vw)/2)!important;margin-right:calc((520px - 100vw)/2)!important}}
+
+/* 好友资料是独立全屏页面，不使用居中弹窗卡片 */
+#profileViewModal.profile-page-overlay{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;padding:0!important;margin:0!important;display:none;align-items:stretch!important;justify-content:stretch!important;overflow:hidden!important;background:#fff!important;backdrop-filter:none!important;z-index:5000!important}
+#profileViewModal .profile-page-card{position:absolute!important;inset:0!important;display:block!important;width:100vw!important;min-width:100vw!important;max-width:none!important;height:100dvh!important;min-height:100dvh!important;max-height:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow-x:hidden!important;overflow-y:auto!important;text-align:left!important;background:#fff!important}
+#profileViewModal .profile-page-top{width:100%!important;min-height:250px!important;height:auto!important;padding-top:calc(env(safe-area-inset-top) + 58px)!important;padding-bottom:24px!important;box-sizing:border-box!important}
+#profileViewModal .profile-page-notes{min-height:calc(100dvh - 250px)!important;padding:30px 28px 70px!important}
+#profileViewModal .profile-page-extra{padding-bottom:calc(30px + env(safe-area-inset-bottom))!important}
 </style>
 </head>
 
