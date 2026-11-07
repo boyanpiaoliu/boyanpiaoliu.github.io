@@ -1263,6 +1263,22 @@ html,body{max-width:100%;overflow-x:hidden!important}
  cursor:pointer!important;-webkit-tap-highlight-color:rgba(70,130,170,.18)!important
 }
 
+/* iOS 导航最终修复：确保导航始终位于弹窗遮罩之上 */
+#mainNav{
+ position:fixed!important;
+ z-index:2147483001!important;
+ pointer-events:auto!important;
+ isolation:isolate!important;
+}
+#mainNav .navbtn{
+ position:relative!important;
+ z-index:2147483002!important;
+ pointer-events:auto!important;
+ touch-action:manipulation!important;
+ -webkit-appearance:none!important;
+}
+#globalFloatingBack{z-index:2147483003!important}
+
 </style>
 </head>
 
@@ -3401,6 +3417,30 @@ function renderOceanCollection(){
  document.body.dataset.oceanTheme=theme;
  document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b.dataset.oceanTheme===theme));
 }
+// iPhone Safari 导航按钮直接绑定触摸/点击事件，避免全局委托被遮罩或其他监听器影响
+document.querySelectorAll('#mainNav [data-page]').forEach(button=>{
+const navigate=function(e){
+if(e){e.preventDefault();e.stopPropagation();}
+const page=button.dataset.page;
+showPage(page);
+if(page==='messages'){
+loadMessages().then(()=>renderMessages()).catch(err=>console.error('消息加载失败：',err));
+}
+if(page==='profile'){
+refreshFriendRequestCount().catch(err=>console.error('好友通知加载失败：',err));
+}
+};
+button.addEventListener('click',navigate,true);
+button.addEventListener('touchend',navigate,{capture:true,passive:false});
+});
+
+// 页面启动时清理意外残留的遮罩状态；正常需要弹出的弹窗会由交互重新打开
+document.querySelectorAll('.modal').forEach(modal=>{
+modal.classList.remove('show');
+modal.setAttribute('aria-hidden','true');
+modal.style.display='none';
+});
+
 // 启动
 (async()=>{
 try{
