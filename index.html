@@ -1138,17 +1138,75 @@ main{padding:0 0 94px!important}
 .two-page-add{position:fixed;right:26px;bottom:125px;width:72px;height:72px;border:0;border-radius:50%;background:#ffc0cd;color:#fff;font-size:38px;box-shadow:0 5px 18px #0001;z-index:40}
 #profile .card:not(.profile-head){display:none!important}
 
+
+/* 参考图二次精简：缩小字号、去除顶部固定品牌页眉 */
+.global-brand-bar{display:none!important}
+#globalFloatingBack{display:none!important}
+body{font-size:14px!important;-webkit-text-size-adjust:100%}
+h1{font-size:20px!important}
+h2{font-size:17px!important;line-height:1.35}
+h3{font-size:15px!important}
+p,.sub,.label,.row,.navbtn{font-size:13px!important}
+button,input,textarea,select{font-size:13px!important}
+.page{min-height:100vh!important;padding-top:0!important;padding-bottom:calc(92px + env(safe-area-inset-bottom))!important}
+#mainNav.two-page-nav{height:76px!important;padding:7px 8% calc(7px + env(safe-area-inset-bottom))!important}
+.two-page-nav .navbtn{font-size:11px!important;gap:3px!important}
+.two-page-nav .ico{font-size:22px!important}
+.two-page-message-head{height:58px!important;padding:0 18px!important}
+.two-page-message-head strong{font-size:20px!important;letter-spacing:3px!important}
+.two-page-message-head button{font-size:14px!important}
+.two-page-official{min-height:82px!important;padding:10px 16px!important;gap:12px!important}
+.official-icon{width:48px!important;height:48px!important;font-size:22px!important}
+.official-title{font-size:15px!important}
+.official-title time{font-size:11px!important}
+.official-copy p{font-size:12px!important;margin-top:5px!important}
+#messageList{padding:0 12px 125px!important}
+#messageList .conversation-item{padding:10px 4px!important;min-height:70px!important}
+#messageList .conversation-item *{font-size:12px!important}
+#messageList .conversation-item .name,
+#messageList .conversation-item strong{font-size:14px!important}
+.two-page-actions{bottom:88px!important;gap:10px!important;padding:9px!important}
+.two-page-actions button{height:44px!important;min-width:94px!important;padding:0 18px!important;border-radius:17px!important;font-size:15px!important}
+.two-page-actions .swap{min-width:44px!important;width:44px!important;font-size:21px!important}
+.two-page-profile-hero{min-height:260px!important;padding:28px 20px 18px!important}
+.profile-settings{top:16px!important;right:20px!important;font-size:25px!important}
+.two-page-profile-main{margin-top:40px!important;gap:12px!important}
+#profile .avatar{width:68px!important;height:68px!important}
+.two-page-profile-identity h2{font-size:16px!important}
+.two-page-profile-identity .profile-id{font-size:13px!important;margin:5px 0 3px!important}
+.two-page-profile-identity small{font-size:11px!important}
+.two-page-vip{padding:9px 13px!important;font-size:13px!important}
+.two-page-coins{margin-top:28px!important}
+.two-page-coins strong{font-size:17px!important}
+.two-page-coins span{font-size:12px!important}
+.two-page-notes{padding:16px 18px!important}
+.two-page-notes h2{font-size:18px!important}
+.notes-empty{height:310px!important;gap:14px!important}
+.notes-art{font-size:78px!important}
+.notes-empty span{font-size:13px!important}
+.two-page-add{width:58px!important;height:58px!important;right:20px!important;bottom:105px!important;font-size:30px!important}
+#messageThread{font-size:13px!important}
+#messageThread .message-bubble{font-size:13px!important;padding:8px 11px!important}
+#messageThread .chat-avatar{width:34px!important;height:34px!important;flex-basis:34px!important}
+#messageThread .chat-line{gap:7px!important;margin:9px 0!important}
+#messageThread .chat-composer,#messageThread .chat-input-area{font-size:13px!important}
+#messageThread input,#messageThread textarea{font-size:13px!important}
+#messageThread button{font-size:12px!important}
+.modalbox{max-width:340px!important;padding:18px!important;border-radius:18px!important}
+.modalbox h2{font-size:17px!important}
+.modalbox p,.modalbox label,.modalbox input,.modalbox textarea,.modalbox select{font-size:13px!important}
+
 </style>
 </head>
 
 <body>
-<button type="button" id="globalFloatingBack" aria-label="返回上一层" data-action="backProfile">‹</button>
 
-<header class="global-brand-bar"><div>🌊 <strong>泊言漂流瓶</strong><i>丨</i><span>心事停泊，偶然被看见</span></div></header>
+
+
 
 <main>
 
-<section class="page active" id="home">
+<section class="page" id="home">
 <div class="hero hero-premium">
 <div class="hero-sky"><span class="hero-star star-one">✦</span><span class="hero-star star-two">✧</span><span class="hero-moon">☼</span><span class="hero-bird">⌁</span></div>
 <div class="hero-copy"><span class="hero-kicker">A MESSAGE TO THE OCEAN</span><h2>大海正在<br>等待你的故事</h2><p>把心事装进漂流瓶，让它飘向未知的远方。</p>
