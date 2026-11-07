@@ -1199,6 +1199,13 @@ html,body{max-width:100%;overflow-x:hidden!important}
 #messageModal button{cursor:pointer;-webkit-appearance:none;appearance:none}
 #messageModal button:disabled{opacity:.65}
 
+
+/* 回信按钮可点击区域独立于遮罩层 */
+#messageModal{z-index:2147482000!important;pointer-events:none!important;isolation:isolate}
+#messageModal .modalbox{position:relative!important;z-index:1!important;pointer-events:auto!important}
+#messageModal button{position:relative!important;z-index:5!important;display:flex!important;pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(70,130,170,.18)}
+#messageModal textarea{pointer-events:auto!important;position:relative!important;z-index:2!important}
+
 </style>
 </head>
 
@@ -1665,8 +1672,8 @@ html,body{max-width:100%;overflow-x:hidden!important}
 <h2>写一封回信</h2>
 <p class="sub" id="messageTarget"></p>
 <textarea id="messageText" maxlength="500" placeholder="写下你想说的话……"></textarea>
-<button class="btn primary block" data-action="submitMessage">发送消息</button>
-<button class="btn ghost block" data-action="closeMessage">取消</button>
+<button type="button" id="messageSendButton" class="btn primary block" onclick="window.__sendReplyNow(event)">发送消息</button>
+<button type="button" id="messageCancelButton" class="btn ghost block" onclick="window.__closeReplyNow(event)">取消</button>
 </div>
 </div>
 
@@ -2612,26 +2619,21 @@ $('conversationSearch')?.addEventListener('input',()=>renderMessages());
 $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conversationSearch');if(input){input.value='';renderMessages();input.focus()}});
 
 
-/* 回信弹窗独立点击处理：确保 iOS Safari 中发送与取消始终可触发 */
-document.addEventListener('click',async function(e){
- const send=e.target.closest('#messageModal [data-action="submitMessage"]');
- const cancel=e.target.closest('#messageModal [data-action="closeMessage"]');
- if(!send&&!cancel)return;
- e.preventDefault();
- e.stopPropagation();
- e.stopImmediatePropagation();
- if(send){
-  if(send.dataset.busy==='1')return;
-  send.dataset.busy='1';
-  send.disabled=true;
-  try{await submitMessage()}
-  finally{send.dataset.busy='0';send.disabled=false}
- }else{
-  $('messageModal').classList.remove('show');
-  messageReceiver=null;
-  $('messageText').value='';
- }
-},true);
+/* 回信按钮使用原生内联事件入口，绕过页面委托事件冲突 */
+window.__sendReplyNow=async function(e){
+ if(e){e.preventDefault();e.stopPropagation()}
+ const button=$('messageSendButton');
+ if(!button||button.dataset.busy==='1')return;
+ button.dataset.busy='1';button.disabled=true;
+ try{await submitMessage()}
+ finally{button.dataset.busy='0';button.disabled=false}
+};
+window.__closeReplyNow=function(e){
+ if(e){e.preventDefault();e.stopPropagation()}
+ $('messageModal').classList.remove('show');
+ messageReceiver=null;
+ $('messageText').value='';
+};
 
 // 事件
 
