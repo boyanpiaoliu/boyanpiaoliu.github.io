@@ -1206,6 +1206,12 @@ html,body{max-width:100%;overflow-x:hidden!important}
 #messageModal button{position:relative!important;z-index:5!important;display:flex!important;pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(70,130,170,.18)}
 #messageModal textarea{pointer-events:auto!important;position:relative!important;z-index:2!important}
 
+
+/* 修正 iOS Safari 触控：遮罩和弹窗本身都允许命中 */
+#messageModal{z-index:2147483647!important;pointer-events:auto!important;touch-action:manipulation!important}
+#messageModal .modalbox{pointer-events:auto!important;position:relative!important;z-index:1!important}
+#messageModal button{pointer-events:auto!important;position:relative!important;z-index:2!important;touch-action:manipulation!important;cursor:pointer!important}
+
 </style>
 </head>
 
@@ -1672,8 +1678,8 @@ html,body{max-width:100%;overflow-x:hidden!important}
 <h2>写一封回信</h2>
 <p class="sub" id="messageTarget"></p>
 <textarea id="messageText" maxlength="500" placeholder="写下你想说的话……"></textarea>
-<button type="button" id="messageSendButton" class="btn primary block" onclick="window.__sendReplyNow(event)">发送消息</button>
-<button type="button" id="messageCancelButton" class="btn ghost block" onclick="window.__closeReplyNow(event)">取消</button>
+<button type="button" id="messageSendButton" class="btn primary block">发送消息</button>
+<button type="button" id="messageCancelButton" class="btn ghost block">取消</button>
 </div>
 </div>
 
@@ -2619,21 +2625,23 @@ $('conversationSearch')?.addEventListener('input',()=>renderMessages());
 $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conversationSearch');if(input){input.value='';renderMessages();input.focus()}});
 
 
-/* 回信按钮使用原生内联事件入口，绕过页面委托事件冲突 */
-window.__sendReplyNow=async function(e){
- if(e){e.preventDefault();e.stopPropagation()}
- const button=$('messageSendButton');
- if(!button||button.dataset.busy==='1')return;
- button.dataset.busy='1';button.disabled=true;
+/* 回信弹窗：在按钮本身绑定事件，避免全局事件委托和 iOS 点击穿透问题 */
+const replySendButton=$('messageSendButton');
+const replyCancelButton=$('messageCancelButton');
+replySendButton.addEventListener('click',async function(e){
+ e.preventDefault();e.stopPropagation();
+ if(replySendButton.dataset.busy==='1')return;
+ replySendButton.dataset.busy='1';replySendButton.disabled=true;
  try{await submitMessage()}
- finally{button.dataset.busy='0';button.disabled=false}
-};
-window.__closeReplyNow=function(e){
- if(e){e.preventDefault();e.stopPropagation()}
+ catch(err){showError(err)}
+ finally{replySendButton.dataset.busy='0';replySendButton.disabled=false}
+});
+replyCancelButton.addEventListener('click',function(e){
+ e.preventDefault();e.stopPropagation();
  $('messageModal').classList.remove('show');
  messageReceiver=null;
  $('messageText').value='';
-};
+});
 
 // 事件
 
