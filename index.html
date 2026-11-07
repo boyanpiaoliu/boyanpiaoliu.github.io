@@ -1196,6 +1196,73 @@ button,input,textarea,select{font-size:13px!important}
 .modalbox h2{font-size:17px!important}
 .modalbox p,.modalbox label,.modalbox input,.modalbox textarea,.modalbox select{font-size:13px!important}
 
+
+/* 泊言统一樱粉色视觉规范与参考图页面 */
+:root{--blue:#ed8fa4;--blue2:#fff0f3;--ink:#29252a;--muted:#99939a;--line:#f1e6e9;--bg:#fffafb;--pink:#f5aeba;--pink-deep:#ed8fa4;--pink-light:#fff0f3}
+body{background:#fff!important;color:#29252a}
+header,.global-brand-bar{background:#fff7f8}
+.btn.primary,.message-composer button{background:linear-gradient(135deg,#f5aeba,#ed8fa4)!important;color:#fff!important}
+.btn.ghost{background:#fff4f6!important;color:#d77f93!important;border-color:#f5d4dc!important}
+input:focus,textarea:focus,select:focus{border-color:#f0a2b3!important;box-shadow:0 0 0 3px #fbe5ea!important}
+.two-page-message-head{background:linear-gradient(105deg,#f7b8c2,#f3aab7)!important}
+.two-page-official{background:#fff}
+.official-icon{background:#f3aab7!important}
+.two-page-actions button{background:#f3aab7!important}
+.two-page-nav .navbtn.active{color:#ed8fa4!important}
+.two-page-profile-hero{background:linear-gradient(155deg,#ffdce2 0%,#fff8f9 78%,#fff 100%)!important}
+.profile-settings{color:#ed8fa4!important}
+.two-page-vip{background:#ff646b!important}
+.two-page-add{background:#ffc0cd!important}
+#messageThread{background:#fffafa!important;min-height:calc(100dvh - 160px);padding:0 14px 180px!important}
+.message-thread-head{position:sticky;top:0;z-index:8;display:flex;align-items:center;justify-content:center;min-height:64px;margin:0 -14px 10px;padding:8px 14px;background:linear-gradient(105deg,#f7bcc5,#f2aab7)!important;color:#fff!important;text-align:center}
+.message-thread-head>button{position:absolute;left:12px;border:0;background:none;color:#fff!important;font-size:14px;padding:10px}
+.message-thread-head>strong{font-size:17px!important;font-weight:600;line-height:1.35}
+.thread-peer-id{display:block;font-size:11px;color:#fff!important;opacity:.9;font-weight:400}
+#messageThread .message-bubble.mine{background:#fbe0e6!important;color:#3f3035!important}
+#messageThread .message-bubble.theirs{background:#fff!important;color:#29252a!important;border:1px solid #f4edf0}
+#messageThread .chat-avatar{border-color:#f9dce3}
+#messageThread .message-composer{position:fixed;z-index:12;left:0;right:0;bottom:76px;display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px 14px;background:rgba(255,250,251,.97);border-top:1px solid #f2e6e9;backdrop-filter:blur(12px)}
+#messageThread .message-composer input{height:48px;border:0!important;border-radius:12px;background:#fff!important;padding:0 14px;box-shadow:0 1px 5px #00000008}
+#messageThread .message-composer>button{height:44px;padding:0 18px;border:0;border-radius:12px}
+#messageThread .message-tools{grid-column:1/-1;display:flex;gap:10px;padding:2px 0 0}
+#messageThread .message-tools button{border:0;border-radius:10px;background:#fff!important;color:#d77f93!important;padding:8px 13px}
+#messageThread .message-tools button:before{content:"";display:inline-block}
+#messageThread .chat-line{margin:16px 0}
+#messageThread .message-bubble{font-size:14px!important}
+#messageThread .chat-meta-time,#messageThread .chat-read-receipt{font-size:10px!important;color:#aaa}
+#settings.page.active{display:block!important;padding:0 18px calc(100px + env(safe-area-inset-bottom))!important;background:#fff}
+#settings .page-head{height:74px;margin:0 -18px 18px;padding:0 18px;background:#f6b9c2;color:#fff;display:flex;align-items:center;justify-content:center;position:relative}
+#settings .page-head h2{color:#fff;font-size:19px!important;font-weight:500}
+#settings .page-head .back{position:absolute;left:14px;color:#fff!important;border:0;background:none;font-size:24px!important}
+#settings .card{background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;margin:0!important}
+#settings .settings-reference-list{margin:0 -2px}
+#settings .settings-reference-row{height:66px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #f0edef;color:#171717;text-decoration:none;padding:0 8px;background:#fff}
+#settings .settings-reference-row .settings-icon{width:24px;text-align:center;font-size:23px;color:#ff3b91;line-height:1}
+#settings .settings-reference-row .settings-label{font-size:16px!important;flex:1}
+#settings .settings-reference-row .settings-arrow{font-size:27px;color:#ff6875;font-weight:300}
+#settings .language-card{padding:14px 8px!important;margin:0 0 8px!important;border-bottom:1px solid #f0edef!important}
+#settings .language-heading strong{font-size:14px;color:#222}
+#settings .language-heading small,.language-note{font-size:11px;color:#aaa}
+#settings #languageSelect{margin-top:8px;width:100%;height:40px;border:1px solid #f2d9df;border-radius:10px;background:#fff;color:#555;padding:0 10px}
+#bottleFilterOverlay{display:none;position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.38);align-items:center;justify-content:center;padding:22px}
+#bottleFilterOverlay.show{display:flex}
+.bottle-filter-card{width:min(100%,360px);background:#fff;border-radius:18px;padding:20px 18px 18px;box-shadow:0 15px 45px #0002}
+.bottle-filter-title{text-align:center;font-size:18px;font-weight:650;margin:0 0 28px;color:#333}
+.bottle-filter-title em{font-style:normal;color:#ee91a3;font-size:12px;margin-left:5px}
+.bottle-filter-label{font-size:15px;color:#222;margin:0 0 12px}
+.bottle-filter-genders{display:flex;justify-content:space-around;gap:8px;margin-bottom:34px}
+.bottle-filter-genders label{display:flex;align-items:center;gap:5px;color:#777;font-size:14px}
+.bottle-filter-genders input{appearance:none;width:18px;height:18px;border:2px solid #d9dce2;border-radius:50%;margin:0;position:relative}
+.bottle-filter-genders input:checked{border-color:#f3a2b2}
+.bottle-filter-genders input:checked:after{content:"";position:absolute;inset:3px;border-radius:50%;background:#f3a2b2}
+.bottle-filter-genders label:has(input:checked){color:#ee91a3}
+.bottle-filter-location{width:100%;height:46px;border:1px solid #ddd;border-radius:12px;background:#fff;color:#ee91a3;font-size:15px!important}
+.bottle-filter-note{text-align:center;color:#b9b9bf;font-size:12px;margin:12px 0 0}
+.bottle-filter-actions{display:flex;gap:10px;margin-top:20px}
+.bottle-filter-actions button{flex:1;height:42px;border:0;border-radius:12px;background:#f6b3bf;color:#fff}
+.bottle-filter-actions .secondary{background:#f5f3f4;color:#888}
+@media(max-width:380px){.bottle-filter-card{padding:18px 15px}.bottle-filter-genders{gap:5px}}
+
 </style>
 </head>
 
@@ -1293,7 +1360,7 @@ button,input,textarea,select{font-size:13px!important}
 <div class="two-page-message-head">
 <button type="button" class="message-task" onclick="notify('任务','任务功能暂未开放')">任务</button>
 <strong>会话</strong>
-<button type="button" class="message-filter" onclick="notify('筛选','当前显示全部会话')">筛选</button>
+<button type="button" class="message-filter" onclick="openBottleFilter()">筛选</button>
 </div>
 <div class="two-page-official">
 <div class="official-icon">➤</div>
@@ -1312,7 +1379,7 @@ button,input,textarea,select{font-size:13px!important}
 
 <section class="page" id="profile">
 <div class="two-page-profile-hero">
-<button class="profile-settings" type="button" onclick="notify('设置','设置功能暂时收起')">⚙</button>
+<button class="profile-settings" type="button" onclick="showPage('settings')">⚙</button>
 <div class="two-page-profile-main">
 <div class="avatar" id="avatar">🌊</div>
 <div class="two-page-profile-identity"><div class="profile-name-line"><h2 id="nickname">海边的风</h2><span id="vipBadge" class="vip-badge" style="display:none">VIP</span></div><p class="sub profile-id" id="userId">尚未登录</p><small id="profileIp">IP · 暂未获取</small></div>
@@ -1617,20 +1684,20 @@ button,input,textarea,select{font-size:13px!important}
 <div class="ocean-badge-list" id="oceanBadgeList"></div>
 <p class="collection-note">主题装饰保存在当前设备中，不影响账号资料；纪念章根据已加载的真实数据计算，不代表可兑换的积分或会员权益。</p>
 </section>
+
 <section class="page" id="settings">
-<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2 data-i18n="settings">设置</h2></div>
-<div class="card language-card">
-<div class="language-heading"><strong data-i18n="language">语言设置</strong><small data-i18n="languageHint">选择你使用的界面语言</small></div>
-<select id="languageSelect" aria-label="选择语言">
-<option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="en">English</option>
-</select>
-<p class="language-note" data-i18n="languageNote">语言选择会自动保存，并在下次打开时继续使用。</p>
-</div>
-<div class="card">
-<div class="row" data-action="about"><span class="label" data-i18n="about">关于漂流瓶</span><span class="arrow">›</span></div>
-<div class="row" data-action="refresh"><span class="label" data-i18n="refresh">刷新云端数据</span><span class="arrow">›</span></div>
+<div class="page-head"><button class="back" type="button" onclick="showPage('profile')">‹</button><h2>设置</h2></div>
+<div class="settings-reference-list">
+<button class="settings-reference-row" type="button" onclick="shareInvite()"><span class="settings-icon">♧</span><span class="settings-label">邀请好友得星球币</span><span class="settings-arrow">›</span></button>
+<button class="settings-reference-row" type="button" onclick="notify('关注官方公众号','官方公众号入口暂未配置。请留意泊言站内公告，避免通过非官方渠道提供账号信息。')"><span class="settings-icon">♡</span><span class="settings-label">关注官方公众号</span><span class="settings-arrow">›</span></button>
+<button class="settings-reference-row" type="button" onclick="notify('联系客服','客服通道正在完善中。你可以通过泊言官方通知了解后续联系渠道。')"><span class="settings-icon">♧</span><span class="settings-label">联系客服</span><span class="settings-arrow">›</span></button>
+<button class="settings-reference-row" type="button" onclick="notify('隐私政策','泊言仅在提供账号、漂流瓶和消息功能所需范围内处理相关数据。请勿在公开漂流瓶或聊天中分享密码、验证码及其他敏感信息。')"><span class="settings-icon">▤</span><span class="settings-label">隐私政策</span><span class="settings-arrow">›</span></button>
+<button class="settings-reference-row" type="button" onclick="notify('用户协议','使用泊言时，请遵守法律法规，不发布违法、骚扰、欺诈或侵犯他人权益的内容。请尊重其他用户的隐私与表达。')"><span class="settings-icon">▤</span><span class="settings-label">用户协议</span><span class="settings-arrow">›</span></button>
+<button class="settings-reference-row" type="button" onclick="logout()"><span class="settings-icon">⇥</span><span class="settings-label">退出登录</span><span class="settings-arrow">›</span></button>
+<button class="settings-reference-row" type="button" onclick="notify('注销账户','账户注销需要核验身份并清理云端个人数据。目前尚未开放自助注销，请先联系客服申请处理。')"><span class="settings-icon">⏻</span><span class="settings-label">注销账户</span><span class="settings-arrow">›</span></button>
 </div>
 </section>
+
 
 <div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>账号 ID</span><strong id="profileViewAccountId">—</strong></div><div><span>性别</span><strong id="profileViewGender">未设置</strong></div></div><div class="profile-view-extra"><section><span>性取向</span><p id="profileViewOrientation">未公开</p></section></div><div class="profile-view-extra"><section><span>个性签名</span><p id="profileViewSignature">这个人还没有填写个性签名</p></section><section><span>最近的动态</span><p id="profileViewActivity">暂时没有公开动态</p><small id="profileViewActivityTime"></small></section></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button><div id="profileSafetyActions" class="profile-safety-actions"><button data-action="reportProfile">举报用户</button><button data-action="blockProfile">拉黑用户</button></div></div></div>
 <div id="heartMatchModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card heart-match-card"><button class="profile-view-close" data-action="closeHeartMatch">×</button><div class="profile-view-avatar" id="heartMatchAvatar">🌊</div><h3 id="heartMatchName">遇见一位漂流者</h3><p id="heartMatchId"></p><p id="heartMatchSignature">也许你们会有共同话题</p><div class="heart-match-actions"><button data-action="heartMatchAgain">再找一位</button><button id="heartMatchAdd" class="primary">申请加好友</button></div></div></div>
@@ -1664,6 +1731,22 @@ button,input,textarea,select{font-size:13px!important}
 <input id="chatImageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
 <input id="chatFlashInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
 <input id="chatVideoInput" type="file" accept="video/mp4,video/quicktime" hidden>
+
+<div id="bottleFilterOverlay" aria-hidden="true">
+<div class="bottle-filter-card" role="dialog" aria-modal="true" aria-label="纸条筛选">
+<h3 class="bottle-filter-title">纸条筛选<em>VIP</em></h3>
+<div class="bottle-filter-label">性别：</div>
+<div class="bottle-filter-genders">
+<label><input type="radio" name="bottleGender" value="all" checked>随机</label>
+<label><input type="radio" name="bottleGender" value="male">仅男</label>
+<label><input type="radio" name="bottleGender" value="female">仅女</label>
+</div>
+<div class="bottle-filter-label">地点<span style="color:#ef91a3">(永久VIP专享)</span>：</div>
+<button class="bottle-filter-location" type="button" onclick="notify('VIP专享','地点筛选为永久 VIP 专享功能。当前先使用随机地点。')">默认随机</button>
+<p class="bottle-filter-note">（开启地点筛选后每次抽取消耗3个星球币）</p>
+<div class="bottle-filter-actions"><button class="secondary" type="button" onclick="closeBottleFilter()">取消</button><button type="button" onclick="applyBottleFilter()">确定</button></div>
+</div></div>
+
 <div class="modal" id="genericModal">
 <div class="modalbox">
 <h2 id="modalTitle">提示</h2>
@@ -1748,6 +1831,27 @@ is_demo:true
 }
 ];
 
+
+let bottleGenderFilter='all';
+function openBottleFilter(){
+ const overlay=$('bottleFilterOverlay');if(!overlay)return;
+ const chosen=document.querySelector('input[name="bottleGender"][value="'+bottleGenderFilter+'"]');
+ if(chosen)chosen.checked=true;
+ overlay.classList.add('show');overlay.setAttribute('aria-hidden','false');
+}
+function closeBottleFilter(){const overlay=$('bottleFilterOverlay');overlay?.classList.remove('show');overlay?.setAttribute('aria-hidden','true')}
+function applyBottleFilter(){
+ bottleGenderFilter=document.querySelector('input[name="bottleGender"]:checked')?.value||'all';
+ closeBottleFilter();pickBottle();
+}
+async function shareInvite(){
+ if(!user){notify('请先登录','登录后才能邀请好友。');return}
+ const url=location.origin+'/?invite='+encodeURIComponent(profile?.friend_code||'');
+ const data={title:'泊言',text:'来泊言，写下心事，让每一份真诚都被温柔接住。',url};
+ try{if(navigator.share)await navigator.share(data);else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(url);notify('邀请链接已复制',url)}else notify('邀请链接',url)}
+ catch(e){if(e.name!=='AbortError')notify('邀请链接',url)}
+}
+
 function notify(title,body){
 $('modalTitle').textContent=title;
 $('modalBody').textContent=body;
@@ -1758,7 +1862,7 @@ window.closeGeneric=closeGeneric;
 function showPage(id,options={}){
  const target=document.getElementById(id);
  if(!target)return;
- if(!['messages','profile'].includes(id))return;
+ if(!['messages','profile','settings'].includes(id))return;
  const previous=document.querySelector('.page.active')?.id||currentPageId||'home';
  if(id!==previous&&!options.fromHistory&&!options.replace){
   pageHistory.push(previous);
@@ -2342,10 +2446,19 @@ async function pickBottle(){
  try{
   const seen=new Set();
   try{JSON.parse(localStorage.getItem(seenBottleKey)||'[]').forEach(id=>seen.add(String(id)))}catch(_){}
-  const eligible=[
+  let eligible=[
    ...demoBottles.filter(b=>!seen.has(String(b.id))),
    ...bottles.filter(b=>b.is_public&&b.user_id!==user?.id&&!b.picked_up_by&&!['picked','collected','claimed'].includes(String(b.status||'').toLowerCase())&&!seen.has(String(b.id)))
   ];
+  if(bottleGenderFilter!=='all'){
+   const ids=[...new Set(eligible.map(b=>b.user_id).filter(Boolean))];
+   if(ids.length){
+    const {data:people,error}=await db.from('profiles').select('id,gender').in('id',ids);
+    if(error)throw error;
+    const allowed=new Set((people||[]).filter(p=>p.gender===bottleGenderFilter).map(p=>p.id));
+    eligible=eligible.filter(b=>b.is_demo?false:allowed.has(b.user_id));
+   }else eligible=[];
+  }
   if(!eligible.length){
    notify('海面暂时很安静','目前没有新的公开漂流瓶。你可以稍后再来，或去「发现」看看大家分享的故事。');
    return;
