@@ -1308,6 +1308,61 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
 #messageList .conversation-preview{margin-top:6px!important;font-size:13px!important;color:#9c93a8!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
 #messageList .conversation-unread{width:8px!important;height:8px!important;flex:0 0 8px!important;background:#a98be2!important}
 
+
+/* 云朵岛设置页：按参考图的手机比例压缩尺寸，统一香芋紫 */
+#settings.page.active{
+ display:block!important;width:100%!important;max-width:100%!important;
+ min-height:100dvh!important;box-sizing:border-box!important;
+ padding:0 18px calc(24px + env(safe-area-inset-bottom))!important;
+ margin:0!important;background:#fff!important;
+}
+#settings .page-head{
+ height:55px!important;min-height:55px!important;
+ margin:0 -18px 18px!important;padding:0 18px!important;
+ background:#c8b0f0!important;color:#fff!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ position:relative!important;box-sizing:border-box!important;
+}
+#settings .page-head h2{margin:0!important;color:#fff!important;font-size:18px!important;font-weight:500!important;line-height:1!important}
+#settings .page-head .back{
+ position:absolute!important;left:14px!important;top:50%!important;transform:translateY(-50%)!important;
+ color:#fff!important;border:0!important;background:none!important;
+ font-size:25px!important;line-height:1!important;padding:5px 8px!important;
+}
+#settings .settings-reference-list{width:100%!important;margin:0!important;padding:0!important}
+#settings .settings-reference-row{
+ width:100%!important;height:44px!important;min-height:44px!important;
+ box-sizing:border-box!important;display:flex!important;align-items:center!important;
+ gap:12px!important;margin:0!important;padding:0 5px!important;
+ border:0!important;border-bottom:1px solid #f0edf4!important;
+ border-radius:0!important;background:#fff!important;
+ color:#282331!important;text-align:left!important;box-shadow:none!important;
+}
+#settings .settings-reference-row .settings-icon{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:24px!important;min-width:24px!important;height:24px!important;
+ flex:0 0 24px!important;text-align:center!important;
+ color:#a98be2!important;font-size:21px!important;line-height:1!important;
+}
+#settings .settings-reference-row .settings-label{
+ display:block!important;flex:1 1 auto!important;min-width:0!important;
+ margin:0!important;color:#222!important;
+ font-size:15px!important;font-weight:400!important;line-height:1.2!important;
+ white-space:nowrap!important;
+}
+#settings .settings-reference-row .settings-arrow{
+ display:flex!important;align-items:center!important;justify-content:flex-end!important;
+ flex:0 0 18px!important;width:18px!important;margin-left:auto!important;
+ padding:0!important;color:#a98be2!important;
+ font-size:25px!important;font-weight:300!important;line-height:1!important;
+ text-align:right!important;
+}
+#settings .settings-reference-row:active{background:#faf8fd!important}
+@media(max-width:380px){
+ #settings.page.active{padding-left:18px!important;padding-right:18px!important}
+ #settings .settings-reference-row .settings-label{font-size:14px!important}
+}
+
 </style>
 </head>
 
@@ -1741,11 +1796,7 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
 <button class="settings-reference-row" type="button" onclick="logout()"><span class="settings-icon">⇥</span><span class="settings-label">退出登录</span><span class="settings-arrow">›</span></button>
 <button class="settings-reference-row" type="button" onclick="notify('注销账户','账户注销需要核验身份并清理云端个人数据。目前尚未开放自助注销，请先联系客服申请处理。')"><span class="settings-icon">⏻</span><span class="settings-label">注销账户</span><span class="settings-arrow">›</span></button>
 </div>
-<div class="language-card" style="padding:18px 8px!important;margin-top:18px!important;border-top:1px solid #f0edef!important">
-<div class="language-heading"><strong>语言设置</strong><small>选择你使用的界面语言</small></div>
-<select id="languageSelect" aria-label="选择语言"><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="en">English</option></select>
-<p class="language-note">语言选择会自动保存，并在下次打开时继续使用。</p>
-</div>
+
 </section>
 
 
