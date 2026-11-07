@@ -1384,6 +1384,24 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
 #messageList .conversation-time,
 .two-page-official .official-title time{font-size:12px!important;line-height:1.4!important;color:#b7afc1!important}
 
+
+/* 会话列表紧凑化：缩小行距与头像，官方和用户头像保持一致 */
+.two-page-official{
+ min-height:88px!important;padding:10px 18px!important;
+ gap:12px!important;box-sizing:border-box!important;
+}
+.two-page-official .official-icon,
+#messageList .conversation-avatar{
+ width:52px!important;height:52px!important;min-width:52px!important;
+ flex:0 0 52px!important;border-radius:50%!important;
+}
+#messageList .conversation-item{
+ min-height:82px!important;padding:10px 18px!important;
+ gap:12px!important;margin:0!important;
+}
+#messageList .conversation-top{align-items:center!important}
+#messageList .conversation-preview{margin-top:4px!important}
+
 </style>
 </head>
 
