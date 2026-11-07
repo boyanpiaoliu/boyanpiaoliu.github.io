@@ -1750,6 +1750,59 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  font-size:10px!important;
 }
 #messageThread .chat-line.theirs .chat-read-receipt{display:none!important}
+
+/* 私聊消息统一对齐：头像、气泡和发送状态保持稳定的水平关系 */
+#messageThread .chat-line{
+ align-items:flex-start!important;
+}
+#messageThread .chat-line.theirs .chat-content{
+ align-items:flex-start!important;
+}
+#messageThread .chat-line.mine .chat-content{
+ align-items:flex-end!important;
+}
+#messageThread .chat-line.mine .chat-read-receipt{
+ display:block!important;
+ width:max-content!important;
+ max-width:100%!important;
+ align-self:flex-end!important;
+ margin:4px 2px 0 auto!important;
+ padding:0!important;
+ text-align:right!important;
+ line-height:1.25!important;
+ color:#999!important;
+ font-size:10px!important;
+}
+#messageThread .chat-line.theirs .chat-read-receipt{
+ display:none!important;
+}
+/* 收紧聊天顶部栏，避免紫色区域占用过多高度 */
+#messageThread{padding-top:64px!important;scroll-padding-top:64px!important}
+#messageThread .message-thread-head{
+ height:64px!important;
+ min-height:64px!important;
+ padding:4px 52px!important;
+}
+/* 更精致、清晰的右上角资料入口 */
+#messageThread .message-thread-head .thread-more{
+ right:14px!important;
+ top:50%!important;
+ transform:translateY(-50%)!important;
+ width:38px!important;
+ height:38px!important;
+ display:grid!important;
+ place-items:center!important;
+ border:1px solid rgba(255,255,255,.32)!important;
+ border-radius:50%!important;
+ background:rgba(255,255,255,.15)!important;
+ color:#fff!important;
+ font-size:20px!important;
+ font-weight:600!important;
+ letter-spacing:2px!important;
+ line-height:1!important;
+ padding:0 0 5px 2px!important;
+ box-shadow:0 2px 8px rgba(91,65,125,.10)!important;
+}
 </style>
 </head>
 
