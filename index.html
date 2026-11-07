@@ -1596,6 +1596,26 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
 body:has(#messageThread[style*="display: block"]) #mainNav,
 body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important}
 
+/* 聊天时间居中加深；消息气泡与对应头像顶部平行 */
+#messageThread .chat-date-divider{
+ color:#24212a!important;text-align:center!important;font-weight:500!important;
+}
+#messageThread .chat-line{
+ align-items:flex-start!important;
+}
+#messageThread .chat-line .chat-content{
+ min-width:0!important;
+}
+#messageThread .chat-line .chat-meta-time{
+ width:100%!important;box-sizing:border-box!important;
+ text-align:center!important;color:#24212a!important;
+ font-size:11px!important;font-weight:500!important;
+ margin-top:7px!important;padding:0!important;
+}
+#messageThread .chat-line .chat-read-receipt{
+ display:block!important;width:100%!important;text-align:center!important;
+ color:#77717f!important;font-size:10px!important;
+}
 /* 聊天标题栏固定在视口顶部，不随消息列表滚动 */
 #messageThread{padding-top:76px!important;scroll-padding-top:76px!important}
 #messageThread .message-thread-head{
