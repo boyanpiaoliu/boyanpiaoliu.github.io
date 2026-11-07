@@ -1402,6 +1402,13 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
 #messageList .conversation-top{align-items:center!important}
 #messageList .conversation-preview{margin-top:4px!important}
 
+
+/* 会话两行进一步压缩，并优化底部消息图标 */
+.two-page-official{min-height:88px!important;padding:8px 18px!important;gap:12px!important}
+#messageList .conversation-item{min-height:70px!important;padding:8px 4px!important;gap:12px!important}
+#mainNav .message-tab-icon{width:25px!important;height:25px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+#mainNav .message-tab-icon svg{width:25px!important;height:25px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+
 </style>
 </head>
 
@@ -1845,7 +1852,7 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
 </main>
 
 <nav id="mainNav" aria-label="主导航" class="two-page-nav">
-<button class="navbtn message-nav active" data-page="messages"><span class="ico" aria-hidden="true">▣</span>消息<span id="unreadBadge" class="unread-badge" style="display:none">0</span></button>
+<button class="navbtn message-nav active" data-page="messages"><span class="ico message-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 5.8A2.8 2.8 0 0 1 6.8 3h10.4A2.8 2.8 0 0 1 20 5.8v7.4a2.8 2.8 0 0 1-2.8 2.8H10l-4.8 3.4v-3.7A2.8 2.8 0 0 1 4 13.2z"/><path d="M8 8h8M8 11.5h5"/></svg></span>消息<span id="unreadBadge" class="unread-badge" style="display:none">0</span></button>
 <button class="navbtn" data-page="profile"><span class="ico" aria-hidden="true">♙</span>个人</button>
 </nav>
 
