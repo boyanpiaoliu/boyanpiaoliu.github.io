@@ -1250,6 +1250,19 @@ html,body{max-width:100%;overflow-x:hidden!important}
 #genericModal{z-index:2147483647!important;pointer-events:auto!important}
 #genericModal .modalbox,#genericModal #closeGenericButton{pointer-events:auto!important;position:relative!important;z-index:2147483647!important;touch-action:manipulation!important}
 
+/* 取消按钮修复：提示框只拦截自身白色内容区域，空白遮罩区域允许点击底层取消 */
+#genericModal{pointer-events:none!important}
+#genericModal .modalbox{pointer-events:auto!important}
+#genericModal #closeGenericButton{pointer-events:auto!important}
+#writeModal{pointer-events:auto!important}
+#writeModal .modalbox{pointer-events:auto!important}
+#writeModal #closeWriteButton{
+ position:relative!important;z-index:2147483000!important;
+ display:flex!important;min-height:48px!important;width:100%!important;
+ pointer-events:auto!important;touch-action:manipulation!important;
+ cursor:pointer!important;-webkit-tap-highlight-color:rgba(70,130,170,.18)!important
+}
+
 </style>
 </head>
 
