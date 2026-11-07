@@ -2969,7 +2969,7 @@ function applyLanguage(lang){
  const dict=languageText[lang]||languageText['zh-CN'];
  document.documentElement.lang=lang;
  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(dict[k])el.textContent=dict[k]});
- document.querySelectorAll('#mainNav .navbtn').forEach(btn=>{const key=languageMap[btn.textContent.replace(/\d+/g,'').trim()];if(key){const icon=btn.querySelector('.ico'),badge=btn.querySelector('.unread-badge');btn.childNodes.forEach(n=>{if(n.nodeType===3)n.textContent=''});if(icon)icon.insertAdjacentText('afterend',dict[key]||'');else btn.insertAdjacentText('afterbegin',dict[key]||'');}});
+ document.querySelectorAll('#mainNav .navbtn').forEach(btn=>{const key=({home:'home',discover:'discover',messages:'messages',profile:'profile'})[btn.dataset.page];if(key){const icon=btn.querySelector('.ico');btn.childNodes.forEach(n=>{if(n.nodeType===3)n.textContent=''});if(icon)icon.insertAdjacentText('afterend',dict[key]||'');}});
  document.querySelectorAll('.page-head .back').forEach(btn=>{const arrow=btn.textContent.trim().startsWith('‹')?'‹ ':'';btn.textContent=arrow+(dict.back||'返回')});
  const select=document.getElementById('languageSelect');if(select&&select.value!==lang)select.value=lang;
 }
