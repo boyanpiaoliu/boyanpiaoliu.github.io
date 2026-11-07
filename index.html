@@ -1596,6 +1596,16 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
 body:has(#messageThread[style*="display: block"]) #mainNav,
 body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important}
 
+/* 聊天标题栏固定在视口顶部，不随消息列表滚动 */
+#messageThread{padding-top:76px!important;scroll-padding-top:76px!important}
+#messageThread .message-thread-head{
+ position:fixed!important;top:0!important;left:0!important;right:0!important;
+ z-index:1000!important;width:auto!important;margin:0!important;
+ box-sizing:border-box!important;height:76px!important;min-height:76px!important;
+}
+@media(min-width:700px){
+ #messageThread .message-thread-head{left:50%!important;right:auto!important;width:520px!important;transform:translateX(-50%)!important}
+}
 /* 聊天详情：按参考图整理为沉浸式私聊布局 */
 #messages:has(#messageThread[style*="display: block"]) {padding:0!important;background:#fcfbfe!important}
 #messages:has(#messageThread[style*="display: block"]) .two-page-message-head,
