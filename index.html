@@ -216,7 +216,7 @@ max-width:420px;max-height:85vh;overflow:auto;
 .conversation-unread{width:8px;height:8px;border-radius:50%;background:#ad8fd6;flex:0 0 8px}
 .message-thread-head{display:flex;align-items:center;gap:10px;padding:12px 0 15px;border-bottom:1px solid #ede9f2;margin-bottom:14px}
 .message-thread-head button{border:0;background:#f4f0f9;color:#7a619d;border-radius:12px;padding:8px 12px}
-.message-thread-head strong{font-size:14px;color:#534665}
+.message-thread-head strong{font-size:14px;color:#fff}
 .message-bubble{max-width:84%;padding:12px 14px;border-radius:17px;margin:9px 0;line-height:1.65;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
 .message-bubble.mine{margin-left:auto;background:#e8e0f4;color:#513f6a;border-bottom-right-radius:5px}
 .message-bubble.theirs{margin-right:auto;background:#f4f2f7;color:#625378;border-bottom-left-radius:5px}
@@ -547,7 +547,7 @@ header p{letter-spacing:.4px}
 .message-tools button.recording{background:#f7f4fb;color:#8a6bb6;border-color:#d7caea}
 .message-thread-head{display:flex;align-items:center;gap:10px}
 .message-thread-head strong{flex:1;text-align:center;font-size:14px}
-.message-thread-head .thread-peer-id{display:block;font-size:10px;color:#9a8bae;font-weight:500;margin-top:3px}
+.message-thread-head .thread-peer-id{display:block;font-size:10px;color:rgba(255,255,255,.9);font-weight:500;margin-top:3px}
 
 
 .conversation-friend-code{display:block;margin-top:3px;font-size:10px;font-weight:500;color:#9f91b3}
@@ -2411,7 +2411,7 @@ async function openConversation(peer){
  const head=document.createElement('div');head.className='message-thread-head';
  const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',async()=>{replyTargetMessage=null;await loadMessages();renderMessages()});
  const title=document.createElement('strong');title.textContent=(peerProfile?.nickname||'好友');
-const peerId=document.createElement('span');peerId.className='thread-peer-id';peerId.textContent='ID：'+(peerProfile?.friend_code||'—');title.append(peerId);head.append(back,title);thread.append(head);
+const peerId=document.createElement('span');peerId.className='thread-peer-id';peerId.textContent='IP：需对方授权';title.append(peerId);head.append(back,title);thread.append(head);
  for(const m of items){
  const mine=m.sender_id===user.id;
  const line=document.createElement('div');line.className='chat-line '+(mine?'mine':'theirs');
