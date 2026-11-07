@@ -1803,6 +1803,41 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  padding:0 0 5px 2px!important;
  box-shadow:0 2px 8px rgba(91,65,125,.10)!important;
 }
+
+/* 聊天页细节：缩小返回键、压缩消息间距并简化输入区图标 */
+#messageThread .message-thread-head .thread-back{
+ width:42px!important;height:44px!important;left:12px!important;
+}
+#messageThread .message-thread-head .thread-back::before{
+ font-size:36px!important;
+}
+#messageThread .chat-line{
+ margin:8px 0!important;
+ gap:8px!important;
+}
+#messageThread .message-composer{
+ grid-template-columns:34px minmax(0,1fr) 34px 0!important;
+ gap:8px!important;
+ padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;
+}
+#messageThread .message-composer .composer-voice{
+ width:32px!important;height:38px!important;
+ font-size:0!important;
+ display:grid!important;place-items:center!important;
+ color:#78649a!important;
+}
+#messageThread .message-composer .composer-voice::before{
+ content:""!important;display:block!important;
+ width:23px!important;height:23px!important;
+ background-color:#78649a!important;
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='2' width='6' height='12' rx='3'/%3E%3Cpath d='M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8'/%3E%3C/svg%3E") center/contain no-repeat!important;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='2' width='6' height='12' rx='3'/%3E%3Cpath d='M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8'/%3E%3C/svg%3E") center/contain no-repeat!important;
+}
+#messageThread .message-composer .composer-plus{
+ width:34px!important;height:34px!important;
+ border-width:1.7px!important;
+ font-size:23px!important;
+}
 </style>
 </head>
 
