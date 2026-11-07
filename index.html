@@ -2411,7 +2411,7 @@ async function openConversation(peer){
  const head=document.createElement('div');head.className='message-thread-head';
  const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',async()=>{replyTargetMessage=null;await loadMessages();renderMessages()});
  const title=document.createElement('strong');title.textContent=(peerProfile?.nickname||'好友');
-const peerId=document.createElement('span');peerId.className='thread-peer-id';peerId.textContent='IP：需对方授权';title.append(peerId);head.append(back,title);thread.append(head);
+const peerId=document.createElement('span');peerId.className='thread-peer-id';peerId.textContent='IP：未知';title.append(peerId);head.append(back,title);thread.append(head);
  for(const m of items){
  const mine=m.sender_id===user.id;
  const line=document.createElement('div');line.className='chat-line '+(mine?'mine':'theirs');
