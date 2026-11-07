@@ -1363,6 +1363,27 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
  #settings .settings-reference-row .settings-label{font-size:14px!important}
 }
 
+
+/* 消息列表：官方账号与用户会话头像、文字尺寸完全统一 */
+.two-page-official{min-height:110px!important;box-sizing:border-box!important}
+.two-page-official .official-icon,
+#messageList .conversation-avatar{
+ width:64px!important;height:64px!important;min-width:64px!important;
+ flex:0 0 64px!important;border-radius:50%!important;overflow:hidden!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;
+}
+.two-page-official .official-icon{padding:0!important;background:#c8b0f0!important}
+.two-page-official .official-icon img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important}
+#messageList .conversation-avatar img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important}
+#messageList .conversation-friend-code{display:none!important}
+#messageList .conversation-top strong,
+.two-page-official .official-title{font-size:18px!important;font-weight:500!important;line-height:1.35!important;color:#292333!important}
+#messageList .conversation-preview,
+.two-page-official .official-copy p{font-size:14px!important;line-height:1.45!important;margin-top:7px!important;color:#9c93a8!important}
+#messageList .conversation-time,
+.two-page-official .official-title time{font-size:13px!important;line-height:1.4!important;color:#b7afc1!important}
+
 </style>
 </head>
 
@@ -1463,7 +1484,7 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
 <button type="button" class="message-filter" onclick="openBottleFilter()">筛选</button>
 </div>
 <div class="two-page-official">
-<div class="official-icon">➤</div>
+<div class="official-icon"><img src="./cloud-island-icon.jpg?v=7d85b9d7" alt="云朵岛图标"></div>
 <div class="official-copy"><div class="official-title">云朵岛官方 <time>官方通知</time></div><p>欢迎来到云朵岛，愿每一份心事都能被温柔接住。</p></div>
 </div>
 <div id="messageSummary" class="message-summary"></div>
