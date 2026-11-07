@@ -172,7 +172,7 @@ padding:10px;color:#718397;font-size:14px;
 .back{border:0;background:#eaf2f8;color:#47799e;border-radius:12px;padding:9px 13px}
 /* 全站悬浮返回按钮：滚动页面时始终可见 */
 .page-head .back{display:none}
-#globalFloatingBack{position:fixed;right:18px;bottom:calc(94px + env(safe-area-inset-bottom));z-index:2147483000;width:52px;height:52px;border:1px solid rgba(255,255,255,.95);border-radius:50%;display:none;align-items:center;justify-content:center;background:linear-gradient(145deg,#ffffff,#e8f4fb);color:#286b99;font-size:29px;font-weight:600;line-height:1;box-shadow:0 9px 26px rgba(35,91,130,.3);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);-webkit-tap-highlight-color:transparent;transition:transform .18s,box-shadow .18s}#globalFloatingBack.is-visible{display:flex!important}
+#globalFloatingBack{position:fixed!important;right:18px!important;bottom:calc(94px + env(safe-area-inset-bottom))!important;z-index:2147483000!important;width:52px!important;height:52px!important;padding:0!important;border:1px solid rgba(255,255,255,.95)!important;border-radius:50%!important;display:none;align-items:center!important;justify-content:center!important;background:linear-gradient(145deg,#ffffff,#e8f4fb)!important;color:#286b99!important;font-size:29px!important;font-weight:600!important;line-height:1!important;box-shadow:0 9px 26px rgba(35,91,130,.3)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);-webkit-tap-highlight-color:transparent;transition:transform .18s,box-shadow .18s}#globalFloatingBack.is-visible{display:flex!important}
 #globalFloatingBack:active{transform:scale(.92);box-shadow:0 4px 12px rgba(45,91,123,.18)}
 
 .page-head h2{margin:0;flex:1}
@@ -1340,7 +1340,14 @@ $('genericModal').classList.add('show');
 function closeGeneric(){$('genericModal').classList.remove('show')}
 function showPage(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
-const floatingBack=$('globalFloatingBack');const currentPage=document.getElementById(id);if(floatingBack){const canGoBack=!!currentPage?.querySelector('.page-head .back, [data-action="backDetail"]');floatingBack.classList.toggle('is-visible',canGoBack);}
+const floatingBack=document.getElementById('globalFloatingBack');
+const currentPage=document.getElementById(id);
+const canGoBack=!!(currentPage&&currentPage.querySelector('.page-head .back, [data-action="backDetail"]'));
+if(floatingBack){
+ floatingBack.classList.toggle('is-visible',canGoBack);
+ floatingBack.style.setProperty('display',canGoBack?'flex':'none','important');
+ floatingBack.style.setProperty('visibility',canGoBack?'visible':'hidden','important');
+}
 document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
 $('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications','growthCenter','cottageVisit'].includes(id)?'none':'flex';
 window.scrollTo(0,0);
