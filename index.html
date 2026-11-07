@@ -3020,6 +3020,9 @@ function renderOceanCollection(){
 // 启动
 (async()=>{
 try{
+const savedLanguage=localStorage.getItem('boyan-language')||'zh-CN';
+applyLanguage(savedLanguage);
+document.getElementById('languageSelect')?.addEventListener('change',e=>setLanguage(e.target.value));
 await initSession();
 }catch(e){showError(e)}
 })();
