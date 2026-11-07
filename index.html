@@ -1225,6 +1225,12 @@ html,body{max-width:100%;overflow-x:hidden!important}
 #writeModal button{position:relative!important;z-index:5!important;pointer-events:auto!important;touch-action:manipulation!important;cursor:pointer!important;-webkit-tap-highlight-color:rgba(70,130,170,.18)}
 #writeModal textarea,#writeModal input{position:relative;z-index:2;pointer-events:auto!important}
 
+/* 投递成功/失败提示必须显示在所有弹窗上方 */
+#genericModal{z-index:2147483600!important;pointer-events:auto!important}
+#genericModal .modalbox{position:relative;z-index:1;pointer-events:auto!important}
+#genericModal button{pointer-events:auto!important;touch-action:manipulation!important}
+#writeModal{z-index:2147482500!important}
+
 </style>
 </head>
 
@@ -2327,19 +2333,26 @@ async function submitBottle(){
 if(!requireLogin())return;
 const content=$('bottleText').value.trim();
 if(!content){notify('还没有写内容','先写下一段心情。');return}
+const submitButton=$('submitBottleButton');
+if(submitButton?.dataset.busy==='saving')return;
+if(submitButton){submitButton.dataset.busy='saving';submitButton.disabled=true}
 try{
-const {error}=await db.from('bottles').insert({
+const {data,error}=await db.from('bottles').insert({
 user_id:user.id,
 content,
 is_public:$('isPublic').checked,
 mood:'warm'
-});
+}).select('id').single();
 if(error)throw error;
 $('bottleText').value='';
 $('writeModal').classList.remove('show');
-await refreshAll();
 notify('投递成功','你的漂流瓶已经投进云端大海。');
-}catch(e){showError(e)}
+try{await refreshAll()}catch(refreshError){console.error('投递成功后的列表刷新失败：',refreshError)}
+}catch(e){
+showError(e);
+}finally{
+if(submitButton){submitButton.dataset.busy='';submitButton.disabled=false}
+}
 }
 
 // 随机捡瓶
