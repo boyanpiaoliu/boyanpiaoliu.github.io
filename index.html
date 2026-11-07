@@ -228,6 +228,31 @@ max-width:420px;max-height:85vh;overflow:auto;
 .message-nav{position:relative}
 .unread-badge{display:inline-grid;place-items:center;min-width:16px;height:16px;padding:0 4px;border-radius:10px;background:#ad8fd6;color:white;font-size:9px;position:absolute;top:0;right:5px}
 
+
+/* 云朵岛好友资料页：按参考图采用整页资料布局，统一香芋紫 */
+.profile-page-overlay{padding:0!important;align-items:stretch!important;justify-content:stretch!important;background:#fff!important;backdrop-filter:none!important}
+.profile-page-card{width:100%!important;max-width:none!important;height:100dvh!important;max-height:none!important;overflow-y:auto!important;padding:0!important;margin:0!important;border-radius:0!important;box-shadow:none!important;text-align:left!important;background:#fff!important}
+.profile-page-top{height:230px;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 48px) 22px 20px;position:relative;background:linear-gradient(145deg,#f0e8fb 0%,#d5c0f0 52%,#b99be5 100%);color:#332743}
+.profile-page-back,.profile-page-more{position:absolute;top:calc(env(safe-area-inset-top) + 12px);border:0!important;background:transparent!important;color:#8065a8!important;padding:5px 8px!important;line-height:1!important}
+.profile-page-back{left:14px;font-size:42px!important;font-weight:300!important;width:48px;height:48px}
+.profile-page-more{right:16px;font-size:19px!important;letter-spacing:3px!important;width:48px;height:48px}
+.profile-page-identity{display:flex;align-items:center;gap:18px;margin-top:10px}
+.profile-page-identity .profile-view-avatar{width:108px;height:108px;flex:0 0 108px;margin:0;border:0;box-shadow:none;background:rgba(255,255,255,.55);font-size:34px}
+.profile-page-namebox{min-width:0;flex:1}
+.profile-page-namebox h3{font-size:22px!important;font-weight:600!important;color:#30253e!important;margin:0 0 8px!important}
+.profile-page-namebox>span{display:block;font-size:14px;color:#78658f;margin-bottom:10px}
+.profile-page-namebox>p{font-size:13px!important;color:#443653!important;margin:0!important;overflow-wrap:anywhere}
+.profile-page-notes{padding:28px 24px 50px;background:#fff;min-height:calc(100dvh - 230px)}
+.profile-page-notes h2{font-size:19px;font-weight:650;color:#29242f;margin:0 0 34px}
+.profile-note-year{font-size:18px;font-weight:650;color:#29242f;margin:0 0 28px 10px}
+.profile-note-date{font-size:16px;font-weight:600;color:#29242f;margin:0 0 28px 10px}
+.profile-note-content{font-size:15px;color:#6f6876;line-height:1.7;margin:0 10px 28px;white-space:pre-wrap;overflow-wrap:anywhere}
+.profile-note-signature{font-size:13px;color:#8b8292;line-height:1.6;margin:0 10px 24px;white-space:pre-wrap;overflow-wrap:anywhere}
+.profile-page-extra{padding:0 24px 30px;color:#766b83;font-size:12px}
+.profile-page-extra>span{margin-right:12px}
+.profile-page-extra .profile-safety-actions{display:flex;gap:10px;margin-top:16px}
+.profile-page-extra .profile-safety-actions button{border:1px solid #e5d9f2;border-radius:10px;background:#faf7fd;color:#8065a8;padding:9px 14px;font-size:12px}
+
 /* Premium ocean visual system */
 :root{--blue:#6f4aa3;--blue2:#f2edf8;--ink:#352946;--muted:#9586ab;--line:#ebe7f1;--bg:#f6f3fa}
 body{background:linear-gradient(180deg,#f9f7fb 0%,#f3f0f7 100%);color:var(--ink)}
@@ -2095,7 +2120,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 </section>
 
 
-<div id="profileViewModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card"><button class="profile-view-close" data-action="closeProfileView">×</button><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><h3 id="profileViewName">漂流者</h3><p id="profileViewId"></p><div class="profile-view-details"><div><span>账号 ID</span><strong id="profileViewAccountId">—</strong></div><div><span>性别</span><strong id="profileViewGender">未设置</strong></div></div><div class="profile-view-extra"><section><span>性取向</span><p id="profileViewOrientation">未公开</p></section></div><div class="profile-view-extra"><section><span>个性签名</span><p id="profileViewSignature">这个人还没有填写个性签名</p></section><section><span>最近的动态</span><p id="profileViewActivity">暂时没有公开动态</p><small id="profileViewActivityTime"></small></section></div><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button><div id="profileSafetyActions" class="profile-safety-actions"><button data-action="reportProfile">举报用户</button><button data-action="blockProfile">拉黑用户</button></div></div></div>
+<div id="profileViewModal" class="profile-view-overlay profile-page-overlay" style="display:none"><div class="profile-view-card profile-page-card"><div class="profile-page-top"><button class="profile-page-back" data-action="closeProfileView" aria-label="返回">‹</button><button class="profile-page-more" data-action="toggleProfileActions" aria-label="更多">•••</button><div class="profile-page-identity"><div id="profileViewAvatar" class="profile-view-avatar">🌊</div><div class="profile-page-namebox"><h3 id="profileViewName">漂流者</h3><span id="profileViewIp">IP · 未知</span><p id="profileViewId">ID：—</p></div></div></div><div class="profile-page-notes"><h2>Ta的笔记</h2><div class="profile-note-year" id="profileViewYear"></div><div class="profile-note-date" id="profileViewActivityTime"></div><p class="profile-note-content" id="profileViewActivity">暂时没有公开动态</p><p class="profile-note-signature" id="profileViewSignature"></p></div><div class="profile-page-extra"><span id="profileViewGender">未设置</span><span id="profileViewOrientation">未公开</span><strong id="profileViewAccountId" style="display:none">—</strong><button id="profileViewEdit" class="btn primary block" data-action="editProfile" style="display:none">编辑我的资料</button><div id="profileSafetyActions" class="profile-safety-actions" style="display:none"><button data-action="reportProfile">举报用户</button><button data-action="blockProfile">拉黑用户</button></div></div></div></div>
 <div id="heartMatchModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card heart-match-card"><button class="profile-view-close" data-action="closeHeartMatch">×</button><div class="profile-view-avatar" id="heartMatchAvatar">🌊</div><h3 id="heartMatchName">遇见一位漂流者</h3><p id="heartMatchId"></p><p id="heartMatchSignature">也许你们会有共同话题</p><div class="heart-match-actions"><button data-action="heartMatchAgain">再找一位</button><button id="heartMatchAdd" class="primary">申请加好友</button></div></div></div>
 <div id="reportModal" class="profile-view-overlay" style="display:none"><div class="profile-view-card report-card"><button class="profile-view-close" data-action="closeReport">×</button><h3>提交举报</h3><p class="sub">请选择原因，平台会根据举报内容进行处理。</p><select id="reportReason"><option value="spam">垃圾广告或引流</option><option value="harassment">骚扰、辱骂或威胁</option><option value="sexual_content">色情或不适内容</option><option value="violence">暴力或危险内容</option><option value="fraud">诈骗或虚假信息</option><option value="other">其他违规内容</option></select><textarea id="reportDetails" maxlength="300" placeholder="补充说明（选填，最多300字）"></textarea><button class="btn primary block" data-action="submitReport">提交举报</button></div></div>
 </main>
@@ -2333,7 +2358,10 @@ async function showUserProfile(id){
   const av=$('profileViewAvatar');av.replaceChildren();
   if(person.avatar_url){const img=document.createElement('img');img.src=person.avatar_url;img.alt='头像';av.append(img)}else av.textContent=(person.nickname||'漂').slice(0,1);
   $('profileViewName').textContent=person.nickname||'漂流者';
-  $('profileViewId').textContent='好友 ID：'+(person.friend_code||'—');
+  $('profileViewId').textContent='ID：'+(person.friend_code||'—');
+  $('profileViewIp').textContent='IP · 未知';
+  const noteDate=person.recent_activity_at?new Date(person.recent_activity_at):null;
+  $('profileViewYear').textContent=noteDate&&!Number.isNaN(noteDate.getTime())?noteDate.getFullYear()+'年':'';
   $('profileViewGender').textContent=person.gender==='female'?'女生':person.gender==='male'?'男生':'未设置';
   const orientationNames={heterosexual:'异性恋',homosexual:'同性恋',bisexual:'双性恋',pansexual:'泛性恋',asexual:'无性恋',questioning:'探索中',other:'其他',prefer_not_to_say:'不愿透露'};
   $('profileViewOrientation').textContent=person.sexual_orientation_visible&&person.sexual_orientation?(orientationNames[person.sexual_orientation]||'未公开'):(id===user?.id?(person.sexual_orientation?orientationNames[person.sexual_orientation]:'未填写'):'未公开');
@@ -2341,6 +2369,7 @@ async function showUserProfile(id){
   $('profileViewSignature').textContent=person.signature||'这个人还没有填写个性签名';
   $('profileViewActivity').textContent=person.recent_activity||'暂时没有公开动态';
   $('profileViewActivityTime').textContent=person.recent_activity_at?dateText(person.recent_activity_at):'';
+  if(!person.recent_activity){$('profileViewYear').textContent='';$('profileViewActivityTime').textContent='';}
   $('profileViewEdit').style.display=id===user?.id?'block':'none';
   $('profileSafetyActions').style.display=id===user?.id?'none':'flex';
   $('profileViewModal').style.display='flex';
@@ -3235,6 +3264,7 @@ const closeMatch=e.target.closest('[data-action="closeHeartMatch"]');if(closeMat
 const matchAgain=e.target.closest('[data-action="heartMatchAgain"]');if(matchAgain){startHeartMatch();return}
 const match=e.target.closest('[data-action="heartMatch"]');if(match){startHeartMatch();return}
 const closeProfile=e.target.closest('[data-action="closeProfileView"]');if(closeProfile){$('profileViewModal').style.display='none';return}
+const profileActions=e.target.closest('[data-action="toggleProfileActions"]');if(profileActions){const actions=$('profileSafetyActions');actions.style.display=actions.style.display==='flex'?'none':'flex';return}
 const avatarTarget=e.target.closest('.chat-avatar');if(avatarTarget?.dataset.profileId){await showUserProfile(avatarTarget.dataset.profileId);return}
 const ownAvatar=e.target.closest('#avatar');if(ownAvatar&&user){await showUserProfile(user.id);return}
 const gender=e.target.closest('[data-gender]');
