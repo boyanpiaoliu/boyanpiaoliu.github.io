@@ -1689,7 +1689,7 @@ html,body{max-width:100%;overflow-x:hidden!important}
 <input id="isPublic" type="checkbox" checked style="width:auto;margin-right:7px">
 公开漂流（允许其他用户捡到）
 </label>
-<button type="button" id="submitBottleButton" class="btn primary block">投进大海</button>
+<button type="button" id="submitBottleButton" class="btn primary block" onclick="submitBottle()">投进大海</button>
 <button type="button" id="closeWriteButton" class="btn ghost block">取消</button>
 </div>
 </div>
@@ -2362,20 +2362,7 @@ showPage('favorites');
 }
 
 // 投递
-function createBottleClientId(){
-if(window.crypto&&typeof window.crypto.randomUUID==='function')return window.crypto.randomUUID();
-return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
-const r=Math.random()*16|0;
-return (c==='x'?r:(r&3|8)).toString(16);
-});
-}
-function isRetryableBottleInsertError(error){
-const message=String(error?.message||error||'');
-return /failed to fetch|load failed|networkerror|network request failed|expected pattern|timed out|timeout|temporarily unavailable/i.test(message)
-||[408,409,500,502,503,504].includes(Number(error?.status));
-}
-
-// 投递：使用固定 UUID 做幂等保护，避免网络重试造成重复漂流瓶
+// 投递时让数据库自动生成 UUID，避免 iOS Safari 本地 UUID 生成兼容性问题
 async function submitBottle(){
 if(!requireLogin())return;
 const content=$('bottleText').value.trim();
@@ -2385,59 +2372,22 @@ if(submitButton?.dataset.busy==='saving')return;
 if(submitButton){submitButton.dataset.busy='saving';submitButton.disabled=true}
 
 try{
-const bottleId=createBottleClientId();
 const payload={
-id:bottleId,
 user_id:user.id,
 content,
 is_public:$('isPublic').checked,
 mood:'warm'
 };
-let inserted=false;
-let lastError=null;
-
-for(let attempt=0;attempt<2;attempt++){
-try{
-const {error}=await db.from('bottles').insert(payload);
-if(!error){inserted=true;lastError=null;break;}
-lastError=error;
-}catch(error){
-lastError=error;
-}
-if(attempt===0&&isRetryableBottleInsertError(lastError)){
-await new Promise(resolve=>setTimeout(resolve,700));
-}else{
-break;
-}
-}
-
-// 网络中断时，先按同一个 UUID 检查是否已经写入，防止重复投递
-if(!inserted&&lastError){
-try{
-const {data,error:verifyError}=await db.from('bottles').select('id').eq('id',bottleId).maybeSingle();
-if(data?.id===bottleId){
-inserted=true;
-}else if(verifyError){
-console.warn('投递结果核验失败：',verifyError);
-}
-}catch(verifyError){
-console.warn('投递结果核验失败：',verifyError);
-}
-}
-
-if(!inserted)throw lastError||new Error('投递没有完成，请稍后重试。');
+const {data,error}=await db.from('bottles').insert(payload).select('id').single();
+if(error)throw error;
+if(!data?.id)throw new Error('数据库没有返回漂流瓶编号，请检查投递记录。');
 
 $('bottleText').value='';
 $('writeModal').classList.remove('show');
 notify('投递成功','你的漂流瓶已经投进云端大海。');
 try{await refreshAll()}catch(refreshError){console.error('投递成功后的列表刷新失败：',refreshError)}
 }catch(e){
-const message=String(e?.message||e||'');
-if(/expected pattern|failed to fetch|load failed|networkerror|network request failed/i.test(message)){
-notify('网络暂时不稳定','这次投递未能确认完成。请检查网络后再试，系统会先核对是否已经写入，避免重复投递。');
-}else{
 showError(e);
-}
 }finally{
 if(submitButton){submitButton.dataset.busy='';submitButton.disabled=false}
 }
@@ -2738,11 +2688,11 @@ $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conve
 /* 投递弹窗按钮直接绑定，避免全局点击委托造成按钮无响应 */
 const submitBottleButton=$('submitBottleButton');
 const closeWriteButton=$('closeWriteButton');
-submitBottleButton.addEventListener('click',async function(e){
+submitBottleButton.onclick=async function(e){
  e.preventDefault();
  e.stopPropagation();
  await submitBottle();
-});
+};
 closeWriteButton.addEventListener('click',function(e){
  e.preventDefault();e.stopPropagation();
  $('writeModal').classList.remove('show');
