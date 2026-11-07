@@ -1537,7 +1537,7 @@ function conversationGroups(){
  return [...map.entries()].map(([peer,items])=>({peer,items:items.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))})).sort((a,b)=>new Date(b.items[b.items.length-1].created_at)-new Date(a.items[a.items.length-1].created_at));
 }
 async function renderMessages(){
- const el=$('messageList'),thread=$('messageThread');el.replaceChildren();thread.className='';const chatSkin=localStorage.getItem('boyan-chat-skin')||'foam';thread.classList.add('chat-theme-'+chatSkin);thread.style.display='none';el.style.display='block';updateUnreadBadge();
+ const el=$('messageList'),thread=$('messageThread');el.replaceChildren();thread.className='';const chatSkin=localStorage.getItem('boyan-chat-skin')||'foam';thread.classList.add('chat-theme-'+chatSkin);thread.style.display='none';el.style.display='block';const searchBar=document.querySelector('.conversation-search');if(searchBar)searchBar.style.display='flex';updateUnreadBadge();
  if(!user){el.innerHTML='<div class="empty">登录后查看你的云端消息。</div>';return}
  const groups=conversationGroups(),unread=unreadCount();
  const searchTerm=($('conversationSearch')?.value||'').trim().toLocaleLowerCase();
@@ -1579,7 +1579,7 @@ async function openConversation(peer){
  const items=messages.filter(m=>(m.sender_id===peer||m.receiver_id===peer)&&!m.is_retracted).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  let peerProfile=chatProfileCache[peer]||null;
  if(!peerProfile){const {data:chatProfiles,error:chatProfileError}=await db.rpc('get_chat_profiles',{p_peer_ids:[peer]});if(chatProfileError)throw chatProfileError;peerProfile=(chatProfiles||[])[0]||null;if(peerProfile)chatProfileCache[peer]=peerProfile;}
- $('messageList').style.display='none';const thread=$('messageThread');thread.style.display='block';thread.replaceChildren();
+ $('messageList').style.display='none';const searchBar=document.querySelector('.conversation-search');if(searchBar)searchBar.style.display='none';const thread=$('messageThread');thread.style.display='block';thread.replaceChildren();
  const head=document.createElement('div');head.className='message-thread-head';
  const back=document.createElement('button');back.textContent='‹ 返回';back.addEventListener('click',async()=>{replyTargetMessage=null;await loadMessages();renderMessages()});
  const title=document.createElement('strong');title.textContent=(peerProfile?.nickname||'好友');
@@ -2226,6 +2226,7 @@ function showChatImage(src){
  let viewer=$('chatImageViewer');
  if(!viewer){viewer=document.createElement('div');viewer.id='chatImageViewer';viewer.className='chat-image-viewer';const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','关闭图片');const img=document.createElement('img');img.alt='聊天图片预览';viewer.append(close,img);document.body.append(viewer);close.addEventListener('click',()=>viewer.classList.remove('show'));viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.classList.remove('show')})}
  viewer.querySelector('img').src=src;viewer.classList.add('show');
+ if(!viewer.dataset.escapeBound){document.addEventListener('keydown',e=>{if(e.key==='Escape')viewer.classList.remove('show')});viewer.dataset.escapeBound='1'}
 }
 $('conversationSearch')?.addEventListener('input',()=>renderMessages());
 $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conversationSearch');if(input){input.value='';renderMessages();input.focus()}});
