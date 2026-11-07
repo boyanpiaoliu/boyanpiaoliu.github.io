@@ -915,6 +915,52 @@ button:active,.quick-card:active,.conversation-item:active{transform:none!import
 .profile-id.vip-id{background:linear-gradient(100deg,#a77a24 0%,#e1bd65 45%,#9b6b19 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-weight:650}
 .profile-name-line h2.vip-name{background:linear-gradient(100deg,#a77a24 0%,#e1bd65 45%,#9b6b19 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-weight:750}
 
+
+/* 第二轮基础整理：主页布局、导航安全区、统一图标与控件 */
+:root{--blue:#5b8eae;--blue2:#edf3f7;--ink:#344b5d;--muted:#8798a6;--line:#e7edf1;--bg:#f5f7f9}
+.page{padding-left:16px;padding-right:16px;padding-bottom:calc(118px + env(safe-area-inset-bottom))}
+.card{border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:none;border-color:#e8edf1}
+#profile .profile-head{padding:20px 16px 16px;background:#fff!important;border:1px solid #e8edf1!important;border-radius:18px!important}
+#profile .profile-head .avatar{width:62px;height:62px;margin-bottom:8px}
+#profile .profile-head h2{font-size:21px;margin:2px 0!important}
+#profile .profile-head .sub{margin:5px 0 10px;font-size:12px}
+#profile #authButton{min-height:38px;padding:9px 16px;border-radius:10px;font-size:13px;margin:2px 0 6px}
+#profile .statline{padding:8px 0 2px}
+#profile .statline strong{font-size:18px}
+#profile .statline span{font-size:12px}
+#profile .card:not(.profile-head){padding:8px 15px}
+#profile .row{min-height:52px;padding:12px 2px;gap:11px}
+#profile .row .icon{width:32px;height:32px;border-radius:10px;background:#f0f4f7;color:#648aa5;font-size:16px}
+#profile .row .label{font-size:14px;color:#405568}
+#profile .row .arrow{font-size:19px;color:#a2afba}
+#globalFloatingBack{
+ width:42px!important;height:42px!important;right:14px!important;
+ bottom:calc(82px + env(safe-area-inset-bottom))!important;
+ border:1px solid #e7edf1!important;border-radius:50%!important;
+ background:#fff!important;color:#527f9d!important;
+ font-size:24px!important;box-shadow:0 2px 9px rgba(35,60,80,.12)!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important
+}
+#globalFloatingBack:active{transform:scale(.96)!important;box-shadow:0 2px 7px rgba(35,60,80,.1)!important}
+nav#mainNav{
+ height:calc(66px + env(safe-area-inset-bottom));padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+ background:rgba(255,255,255,.98);backdrop-filter:none;border-top:1px solid #e8edf1
+}
+.navbtn{min-width:58px;padding:4px 8px;font-size:11px;color:#91a0ad}
+.navbtn .ico{font-size:21px;line-height:1.1;margin-bottom:4px;color:inherit}
+.navbtn.active{color:#527f9d;font-weight:700}
+.navbtn.active .ico{color:#527f9d}
+.global-brand-bar{background:#fff;border-bottom:1px solid #edf0f2;backdrop-filter:none}
+.btn,.btn.primary,.btn.ghost{border-radius:11px;box-shadow:none}
+input,textarea,select{border-radius:11px}
+.row,.quick-card,.conversation-item{box-shadow:none}
+.icon,.quick-card .qicon{box-shadow:none}
+@media(max-width:390px){
+ .page{padding-left:14px;padding-right:14px}
+ #profile .profile-head{padding:18px 14px 14px}
+ #profile .row{min-height:50px}
+}
+
 </style>
 </head>
 
