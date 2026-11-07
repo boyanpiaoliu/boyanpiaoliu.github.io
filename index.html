@@ -823,6 +823,90 @@ button:active,.quick-card:active,.conversation-item:active{transform:scale(.98)}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid rgba(66,145,190,.24);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
+
+/* 视觉收敛：减少装饰、统一留白与配色 */
+:root{
+ --blue:#4f86aa;
+ --ink:#344b5d;
+ --muted:#8193a1;
+ --line:#e7edf1;
+}
+body{background:#f5f7f9!important;color:#344b5d}
+header{background:rgba(255,255,255,.96)!important;box-shadow:0 1px 5px rgba(35,60,80,.04)!important;backdrop-filter:none!important}
+.card,.list-item,.quick-card,.conversation-item,.friend-row,.friend-result,.friend-request-row{
+ box-shadow:none!important;border:1px solid #e8edf1!important;background:#fff!important
+}
+.card{border-radius:16px!important}
+.btn,.btn.primary,.hero-cta,.hero-pick,.message-composer button{
+ box-shadow:none!important;border-radius:12px!important
+}
+.btn.primary,.message-composer button{background:#5b91b3!important}
+.hero-premium{
+ height:300px!important;border-radius:20px!important;padding:25px 20px!important;
+ background:linear-gradient(145deg,#dcebf3,#b9d4e3)!important;
+ color:#304d61!important;box-shadow:none!important
+}
+.hero-premium h2{color:#304d61!important;text-shadow:none!important;font-size:27px!important}
+.hero-premium p{color:#58758a!important}
+.hero-kicker,.hero-caption,.hero-caption span{color:#58758a!important}
+.hero-sky,.hero-star,.hero-moon,.hero-bird,.hero-wave,.hero-caption i{display:none!important}
+.hero-bottle{filter:none!important;animation:none!important;font-size:58px!important;opacity:.9}
+.hero-cta{background:#fff!important;color:#426e8a!important}
+.hero-pick{background:#5b91b3!important;color:#fff!important}
+.home-quick .quick-card,.home-quick-four .quick-card{
+ border-radius:14px!important;padding:12px 6px!important;background:#fff!important
+}
+.home-quick-four .qicon,.quick-card .qicon{
+ background:#edf3f7!important;box-shadow:none!important;border-radius:12px!important
+}
+.home-feature{
+ background:#fff!important;border:1px solid #e8edf1!important;border-radius:14px!important;
+ box-shadow:none!important;color:#40586a!important
+}
+.home-feature.feature-lilac,.home-feature.feature-peach,.home-feature.feature-mint,.home-feature.feature-blue{
+ background:#fff!important
+}
+.home-feature .feature-symbol{color:#6f9bb6!important}
+.home-quote,.invite-hero,.member-hero,.growth-hero,.community-hero,.collection-hero{
+ background:#eaf1f5!important;color:#38566b!important;box-shadow:none!important;border-radius:16px!important
+}
+.home-quote *,.invite-hero *,.member-hero *,.growth-hero *,.community-hero *,.collection-hero *{
+ text-shadow:none!important
+}
+.home-quote{padding:15px 16px!important}
+.home-quote p,.home-quote span{color:#58758a!important}
+.ocean-scene-card,.home-tip,.friends-intro{
+ background:#fff!important;border:1px solid #e8edf1!important;box-shadow:none!important;border-radius:14px!important
+}
+.scene-sun,.community-hero-art{display:none!important}
+.discover-banner,.discover-banner:after{
+ box-shadow:none!important
+}
+.discover-banner{background:#eaf1f5!important;border-radius:16px!important}
+#discoverList .list-item{background:#fff!important;box-shadow:none!important}
+#mainNav{background:rgba(255,255,255,.98)!important;backdrop-filter:none!important;box-shadow:0 -2px 8px rgba(35,60,80,.04)!important}
+#globalFloatingBack{
+ background:#fff!important;box-shadow:0 2px 10px rgba(35,60,80,.12)!important;
+ backdrop-filter:none!important;border-color:#e8edf1!important
+}
+.message-bubble,.message-bubble.mine,.message-bubble.theirs,
+#messageThread .message-bubble.mine,#messageThread .message-bubble.theirs{
+ background:#edf3f7!important;color:#40586a!important;box-shadow:none!important
+}
+.message-bubble.theirs{background:#f3f5f7!important}
+.modalbox{box-shadow:0 8px 28px rgba(35,60,80,.12)!important;border:1px solid #e8edf1!important}
+.collection-theme,.bottle-skin-option,.bubble-color-swatch{
+ box-shadow:none!important;border-radius:12px!important
+}
+.collection-theme.selected,.bottle-skin-option.selected{
+ border-color:#80a9c1!important;box-shadow:0 0 0 1px #80a9c1!important
+}
+button,.quick-card,.conversation-item{transition:background-color .15s ease,border-color .15s ease!important}
+button:active,.quick-card:active,.conversation-item:active{transform:none!important}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
 </style>
 </head>
 
