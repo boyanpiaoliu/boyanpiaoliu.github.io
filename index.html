@@ -1883,13 +1883,13 @@ const {data,error}=await db.from('messages')
 if(error)throw error;
 messages=(data||[]).filter(m=>!blockedUserIds.includes(m.sender_id)&&!blockedUserIds.includes(m.receiver_id));
 }
-async function refreshAll(){
+async function refreshAll(silent=false){
 try{
 await loadBottles();
 await loadFavorites();
 await loadMessages();
 renderAll();
-}catch(e){showError(e)}
+}catch(e){if(silent)console.error('启动数据同步失败：',e);else showError(e)}
 }
 function renderAll(){
 renderList('homeFeed',[...bottles.filter(b=>b.is_public),...demoBottles].slice(0,3),'海面暂时很安静，写下第一只漂流瓶吧。');
@@ -2605,9 +2605,10 @@ user=data.session?.user||null;
 if(user){await loadProfile();const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}}
 else profile=null;
 syncProfile();
-await refreshAll();
-await refreshFriendRequestCount();await refreshCommunityNoticeBadge();
-setupRealtime();
+await refreshAll(true);
+await refreshFriendRequestCount();
+try{await refreshCommunityNoticeBadge()}catch(e){console.warn('启动通知同步失败：',e)}
+try{setupRealtime()}catch(e){console.warn('实时连接暂不可用：',e)}
 }
 async function logout(){
 if(!confirm('确定退出当前账号吗？'))return;
@@ -3247,7 +3248,7 @@ const savedLanguage=localStorage.getItem('boyan-language')||'zh-CN';
 applyLanguage(savedLanguage);
 document.getElementById('languageSelect')?.addEventListener('change',e=>setLanguage(e.target.value));
 await initSession();
-}catch(e){showError(e)}
+}catch(e){console.error('页面启动时的后台初始化失败：',e)}
 })();
 </script>
 </body>
