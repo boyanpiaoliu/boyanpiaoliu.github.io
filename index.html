@@ -1716,6 +1716,56 @@ html,body{max-width:100%;overflow-x:hidden!important}
 <button class="navbtn" data-page="profile"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2z"/></svg></span>我的</button>
 </nav>
 
+<script>
+/* 独立导航保障：即使主业务脚本报错，首页和底部导航仍可显示、切换 */
+(function(){
+  var nav=document.getElementById('mainNav');
+  var pages=['home','discover','messages','profile'];
+  function activate(id){
+    var target=document.getElementById(id);
+    if(!target)return;
+    document.querySelectorAll('.page').forEach(function(el){
+      el.classList.toggle('active',el.id===id);
+    });
+    nav.querySelectorAll('[data-page]').forEach(function(btn){
+      btn.classList.toggle('active',btn.getAttribute('data-page')===id);
+    });
+    nav.style.display='flex';
+    window.scrollTo(0,0);
+    if(typeof window.showPage==='function'){
+      try{window.showPage(id,{replace:true})}catch(err){console.error('页面切换异常',err)}
+    }
+    if(id==='messages'&&typeof window.loadMessages==='function'){
+      Promise.resolve(window.loadMessages()).then(function(){
+        if(typeof window.renderMessages==='function')window.renderMessages();
+      }).catch(function(err){console.error('消息加载失败',err)});
+    }
+    if(id==='profile'&&typeof window.refreshFriendRequestCount==='function'){
+      Promise.resolve(window.refreshFriendRequestCount()).catch(function(err){console.error(err)});
+    }
+  }
+  if(nav){
+    nav.addEventListener('click',function(event){
+      var btn=event.target.closest('[data-page]');
+      if(!btn)return;
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      activate(btn.getAttribute('data-page'));
+    },true);
+    nav.addEventListener('touchend',function(event){
+      var btn=event.target.closest('[data-page]');
+      if(!btn)return;
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      activate(btn.getAttribute('data-page'));
+    },{capture:true,passive:false});
+  }
+  activate('home');
+})();
+</script>
+
 <div class="modal" id="writeModal">
 <div class="modalbox">
 <h2>投递一只漂流瓶</h2>
