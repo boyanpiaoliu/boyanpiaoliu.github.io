@@ -2337,12 +2337,12 @@ const submitButton=$('submitBottleButton');
 if(submitButton?.dataset.busy==='saving')return;
 if(submitButton){submitButton.dataset.busy='saving';submitButton.disabled=true}
 try{
-const {data,error}=await db.from('bottles').insert({
+const {error}=await db.from('bottles').insert({
 user_id:user.id,
 content,
 is_public:$('isPublic').checked,
 mood:'warm'
-}).select('id').single();
+});
 if(error)throw error;
 $('bottleText').value='';
 $('writeModal').classList.remove('show');
