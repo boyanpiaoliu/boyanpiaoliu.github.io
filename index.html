@@ -1734,6 +1734,22 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  padding:24px 24px 60px!important;
 }
 #profileViewModal .profile-page-notes h2{margin-bottom:26px!important}
+
+/* 已发送/已读状态紧贴自己消息气泡右下方，不再单独占满一行 */
+#messageThread .chat-line.mine .chat-read-receipt{
+ display:block!important;
+ width:auto!important;
+ max-width:100%!important;
+ align-self:flex-end!important;
+ text-align:right!important;
+ box-sizing:border-box!important;
+ margin:4px 2px 0 0!important;
+ padding:0!important;
+ line-height:1.25!important;
+ color:#999!important;
+ font-size:10px!important;
+}
+#messageThread .chat-line.theirs .chat-read-receipt{display:none!important}
 </style>
 </head>
 
