@@ -1038,6 +1038,52 @@ input,textarea,select{border-radius:11px}
  .profile-view-extra{margin-bottom:6px!important}
 }
 
+
+/* 全站弹窗统一：窄屏、适度留白、内容区独立滚动 */
+.modal{padding:14px!important;align-items:center!important;justify-content:center!important}
+.modalbox{
+ box-sizing:border-box!important;width:min(90vw,340px)!important;max-width:340px!important;
+ max-height:82dvh!important;overflow-y:auto!important;overscroll-behavior:contain;
+ padding:18px!important;border-radius:18px!important;
+ box-shadow:0 10px 30px rgba(30,55,75,.13)!important
+}
+.modalbox h2{font-size:18px!important;line-height:1.35!important;margin:0 0 9px!important}
+.modalbox .sub{font-size:12px!important;line-height:1.65!important}
+.modalbox textarea,.modalbox input:not([type=checkbox]),.modalbox select{
+ box-sizing:border-box!important;width:100%;max-width:100%;font-size:13px!important;border-radius:11px!important
+}
+.modalbox .btn{min-height:40px!important;padding:10px 13px!important;font-size:13px!important;border-radius:11px!important}
+.profile-view-overlay{padding:14px!important}
+.profile-view-card,.heart-match-card,.report-card{
+ width:min(90vw,320px)!important;max-width:320px!important;max-height:82dvh!important;
+ overflow-y:auto!important;overscroll-behavior:contain;border-radius:19px!important;
+ padding:20px 17px 16px!important;box-shadow:0 10px 30px rgba(30,55,75,.13)!important
+}
+.profile-view-close{width:30px!important;height:30px!important;top:9px!important;right:9px!important}
+.profile-view-card h3{font-size:17px!important}
+.profile-view-card .btn{min-height:40px!important;font-size:13px!important}
+.report-card textarea{min-height:76px!important}
+@media(max-height:700px){
+ .modalbox,.profile-view-card,.heart-match-card,.report-card{max-height:76dvh!important;padding-top:15px!important;padding-bottom:13px!important}
+}
+@media(min-width:600px){
+ .modalbox{width:min(88vw,380px)!important;max-width:380px!important}
+ .profile-view-card,.heart-match-card,.report-card{width:min(88vw,340px)!important;max-width:340px!important}
+}
+/* 去除装饰性英文小标题；英文界面保留对应空间 */
+html:not([lang="en"]) .hero-kicker,
+html:not([lang="en"]) .scene-eyebrow,
+html:not([lang="en"]) .discover-kicker,
+html:not([lang="en"]) .quote-label,
+html:not([lang="en"]) .invite-hero>span,
+html:not([lang="en"]) .member-hero>span,
+html:not([lang="en"]) .growth-eyebrow,
+html:not([lang="en"]) .growth-kicker,
+html:not([lang="en"]) .community-hero>span,
+html:not([lang="en"]) .community-feed-head>div>span,
+html:not([lang="en"]) .collection-kicker,
+html:not([lang="en"]) .collection-section-head>div>span{display:none!important}
+
 </style>
 </head>
 
