@@ -202,6 +202,10 @@ max-width:420px;max-height:85vh;overflow:auto;
 .message-summary{display:flex;gap:9px;margin:0 0 15px}
 .message-summary span{background:#eef6fb;border-radius:13px;padding:9px 12px;font-size:11px;color:#6e8ca2}
 .message-summary strong{color:#3f789d;margin-right:4px}
+.conversation-search{display:flex;align-items:center;gap:8px;margin:12px 0 14px;padding:0 13px;height:43px;border:1px solid #e2ebf2;border-radius:14px;background:rgba(255,255,255,.9);color:#91a4b4}
+.conversation-search span{font-size:21px;line-height:1}
+.conversation-search input{flex:1;min-width:0;margin:0;padding:0;border:0!important;outline:0!important;box-shadow:none!important;background:transparent;font-size:12px;color:#40566b}
+.conversation-search button{border:0;background:#edf3f7;color:#8297a8;border-radius:50%;width:23px;height:23px;font-size:16px;line-height:1}
 .conversation-item{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #e7eef4;border-radius:17px;background:#fff;margin-bottom:10px;cursor:pointer}
 .conversation-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#dff2fa,#c3e1ef);font-size:19px}
 .conversation-main{min-width:0;flex:1}
@@ -526,7 +530,12 @@ header p{letter-spacing:.4px}
 .hero-bottle svg{display:block;width:100%;height:100%;overflow:visible}
 @media(max-width:380px){.hero-premium{height:375px}.hero-actions{gap:7px}.hero-actions .hero-cta,.hero-pick{padding-left:11px;padding-right:11px;font-size:11px}.hero-bottle{width:94px;height:135px;right:7px;bottom:62px}}
 .home-quick-two{grid-template-columns:repeat(2,minmax(0,1fr))}
-.chat-media{display:block;max-width:min(230px,65vw);max-height:260px;border-radius:12px;object-fit:cover}
+.chat-media{display:block;max-width:min(230px,65vw);max-height:260px;border-radius:12px;object-fit:cover;cursor:zoom-in}
+.chat-read-receipt{display:block;text-align:right;font-size:9px;color:#8ca4b5;margin-top:3px}
+.chat-image-viewer{display:none;position:fixed;inset:0;z-index:9999;background:rgba(12,25,38,.92);align-items:center;justify-content:center;padding:24px}
+.chat-image-viewer.show{display:flex}
+.chat-image-viewer img{max-width:100%;max-height:82vh;object-fit:contain;border-radius:12px}
+.chat-image-viewer button{position:absolute;top:calc(18px + env(safe-area-inset-top));right:18px;width:40px;height:40px;border:1px solid #ffffff55;border-radius:50%;background:#ffffff22;color:#fff;font-size:27px}
 .chat-audio{width:min(230px,62vw);height:38px}
 .chat-video{width:min(240px,68vw);max-height:260px;border-radius:12px}
 .chat-flash{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.3);color:inherit;border-radius:12px;padding:14px 18px;font-weight:650}
@@ -906,6 +915,7 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 <button class="message-refresh" data-action="refreshMessages" aria-label="刷新消息">↻</button>
 </div>
 <div id="messageSummary" class="message-summary"></div>
+<div class="conversation-search"><span>⌕</span><input id="conversationSearch" type="search" placeholder="搜索好友昵称或聊天内容" autocomplete="off"><button type="button" id="clearConversationSearch" aria-label="清空搜索">×</button></div>
 <div id="messageList"></div>
 <div id="messageThread" style="display:none"></div>
 </section>
@@ -1530,17 +1540,21 @@ async function renderMessages(){
  const el=$('messageList'),thread=$('messageThread');el.replaceChildren();thread.className='';const chatSkin=localStorage.getItem('boyan-chat-skin')||'foam';thread.classList.add('chat-theme-'+chatSkin);thread.style.display='none';el.style.display='block';updateUnreadBadge();
  if(!user){el.innerHTML='<div class="empty">登录后查看你的云端消息。</div>';return}
  const groups=conversationGroups(),unread=unreadCount();
+ const searchTerm=($('conversationSearch')?.value||'').trim().toLocaleLowerCase();
  const missingPeers=groups.map(g=>g.peer).filter(id=>!chatProfileCache[id]);
  if(missingPeers.length){const {data:chatProfiles,error:chatProfileError}=await db.rpc('get_chat_profiles',{p_peer_ids:missingPeers});if(chatProfileError)console.warn('聊天资料读取失败',chatProfileError);(chatProfiles||[]).forEach(p=>chatProfileCache[p.id]=p)}
  $('messageSummary').innerHTML='<span><strong>'+groups.length+'</strong>段对话</span><span><strong>'+unread+'</strong>条未读来信</span>';
  if(!groups.length){el.innerHTML='<div class="empty">海面暂时很安静，收到回信后会显示在这里。</div>';return}
+ if(searchTerm&&!el.children.length){el.innerHTML='<div class="empty">没有找到相关对话，试试昵称或聊天关键词。</div>';return}
  groups.forEach(g=>{
  const last=g.items[g.items.length-1],unreadPeer=g.items.filter(m=>m.receiver_id===user.id&&!m.is_read).length;
+ const peerProfile=chatProfileCache[g.peer]||{};
+ const searchable=[peerProfile.nickname,peerProfile.friend_code,...g.items.map(m=>m.content||'')].join(' ').toLocaleLowerCase();
+ if(searchTerm&&!searchable.includes(searchTerm))return;
  const c=document.createElement('div');c.className='conversation-item';
  const avatar=document.createElement('div');avatar.className='conversation-avatar';avatar.textContent='💌';
  const main=document.createElement('div');main.className='conversation-main';
  const top=document.createElement('div');top.className='conversation-top';
- const peerProfile=chatProfileCache[g.peer]||{};
  const name=document.createElement('strong');name.textContent=peerProfile.nickname||'用户';
  const friendCode=document.createElement('small');friendCode.className='conversation-friend-code';friendCode.textContent='ID：'+(peerProfile.friend_code||'暂未设置');name.append(friendCode);
  if(peerProfile.avatar_url){avatar.textContent='';const avatarImg=document.createElement('img');avatarImg.src=peerProfile.avatar_url;avatarImg.alt='好友头像';avatar.append(avatarImg)}else avatar.textContent=(peerProfile.nickname||'友').slice(0,1);
@@ -1597,7 +1611,7 @@ const peerId=document.createElement('span');peerId.className='thread-peer-id';pe
    }else{
     const {data:signed,error:signedError}=await db.storage.from('message-media').createSignedUrl(m.media_path,3600);
     if(signedError){body.textContent='媒体暂时无法加载';}
-    else if(m.message_type==='image'||m.message_type==='flash_image'){const img=document.createElement('img');img.className='chat-media';img.src=signed.signedUrl;img.alt='聊天图片';body.append(img)}
+    else if(m.message_type==='image'||m.message_type==='flash_image'){const img=document.createElement('img');img.className='chat-media';img.src=signed.signedUrl;img.alt='聊天图片';img.loading='lazy';if(m.message_type==='image')img.addEventListener('click',()=>showChatImage(img.src));body.append(img)}
     else if(m.message_type==='video'){const video=document.createElement('video');video.className='chat-video';video.src=signed.signedUrl;video.controls=true;video.playsInline=true;body.append(video)}
     else{const audio=document.createElement('audio');audio.className='chat-audio';audio.src=signed.signedUrl;audio.controls=true;body.append(audio)}
    }
@@ -1607,6 +1621,7 @@ const peerId=document.createElement('span');peerId.className='thread-peer-id';pe
  const bubbleColor=person?.bubble_color;if(bubbleColor){bubble.style.background=bubbleColor;bubble.style.color='#30485d'}
  content.append(bubble);
  const time=document.createElement('time');time.className='chat-meta-time';time.textContent=dateText(m.created_at);content.append(time);
+ if(mine&&!m.is_retracted){const receipt=document.createElement('span');receipt.className='chat-read-receipt';receipt.textContent=m.is_read?'已读':'已发送';content.append(receipt)}
  if(!m.is_retracted){
   let pressTimer=null, longPressed=false;
   const clearPress=()=>{if(pressTimer){clearTimeout(pressTimer);pressTimer=null}};
@@ -1637,6 +1652,7 @@ const peerId=document.createElement('span');peerId.className='thread-peer-id';pe
  const composer=document.createElement('div');composer.className='message-composer';
  const input=document.createElement('input');input.maxLength=500;input.placeholder='写下你的回复…';input.id='threadReply';
  const send=document.createElement('button');send.textContent='发送';send.addEventListener('click',()=>sendThreadReply(peer));
+ input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send.click()}});
  const tools=document.createElement('div');tools.className='message-tools';
  const imageBtn=document.createElement('button');imageBtn.textContent='图片';imageBtn.addEventListener('click',()=>$('chatImageInput').click());
  const flashBtn=document.createElement('button');flashBtn.textContent='闪照';flashBtn.addEventListener('click',()=>$('chatFlashInput').click());
@@ -1682,8 +1698,12 @@ async function retractMessage(id,peer){
 }
 async function sendThreadReply(peer){
  const input=$('threadReply'),content=input?.value.trim();if(!content)return;
+ if(!user||!peer){notify('无法发送','请重新打开这段对话后再发送。');return}
+ if(content.length>500){notify('内容过长','单条消息最多500个字符。');return}
+ const sendButton=document.querySelector('#messageThread .message-composer button');
+ if(sendButton){sendButton.disabled=true;sendButton.textContent='发送中…'}
  try{const payload={sender_id:user.id,receiver_id:peer,content,is_read:false};if(replyTargetMessage)payload.reply_to_id=replyTargetMessage.id;const {error}=await db.from('messages').insert(payload);if(error)throw error;replyTargetMessage=null;await loadMessages();await openConversation(peer)}
- catch(e){showError(e)}
+ catch(e){showError(e);if(sendButton){sendButton.disabled=false;sendButton.textContent='发送'}}
 }
 async function deleteMessage(id,peer){
  if(!confirm('确定删除这条消息吗？'))return;
@@ -2201,6 +2221,14 @@ if(error){showError(error);return}
 user=null;profile=null;bottles=[];favorites=[];messages=[];
 syncProfile();renderAll();showPage('profile');
 }
+
+function showChatImage(src){
+ let viewer=$('chatImageViewer');
+ if(!viewer){viewer=document.createElement('div');viewer.id='chatImageViewer';viewer.className='chat-image-viewer';const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','关闭图片');const img=document.createElement('img');img.alt='聊天图片预览';viewer.append(close,img);document.body.append(viewer);close.addEventListener('click',()=>viewer.classList.remove('show'));viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.classList.remove('show')})}
+ viewer.querySelector('img').src=src;viewer.classList.add('show');
+}
+$('conversationSearch')?.addEventListener('input',()=>renderMessages());
+$('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conversationSearch');if(input){input.value='';renderMessages();input.focus()}});
 
 // 事件
 
