@@ -913,6 +913,7 @@ button:active,.quick-card:active,.conversation-item:active{transform:none!import
 .profile-name-line h2{margin:0!important}
 .vip-badge{align-items:center;justify-content:center;padding:4px 9px;border-radius:7px;border:1px solid #d8b66a;background:linear-gradient(135deg,#fff8df,#f3dfaa);color:#8c641b;font-size:11px;font-weight:800;letter-spacing:1px;line-height:1.2;box-shadow:none}
 .profile-id.vip-id{background:linear-gradient(100deg,#a77a24 0%,#e1bd65 45%,#9b6b19 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-weight:650}
+.profile-name-line h2.vip-name{background:linear-gradient(100deg,#a77a24 0%,#e1bd65 45%,#9b6b19 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-weight:750}
 
 </style>
 </head>
@@ -1560,6 +1561,7 @@ $('nickname').textContent=profile?.nickname||'海边的风';
 const vipUntil=profile?.membership_until?new Date(profile.membership_until):null;
 const isVip=!!(user&&vipUntil&&!Number.isNaN(vipUntil.getTime())&&vipUntil.getTime()>Date.now());
 const vipBadge=$('vipBadge');if(vipBadge)vipBadge.style.display=isVip?'inline-flex':'none';
+const nickname=$('nickname');if(nickname)nickname.classList.toggle('vip-name',isVip);
 const userId=$('userId');if(userId){userId.textContent=user?'好友 ID：'+(profile?.friend_code||'生成中…'):'尚未登录';userId.classList.toggle('vip-id',isVip)}
 const av=$('avatar');if(av)av.innerHTML=profile?.avatar_url?'<img src="'+profile.avatar_url+'" alt="头像">':'🌊';
 $('authButton').textContent=user?'已登录':'登录 / 注册';
