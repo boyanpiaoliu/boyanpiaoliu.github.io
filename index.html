@@ -3068,6 +3068,7 @@ function translateDocument(lang){
  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
  nodes.forEach(node=>{
+  if(node.parentElement?.closest('[data-i18n],#mainNav,.page-head .back'))return;
   if(!node.__sourceText)node.__sourceText=node.nodeValue;
   const source=node.__sourceText, key=source.trim();
   if(!key)return;
