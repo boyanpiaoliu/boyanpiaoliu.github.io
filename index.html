@@ -1585,6 +1585,12 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
  stroke-linecap:round!important;stroke-linejoin:round!important;
 }
 
+
+/* 聊天详情页隐藏首页的采云/放云操作栏 */
+#messages:has(#messageThread[style*="display: block"]) .two-page-actions{
+ display:none!important;
+}
+
 </style>
 </head>
 
