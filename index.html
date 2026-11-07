@@ -1099,23 +1099,61 @@ img,video{max-width:100%;height:auto}
  .page{padding-left:12px;padding-right:12px}
 }
 
+
+/* 首页按海边漂流瓶视觉稿重构 */
+.global-brand-bar.home-brand{height:76px!important;padding:0 22px!important;background:linear-gradient(180deg,#dcecff,#eff6ff)!important;border:0!important;box-shadow:none!important}
+.global-brand-bar.home-brand>div{justify-content:flex-start!important;gap:10px!important;color:#174f7e!important}
+.global-brand-bar.home-brand strong{font-family:Georgia,'Noto Serif SC',serif!important;font-size:25px!important;letter-spacing:2px!important;color:#124a79!important}
+.global-brand-bar.home-brand i{font-size:22px!important;color:#9bbbd5!important}
+.global-brand-bar.home-brand span{font-size:13px!important;color:#315f85!important}
+.home-bell{margin-left:auto!important;width:42px!important;height:42px!important;border:0!important;background:transparent!important;color:#164e7b!important;font-size:28px!important;box-shadow:none!important}
+.home-redesign{padding:0 0 calc(115px + env(safe-area-inset-bottom))!important;background:linear-gradient(180deg,#e6f1ff 0%,#fff8f1 52%,#f4f8ff 100%)!important}
+.home-hero-scene{position:relative;min-height:590px;overflow:hidden;padding:35px 24px 0;background:radial-gradient(ellipse at 77% 12%,rgba(255,255,255,.78),transparent 34%),radial-gradient(ellipse at 15% 48%,rgba(255,233,199,.8),transparent 38%),linear-gradient(180deg,#c5e2fb 0%,#eaf4ff 48%,#f9e5d3 65%,#d5eaf7 100%);isolation:isolate}
+.home-hero-scene:before{content:"";position:absolute;z-index:-1;left:-12%;right:-12%;bottom:95px;height:220px;background:radial-gradient(ellipse at 25% 20%,rgba(255,255,255,.75),transparent 38%),repeating-linear-gradient(174deg,transparent 0 19px,rgba(255,255,255,.44) 20px 23px,transparent 24px 44px),linear-gradient(180deg,#8ec8e7,#c7e6f2 55%,#f5e8d9);border-radius:48% 52% 0 0/18% 24% 0 0;transform:rotate(-2deg)}
+.home-hero-scene:after{content:"";position:absolute;z-index:-1;left:-10%;right:-10%;bottom:0;height:175px;background:linear-gradient(180deg,rgba(255,255,255,.1),#f7f8ff 84%);clip-path:polygon(0 35%,14% 25%,27% 34%,43% 19%,60% 29%,75% 13%,100% 26%,100% 100%,0 100%)}
+.home-hero-copy{position:relative;z-index:2;max-width:76%}
+.home-hero-copy h1{margin:0;color:#124b7b;font-family:Georgia,'Noto Serif SC',serif;font-size:clamp(30px,8vw,42px);font-weight:800;line-height:1.42;letter-spacing:1px}
+.home-hero-underline{height:10px;width:82%;margin:5px 0 30px;border-bottom:4px solid rgba(108,177,224,.58);border-radius:50%;transform:rotate(-2deg)}
+.home-hero-copy p{margin:0;color:#526f91;font-size:16px;line-height:1.85;letter-spacing:.4px}
+.home-hero-gull{position:absolute;top:24px;right:25%;font-size:72px;color:rgba(255,255,255,.75);transform:rotate(-20deg)}
+.home-hero-bottle{position:absolute;right:3%;top:145px;width:43%;max-width:210px;transform:rotate(7deg);filter:drop-shadow(0 12px 14px rgba(50,91,120,.16));opacity:.94}
+.home-hero-bottle svg{width:100%;height:auto}
+.home-hero-sea{position:absolute;left:0;right:0;bottom:126px;height:100px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.22));pointer-events:none}
+.home-main-actions{position:absolute;z-index:4;left:20px;right:20px;bottom:34px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.home-main-actions button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 7px;border:0;border-bottom:3px solid rgba(84,157,207,.42);border-radius:0;background:rgba(255,255,255,.14);color:#124d7d;font-family:Georgia,'Noto Serif SC',serif;font-size:16px;font-weight:800;white-space:nowrap;box-shadow:none}
+.home-main-actions svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.home-shortcuts{margin:0!important;padding:24px 18px 22px!important;gap:0!important;background:rgba(248,250,255,.96)}
+.home-shortcuts .quick-card{position:relative;display:grid;grid-template-columns:66px 1fr 20px;grid-template-rows:auto auto;align-items:center;column-gap:10px;padding:8px 10px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;text-align:left}
+.home-shortcuts .quick-card:first-child{border-right:1px solid #d7e4f1!important}
+.home-shortcuts .qicon{grid-row:1/3;width:56px!important;height:56px!important;margin:0!important;border-radius:50%!important;background:rgba(255,255,255,.85)!important;color:#6da7d1!important;font-size:29px!important;display:grid;place-items:center}
+.home-shortcuts .quick-card:first-child .qicon{color:#e6a46f!important}
+.home-shortcuts .quick-card strong{font-family:Georgia,'Noto Serif SC',serif;font-size:16px!important;color:#164e7b!important;white-space:nowrap}
+.home-shortcuts .quick-card span{font-size:12px!important;color:#7e91aa!important;white-space:nowrap}
+.home-shortcuts .quick-card b{grid-column:3;grid-row:1/3;color:#2f628c;font-size:23px;font-weight:400}
+.home-meet-banner{position:relative;min-height:270px;padding:35px 25px 0;overflow:hidden;background:linear-gradient(180deg,#f9f7f5,#f9e9db 50%,#c8e1ef);cursor:pointer}
+.home-meet-banner>div:first-child{position:relative;z-index:2;display:flex;flex-direction:column;gap:10px}
+.home-meet-banner strong{font-family:Georgia,'Noto Serif SC',serif;font-size:22px;line-height:1.45;color:#174e7a}
+.home-meet-banner small{font-size:15px;color:#748aa3}
+.home-meet-banner>span{position:absolute;right:25px;top:35px;font-size:31px;color:#19547f}
+.home-dune{position:absolute;left:-5%;right:-5%;bottom:0;height:115px;background:radial-gradient(ellipse at 76% 100%,#e9c5a5,#f1ddc8 32%,transparent 66%),linear-gradient(180deg,transparent,#d4e7f2);clip-path:polygon(0 60%,20% 46%,39% 62%,56% 42%,72% 53%,88% 20%,100% 37%,100% 100%,0 100%)}
+.home-dune:after{content:"";position:absolute;right:12%;top:0;width:40%;height:100%;background:repeating-linear-gradient(105deg,transparent 0 12px,rgba(192,151,112,.42) 13px 15px,transparent 16px 25px);clip-path:polygon(35% 100%,45% 0,48% 100%,58% 15%,60% 100%,75% 28%,78% 100%)}
+#home .home-feature-grid{margin:20px 18px!important}
+#home .home-mood-head,#home .home-mood-row,#home .home-quote,#home .home-section-head,#home #homeFeed,#home .home-tip{margin-left:18px!important;margin-right:18px!important}
+#home .home-feature{background:rgba(255,255,255,.88)!important;border:1px solid #e4edf5!important;box-shadow:none!important;border-radius:16px!important}
+#mainNav{background:rgba(248,250,255,.97)!important;border-top:1px solid rgba(210,225,239,.7)!important;backdrop-filter:blur(12px)!important}
+@media(max-width:390px){.global-brand-bar.home-brand{height:66px!important;padding:0 16px!important}.global-brand-bar.home-brand strong{font-size:22px!important}.global-brand-bar.home-brand span{font-size:11px!important}.home-hero-scene{min-height:550px;padding:31px 20px 0}.home-hero-copy h1{font-size:31px}.home-hero-bottle{top:160px;right:1%;width:46%}.home-main-actions{left:12px;right:12px;gap:4px}.home-main-actions button{font-size:14px}.home-shortcuts{padding:18px 9px!important}.home-shortcuts .quick-card{grid-template-columns:48px 1fr 14px;column-gap:7px;padding:7px 5px!important}.home-shortcuts .qicon{width:43px!important;height:43px!important;font-size:23px!important}.home-shortcuts .quick-card strong{font-size:13px!important}.home-shortcuts .quick-card span{font-size:10px!important}.home-meet-banner{min-height:235px;padding:28px 18px 0}.home-meet-banner strong{font-size:19px}.home-meet-banner small{font-size:13px}}
+
 </style>
 </head>
 
 <body>
 <button type="button" id="globalFloatingBack" aria-label="返回上一层" data-action="backProfile">‹</button>
 
-<header class="global-brand-bar"><div>🌊 <strong>泊言漂流瓶</strong><i>丨</i><span>心事停泊，偶然被看见</span></div></header>
-
-<main>
-
-<section class="page active" id="home">
-<div class="hero hero-premium">
-<div class="hero-sky"><span class="hero-star star-one">✦</span><span class="hero-star star-two">✧</span><span class="hero-moon">☼</span><span class="hero-bird">⌁</span></div>
-<div class="hero-copy"><span class="hero-kicker">A MESSAGE TO THE OCEAN</span><h2>大海正在<br>等待你的故事</h2><p>把心事装进漂流瓶，让它飘向未知的远方。</p>
-<div class="hero-actions"><button class="hero-cta" data-action="write"><span>✧</span> 投递漂流瓶</button><button class="hero-pick" data-action="pick">收取漂流瓶</button></div></div>
-<div class="hero-bottle" aria-hidden="true">
-<svg viewBox="0 0 120 170" role="img" aria-label="">
+<header class="global-brand-bar home-brand"><div><strong>泊言</strong><i>丨</i><span>心事停泊，偶然被看见</span></div><button class=<section class="page active home-redesign" id="home">
+<div class="home-hero-scene">
+ <div class="home-hero-copy"><h1>大海正在<br>等待你的故事</h1><div class="home-hero-underline"></div><p>把心事装进漂流瓶，<br>让它飘向未知的远方。</p></div>
+ <div class="home-hero-gull" aria-hidden="true">⌁</div>
+ <div class="home-hero-bottle" aria-hidden="true"><svg viewBox="0 0 120 170" role="img" aria-label="">
  <defs>
   <linearGradient id="glassBottle" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".86"/><stop offset=".24" stop-color="#d9f4ff" stop-opacity=".55"/><stop offset=".52" stop-color="#79c7e7" stop-opacity=".28"/><stop offset=".78" stop-color="#e9fbff" stop-opacity=".68"/><stop offset="1" stop-color="#5b9fc6" stop-opacity=".72"/></linearGradient>
   <linearGradient id="corkBottle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e9bd83"/><stop offset=".5" stop-color="#bd8250"/><stop offset="1" stop-color="#8f5b38"/></linearGradient>
@@ -1135,18 +1173,18 @@ img,video{max-width:100%;height:auto}
  </g>
  <path d="M14 51l-4 7m9-13-1 5" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
  <circle cx="97" cy="28" r="3" fill="#fff" opacity=".8"/>
-</svg></div>
-<div class="hero-wave wave-back"></div><div class="hero-wave wave-front"></div>
-<div class="hero-caption"><span>01</span><i></i><span>每一段心事，都值得被听见</span></div>
+</svg></div><div class="home-hero-sea"></div>
+ <div class="home-main-actions">
+  <button data-action="write"><svg viewBox="0 0 24 24"><path d="M3 11.5 21 3l-6.8 18-3.3-7.2L3 11.5Z"/><path d="m10.9 13.8 4.2-4.1"/></svg>投递漂流瓶</button>
+  <button data-action="pick"><svg viewBox="0 0 24 24"><path d="M8 5h8l1 3 3 2v10H4V10l3-2 1-3Z"/><path d="M9 5V3h6v2M8 10c0 3 8 3 8 0"/></svg>收取漂流瓶</button>
+ </div>
 </div>
-<div class="home-quick home-quick-two">
-<div class="quick-card" data-action="favorites"><div class="qicon">☆</div><strong>我的收藏</strong><span>珍藏温暖话语</span></div>
-<div class="quick-card" data-page="messages"><div class="qicon">✉</div><strong>海上来信</strong><span>查看回复消息</span></div>
+<div class="home-quick home-quick-two home-shortcuts">
+ <div class="quick-card" data-action="favorites"><div class="qicon">☆</div><strong>我的收藏</strong><span>珍藏温暖话语</span><b>›</b></div>
+ <div class="quick-card" data-page="messages"><div class="qicon">♧</div><strong>海上来信</strong><span>查看回复消息</span><b>›</b></div>
 </div>
-<div class="ocean-scene-card">
- <div class="ocean-scene-top"><div><span class="scene-eyebrow">BOYAN OCEAN CLUB</span><strong>今天的海边，适合认识新朋友</strong><small>把一点好奇心，交给下一次相遇。</small></div><div class="scene-sun">☀</div></div>
- <div class="scene-horizon"><span class="scene-cloud cloud-a"></span><span class="scene-cloud cloud-b"></span><span class="scene-bird">⌁　⌁</span><div class="scene-sun-reflection"></div><div class="scene-wave-line line-a"></div><div class="scene-wave-line line-b"></div><div class="scene-wave-line line-c"></div><div class="scene-shell">🐚</div><div class="scene-star">✦</div></div>
- <div class="scene-bottom"><span>🌊 慢一点，也会遇见</span><button data-page="discover">去海上看看　›</button></div>
+<div class="home-meet-banner" data-page="discover">
+ <div><strong>今天的海边，适合认识新朋友</strong><small>把一点好奇心，交给下一次相遇。</small></div><span>›</span><div class="home-dune"></div>
 </div>
 <div class="home-feature-grid">
  <button class="home-feature feature-lilac" data-page="discover"><span class="feature-symbol">✧</span><strong>遇见新故事</strong><small>看看陌生人的心情</small><b>去探索　→</b></button>
@@ -1155,19 +1193,11 @@ img,video{max-width:100%;height:auto}
  <button class="home-feature feature-blue" data-action="inviteCenter"><span class="feature-symbol">↗</span><strong>分享这片海</strong><small>邀请朋友一起加入</small><b>邀请好友　→</b></button>
 </div>
 <div class="home-section-head home-mood-head"><div><div class="discover-kicker">A LITTLE MOMENT</div><div class="section-title">给今天选一种心情</div></div><span>轻轻点一下</span></div>
-<div class="home-mood-row">
- <button data-filter="warm" data-page="discover"><span>☀️</span><b>想要温暖</b></button>
- <button data-filter="thought" data-page="discover"><span>🌙</span><b>想说心事</b></button>
- <button data-page="discover"><span>🌊</span><b>随便逛逛</b></button>
-</div>
-<div class="home-quote">
-<div class="quote-label">TODAY'S OCEAN NOTE <span>☾</span></div>
-<p>“有些心事，不必说给世界听，<br>但可以交给大海。”</p>
-<div class="quote-wave">～～～～～～～～～～</div>
-</div>
-<div class="home-section-head"><div class="section-title">海上故事</div><button data-page="discover">探索更多 ›</button></div>
-<div id="homeFeed"></div>
+<div class="home-mood-row"><button data-filter="warm" data-page="discover"><span>☀️</span><b>想要温暖</b></button><button data-filter="thought" data-page="discover"><span>🌙</span><b>想说心事</b></button><button data-page="discover"><span>🌊</span><b>随便逛逛</b></button></div>
+<div class="home-quote"><div class="quote-label">TODAY'S OCEAN NOTE <span>☾</span></div><p>“有些心事，不必说给世界听，<br>但可以交给大海。”</p><div class="quote-wave">～～～～～～～～～～</div></div>
+<div class="home-section-head"><div class="section-title">海上故事</div><button data-page="discover">探索更多 ›</button></div><div id="homeFeed"></div>
 <div class="home-tip"><div class="tip-icon">☾</div><div><strong>给远方的你</strong><span>不必认识，也可以认真倾听。</span></div></div>
+</section> class="tip-icon">☾</div><div><strong>给远方的你</strong><span>不必认识，也可以认真倾听。</span></div></div>
 </section>
 
 <section class="page" id="discover">
