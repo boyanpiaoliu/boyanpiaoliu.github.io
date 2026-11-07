@@ -1592,6 +1592,10 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
 }
 
 
+/* 私聊详情打开时隐藏底部「消息 / 我的」主导航；返回会话列表后由 renderMessages 自动恢复 */
+body:has(#messageThread[style*="display: block"]) #mainNav,
+body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important}
+
 /* 聊天详情：按参考图整理为沉浸式私聊布局 */
 #messages:has(#messageThread[style*="display: block"]) {padding:0!important;background:#fcfbfe!important}
 #messages:has(#messageThread[style*="display: block"]) .two-page-message-head,
