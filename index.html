@@ -170,6 +170,11 @@ padding:10px;color:#718397;font-size:14px;
 .tabs button.active{background:white;color:var(--blue);font-weight:650}
 .page-head{display:flex;align-items:center;gap:12px;margin:0 0 18px}
 .back{border:0;background:#eaf2f8;color:#47799e;border-radius:12px;padding:9px 13px}
+/* 全站悬浮返回按钮：滚动页面时始终可见 */
+.page-head .back{display:none}
+#globalFloatingBack{position:fixed;right:18px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:9999;width:48px;height:48px;border:1px solid rgba(255,255,255,.85);border-radius:50%;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.88);color:#477fa4;font-size:25px;font-weight:500;line-height:1;box-shadow:0 8px 24px rgba(45,91,123,.2);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:transform .18s,box-shadow .18s}
+#globalFloatingBack:active{transform:scale(.92);box-shadow:0 4px 12px rgba(45,91,123,.18)}
+
 .page-head h2{margin:0;flex:1}
 .list-item{
 padding:15px 16px;border-radius:17px;background:white;
@@ -792,6 +797,7 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 </head>
 
 <body>
+<button type="button" id="globalFloatingBack" aria-label="返回上一层" data-action="backProfile">‹</button>
 
 <header class="global-brand-bar"><div>🌊 <strong>泊言漂流瓶</strong><i>丨</i><span>心事停泊，偶然被看见</span></div></header>
 
@@ -1334,6 +1340,7 @@ $('genericModal').classList.add('show');
 function closeGeneric(){$('genericModal').classList.remove('show')}
 function showPage(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+const floatingBack=$('globalFloatingBack');if(floatingBack)floatingBack.style.display=document.querySelector('#'+CSS.escape(id)+' .back, #'+CSS.escape(id)+' [data-action="backDetail"]')?'flex':'none';
 document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
 $('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications','growthCenter','cottageVisit'].includes(id)?'none':'flex';
 window.scrollTo(0,0);
