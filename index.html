@@ -1785,6 +1785,7 @@ const modal=$('genericModal');
 if(!modal)return;
 $('modalTitle').textContent=title;
 $('modalBody').textContent=body;
+modal.style.display='flex';
 modal.classList.add('show');
 modal.setAttribute('aria-hidden','false');
 }
@@ -1793,26 +1794,27 @@ const modal=$('genericModal');
 if(!modal)return;
 modal.classList.remove('show');
 modal.setAttribute('aria-hidden','true');
+modal.style.display='none';
 }
+window.closeGeneric=closeGeneric;
 
-// 提示弹窗使用独立事件，不依赖页面底部的全局点击委托
-$('closeGenericButton')?.addEventListener('click',function(e){
-e.preventDefault();
-e.stopPropagation();
-closeGeneric();
-});
-$('closeGenericButton')?.addEventListener('touchend',function(e){
-e.preventDefault();
-e.stopPropagation();
-closeGeneric();
-},{passive:false});
-document.addEventListener('click',function(e){
-const button=$('closeGenericButton');
-if(button&&$('genericModal')?.classList.contains('show')&&e.target===button)closeGeneric();
-},true);
-$('genericModal')?.addEventListener('click',function(e){
-if(e.target===$('genericModal'))closeGeneric();
-});
+// iPhone Safari：按钮点击、触摸、指针事件均可关闭；点击弹窗内容也可关闭
+(function(){
+const modal=$('genericModal'),button=$('closeGenericButton');
+if(!modal)return;
+const dismiss=function(e){if(e){e.preventDefault();e.stopPropagation()}closeGeneric()};
+if(button){
+button.addEventListener('click',dismiss,true);
+button.addEventListener('touchend',dismiss,{capture:true,passive:false});
+button.addEventListener('pointerup',dismiss,true);
+}
+const box=modal.querySelector('.modalbox');
+if(box){
+box.addEventListener('click',dismiss,true);
+box.addEventListener('touchend',dismiss,{capture:true,passive:false});
+}
+modal.addEventListener('click',function(e){if(e.target===modal)dismiss(e)},true);
+})();
 document.addEventListener('keydown',function(e){
 if(e.key==='Escape'&&$('genericModal')?.classList.contains('show'))closeGeneric();
 });
@@ -2673,15 +2675,28 @@ notify('保存成功','昵称、头像和聊天气泡外观已同步到云端。
 
 // 登录状态
 async function initSession(){
-const {data,error}=await db.auth.getSession();
-if(error)throw error;
-user=data.session?.user||null;
-if(user){await loadProfile();const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}}
-else profile=null;
+let session=null;
+try{
+const result=await db.auth.getSession();
+if(result.error)throw result.error;
+session=result.data?.session||null;
+}catch(sessionError){
+console.error('读取登录状态失败，先以访客模式启动：',sessionError);
+user=null;profile=null;
 syncProfile();
-await refreshAll();
-await refreshFriendRequestCount();await refreshCommunityNoticeBadge();
-setupRealtime();
+try{renderAll()}catch(renderError){console.error(renderError)}
+return;
+}
+user=session?.user||null;
+if(user){
+try{await loadProfile()}catch(profileError){console.error('读取个人资料失败：',profileError);profile=null}
+const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');
+if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}
+}else profile=null;
+syncProfile();
+try{await refreshAll()}catch(e){console.error('加载首页数据失败：',e)}
+try{await refreshFriendRequestCount();await refreshCommunityNoticeBadge()}catch(e){console.error('加载通知失败：',e)}
+try{setupRealtime()}catch(e){console.error('启动实时同步失败：',e)}
 }
 async function logout(){
 if(!confirm('确定退出当前账号吗？'))return;
@@ -3353,7 +3368,10 @@ const savedLanguage=localStorage.getItem('boyan-language')||'zh-CN';
 applyLanguage(savedLanguage);
 document.getElementById('languageSelect')?.addEventListener('change',e=>setLanguage(e.target.value));
 await initSession();
-}catch(e){showError(e)}
+}catch(e){
+console.error('页面初始化异常（不阻断页面操作）：',e);
+try{user=null;profile=null;syncProfile();renderAll()}catch(renderError){console.error(renderError)}
+}
 })();
 </script>
 </body>
