@@ -816,6 +816,13 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 @media(max-width:340px){.hero-actions{width:100%!important;gap:6px!important}.hero-actions .hero-cta,.hero-actions .hero-pick{font-size:10px!important;padding:0 4px!important}}
 /* 页面导航按钮固定在安全区上方，不遮挡底部导航 */
 #globalFloatingBack{bottom:calc(112px + env(safe-area-inset-bottom))!important;right:16px!important;}
+
+/* 交互与可访问性细节 */
+button,.quick-card,.row,.conversation-item{transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease}
+button:active,.quick-card:active,.conversation-item:active{transform:scale(.98)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid rgba(66,145,190,.24);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 
@@ -1419,17 +1426,18 @@ return false;
 // 用户资料
 async function loadProfile(){
 if(!user){profile=null;return}
-const {data,error}=await db.from('profiles').select('*').eq('id',user.id).maybeSingle();
+const columns='id,nickname,friend_code,avatar_url,created_at,gender,bubble_color,signature,profile_theme';
+let {data,error}=await db.from('profiles').select(columns).eq('id',user.id).maybeSingle();
 if(error)throw error;
-if(data){profile=data}
-else{
+if(!data){
 const nickname=user.user_metadata?.nickname||user.email?.split('@')[0]||'漂流者';
-const {data:newProfile,error:e}=await db.from('profiles').upsert({
-id:user.id,nickname
-}).select().single();
+const {data:newProfile,error:e}=await db.from('profiles').insert({id:user.id,nickname}).select(columns).single();
 if(e)throw e;
-profile=newProfile;
+data=newProfile;
 }
+const {data:privateRows,error:privateError}=await db.rpc('get_my_private_profile');
+if(privateError)throw privateError;
+profile={...data,...(privateRows?.[0]||{})};
 syncProfile();
 }
 
@@ -1672,7 +1680,7 @@ async function uploadChatMedia(peer,file,type){
   const ext=(file.name.split('.').pop()||({image:'jpg',flash_image:'jpg',video:'mp4',audio:'m4a'}[type])).replace(/[^a-zA-Z0-9]/g,'').slice(0,8);
   const path=user.id+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
   const {error:uploadError}=await db.storage.from('message-media').upload(path,file,{contentType:file.type,upsert:false});if(uploadError)throw uploadError;
-  const {error}=await db.from('messages').insert({sender_id:user.id,receiver_id:peer,content:'',is_read:false,message_type:type,media_path:path,media_mime:file.type});
+  const {error}=await db.from('messages').insert({sender_id:user.id,receiver_id:peer,content:'',message_type:type,media_path:path,media_mime:file.type});
   if(error){await db.storage.from('message-media').remove([path]);throw error}
   await loadMessages();await openConversation(peer);
  }catch(e){showError(e)}
@@ -1702,7 +1710,7 @@ async function sendThreadReply(peer){
  if(content.length>500){notify('内容过长','单条消息最多500个字符。');return}
  const sendButton=document.querySelector('#messageThread .message-composer button');
  if(sendButton){sendButton.disabled=true;sendButton.textContent='发送中…'}
- try{const payload={sender_id:user.id,receiver_id:peer,content,is_read:false};if(replyTargetMessage)payload.reply_to_id=replyTargetMessage.id;const {error}=await db.from('messages').insert(payload);if(error)throw error;replyTargetMessage=null;await loadMessages();await openConversation(peer)}
+ try{const payload={sender_id:user.id,receiver_id:peer,content};if(replyTargetMessage)payload.reply_to_id=replyTargetMessage.id;const {error}=await db.from('messages').insert(payload);if(error)throw error;replyTargetMessage=null;await loadMessages();await openConversation(peer)}
  catch(e){showError(e);if(sendButton){sendButton.disabled=false;sendButton.textContent='发送'}}
 }
 async function deleteMessage(id,peer){
@@ -1786,8 +1794,7 @@ async function loadInviteCenter(){
 }
 async function loadMembership(){
  if(!requireLogin())return;
- const {data,error}=await db.from('profiles').select('membership_until').eq('id',user.id).maybeSingle();if(error)throw error;
- const until=data?.membership_until?new Date(data.membership_until):null;
+ const until=profile?.membership_until?new Date(profile.membership_until):null;
  $('memberStatus').textContent=until&&until>Date.now()?'会员有效期至 '+until.toLocaleDateString('zh-CN'):'当前为普通用户 · 可通过邀请好友领取体验会员';
 }
 async function copyInvite(){
@@ -1978,7 +1985,7 @@ const content=$('messageText').value.trim();
 if(!content){notify('消息不能为空','请输入你想说的话。');return}
 try{
 const {error}=await db.from('messages').insert({
-sender_id:user.id,receiver_id:messageReceiver,content,is_read:false
+sender_id:user.id,receiver_id:messageReceiver,content
 });
 if(error)throw error;
 $('messageModal').classList.remove('show');
@@ -2194,10 +2201,10 @@ if(file){
  avatar_url=data.publicUrl+'?v='+Date.now();
 }
 const signature=$('editSignature').value.trim();
-const profileUpdate={id:user.id,nickname,avatar_url,signature,bubble_color:selectedBubbleColor||profile?.bubble_color||'#a9d6f5',sexual_orientation:$('sexualOrientation').value||null,sexual_orientation_visible:$('sexualOrientationVisible').checked};if(!profile?.gender)profileUpdate.gender=selectedGender;
-const {data,error}=await db.from('profiles').upsert(profileUpdate,{onConflict:'id'}).select().single();
+const profileUpdate={nickname,avatar_url,signature,bubble_color:selectedBubbleColor||profile?.bubble_color||'#a9d6f5',sexual_orientation:$('sexualOrientation').value||null,sexual_orientation_visible:$('sexualOrientationVisible').checked};if(!profile?.gender)profileUpdate.gender=selectedGender;
+const {error}=await db.from('profiles').update(profileUpdate).eq('id',user.id);
 if(error)throw error;
-profile=data;syncProfile();showPage('profile');
+await loadProfile();syncProfile();showPage('profile');
 notify('保存成功','昵称、头像和聊天气泡外观已同步到云端。');
 }catch(e){showError(e)}
 }
@@ -2269,18 +2276,19 @@ if(saveOceanDecor){
  const chat=pick('[data-chat-skin]','chatSkin','foam');
  const frame=pick('[data-avatar-frame]','avatarFrame','none');
  const profileTheme=pick('[data-profile-theme]','profileTheme',profile?.profile_theme||'sea');
+ if(user&&profileTheme!==(profile?.profile_theme||'sea')){
+  const {error}=await db.rpc('set_my_profile_theme',{p_theme:profileTheme});
+  if(error){showError(error);return}
+  if(profile)profile.profile_theme=profileTheme;
+ }
  localStorage.setItem('boyan-ocean-theme',theme);
  localStorage.setItem('boyan-bottle-skin',bottle);
  localStorage.setItem('boyan-chat-skin',chat);
  localStorage.setItem('boyan-avatar-frame',frame);
  document.body.dataset.oceanTheme=theme;
  applyAvatarFrame();
+ applyProfileTheme();
  renderAll();
- if(user){
-  const {data,error}=await db.from('profiles').update({profile_theme:profileTheme}).eq('id',user.id).select().single();
-  if(error){notify('本设备外观已保存','主页背景同步失败，请稍后重试。');return}
-  profile=data;applyProfileTheme();
- }
  notify('外观保存成功','你选择的海洋主题和装饰已经生效。');
  return
 }
@@ -2667,8 +2675,10 @@ async function useOceanItem(code){
  if(owned.error){showError(owned.error);return}if(!owned.data){notify('尚未拥有','请先使用贝壳兑换这件装扮。');return}
  if(code.startsWith('theme_')){
   const theme=code.replace('theme_','');
-  const {data,error}=await db.from('profiles').update({profile_theme:theme}).eq('id',user.id).select().single();
-  if(error){showError(error);return}profile=data;applyProfileTheme();
+  const {error}=await db.rpc('set_my_profile_theme',{p_theme:theme});
+  if(error){showError(error);return}
+  if(profile)profile.profile_theme=theme;
+  applyProfileTheme();
  }else{
   const frameMap={frame_pearl:'pearl',frame_coral:'mint',frame_starlight:'starlight'};
   localStorage.setItem('boyan-avatar-frame',frameMap[code]||'none');applyAvatarFrame();
