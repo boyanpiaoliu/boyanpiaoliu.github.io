@@ -1231,6 +1231,18 @@ html,body{max-width:100%;overflow-x:hidden!important}
 #genericModal button{pointer-events:auto!important;touch-action:manipulation!important}
 #writeModal{z-index:2147482500!important}
 
+/* 提示弹窗的关闭按钮独立接收 iOS 触控 */
+#genericModal{z-index:2147483600!important;pointer-events:auto!important;isolation:isolate!important;touch-action:manipulation!important}
+#genericModal .modalbox{position:relative!important;z-index:1!important;pointer-events:auto!important}
+#genericModal #closeGenericButton{
+ position:relative!important;z-index:2!important;display:flex!important;
+ align-items:center!important;justify-content:center!important;
+ min-height:48px!important;width:100%!important;
+ pointer-events:auto!important;touch-action:manipulation!important;
+ cursor:pointer!important;-webkit-appearance:none!important;appearance:none!important;
+ -webkit-tap-highlight-color:rgba(70,130,170,.18)!important
+}
+
 </style>
 </head>
 
@@ -1685,11 +1697,11 @@ html,body{max-width:100%;overflow-x:hidden!important}
 <input id="chatImageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
 <input id="chatFlashInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
 <input id="chatVideoInput" type="file" accept="video/mp4,video/quicktime" hidden>
-<div class="modal" id="genericModal">
+<div class="modal" id="genericModal" aria-hidden="true">
 <div class="modalbox">
 <h2 id="modalTitle">提示</h2>
 <div id="modalBody" class="sub"></div>
-<button class="btn primary block" data-action="closeGeneric">知道了</button>
+<button type="button" id="closeGenericButton" class="btn primary block" data-action="closeGeneric" onclick="closeGeneric()" aria-label="关闭提示">知道了</button>
 </div>
 </div>
 
@@ -1762,11 +1774,32 @@ is_demo:true
 ];
 
 function notify(title,body){
+const modal=$('genericModal');
+if(!modal)return;
 $('modalTitle').textContent=title;
 $('modalBody').textContent=body;
-$('genericModal').classList.add('show');
+modal.classList.add('show');
+modal.setAttribute('aria-hidden','false');
 }
-function closeGeneric(){$('genericModal').classList.remove('show')}
+function closeGeneric(){
+const modal=$('genericModal');
+if(!modal)return;
+modal.classList.remove('show');
+modal.setAttribute('aria-hidden','true');
+}
+
+// 提示弹窗使用独立事件，不依赖页面底部的全局点击委托
+$('closeGenericButton')?.addEventListener('click',function(e){
+e.preventDefault();
+e.stopPropagation();
+closeGeneric();
+});
+$('genericModal')?.addEventListener('click',function(e){
+if(e.target===$('genericModal'))closeGeneric();
+});
+document.addEventListener('keydown',function(e){
+if(e.key==='Escape'&&$('genericModal')?.classList.contains('show'))closeGeneric();
+});
 function showPage(id,options={}){
  const target=document.getElementById(id);
  if(!target)return;
@@ -2329,6 +2362,20 @@ showPage('favorites');
 }
 
 // 投递
+function createBottleClientId(){
+if(window.crypto&&typeof window.crypto.randomUUID==='function')return window.crypto.randomUUID();
+return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+const r=Math.random()*16|0;
+return (c==='x'?r:(r&3|8)).toString(16);
+});
+}
+function isRetryableBottleInsertError(error){
+const message=String(error?.message||error||'');
+return /failed to fetch|load failed|networkerror|network request failed|expected pattern|timed out|timeout|temporarily unavailable/i.test(message)
+||[408,409,500,502,503,504].includes(Number(error?.status));
+}
+
+// 投递：使用固定 UUID 做幂等保护，避免网络重试造成重复漂流瓶
 async function submitBottle(){
 if(!requireLogin())return;
 const content=$('bottleText').value.trim();
@@ -2336,25 +2383,65 @@ if(!content){notify('还没有写内容','先写下一段心情。');return}
 const submitButton=$('submitBottleButton');
 if(submitButton?.dataset.busy==='saving')return;
 if(submitButton){submitButton.dataset.busy='saving';submitButton.disabled=true}
+
 try{
-const {error}=await db.from('bottles').insert({
+const bottleId=createBottleClientId();
+const payload={
+id:bottleId,
 user_id:user.id,
 content,
 is_public:$('isPublic').checked,
 mood:'warm'
-});
-if(error)throw error;
+};
+let inserted=false;
+let lastError=null;
+
+for(let attempt=0;attempt<2;attempt++){
+try{
+const {error}=await db.from('bottles').insert(payload);
+if(!error){inserted=true;lastError=null;break;}
+lastError=error;
+}catch(error){
+lastError=error;
+}
+if(attempt===0&&isRetryableBottleInsertError(lastError)){
+await new Promise(resolve=>setTimeout(resolve,700));
+}else{
+break;
+}
+}
+
+// 网络中断时，先按同一个 UUID 检查是否已经写入，防止重复投递
+if(!inserted&&lastError){
+try{
+const {data,error:verifyError}=await db.from('bottles').select('id').eq('id',bottleId).maybeSingle();
+if(data?.id===bottleId){
+inserted=true;
+}else if(verifyError){
+console.warn('投递结果核验失败：',verifyError);
+}
+}catch(verifyError){
+console.warn('投递结果核验失败：',verifyError);
+}
+}
+
+if(!inserted)throw lastError||new Error('投递没有完成，请稍后重试。');
+
 $('bottleText').value='';
 $('writeModal').classList.remove('show');
 notify('投递成功','你的漂流瓶已经投进云端大海。');
 try{await refreshAll()}catch(refreshError){console.error('投递成功后的列表刷新失败：',refreshError)}
 }catch(e){
+const message=String(e?.message||e||'');
+if(/expected pattern|failed to fetch|load failed|networkerror|network request failed/i.test(message)){
+notify('网络暂时不稳定','这次投递未能确认完成。请检查网络后再试，系统会先核对是否已经写入，避免重复投递。');
+}else{
 showError(e);
+}
 }finally{
 if(submitButton){submitButton.dataset.busy='';submitButton.disabled=false}
 }
 }
-
 // 随机捡瓶
 async function pickBottle(){
  try{
@@ -2652,11 +2739,9 @@ $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conve
 const submitBottleButton=$('submitBottleButton');
 const closeWriteButton=$('closeWriteButton');
 submitBottleButton.addEventListener('click',async function(e){
- e.preventDefault();e.stopPropagation();
- if(submitBottleButton.dataset.busy==='1')return;
- submitBottleButton.dataset.busy='1';submitBottleButton.disabled=true;
- try{await submitBottle()}
- finally{submitBottleButton.dataset.busy='0';submitBottleButton.disabled=false}
+ e.preventDefault();
+ e.stopPropagation();
+ await submitBottle();
 });
 closeWriteButton.addEventListener('click',function(e){
  e.preventDefault();e.stopPropagation();
