@@ -1212,6 +1212,13 @@ html,body{max-width:100%;overflow-x:hidden!important}
 #messageModal .modalbox{pointer-events:auto!important;position:relative!important;z-index:1!important}
 #messageModal button{pointer-events:auto!important;position:relative!important;z-index:2!important;touch-action:manipulation!important;cursor:pointer!important}
 
+.inline-reply-composer{margin:18px 0 28px;padding:18px;border:1px solid #dfe9f2;border-radius:18px;background:#fff;box-shadow:0 5px 18px rgba(43,83,115,.06)}
+.inline-reply-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#234f78;font-size:18px}
+.inline-reply-heading button{border:0;background:#f1f5f9;color:#60758b;border-radius:10px;padding:9px 14px;font-size:14px}
+#inlineReplyTarget{margin:9px 0 12px;color:#8093a6;font-size:13px}
+#inlineReplyText{display:block;width:100%;min-height:120px;max-width:100%;box-sizing:border-box;padding:14px;border:1px solid #dce6ef;border-radius:13px;background:#f8fbfd;color:#30465b;font:inherit;resize:vertical}
+#inlineReplySend{width:100%;margin-top:13px;min-height:48px}
+
 </style>
 </head>
 
@@ -1300,6 +1307,12 @@ html,body{max-width:100%;overflow-x:hidden!important}
 <div class="conversation-search"><span>⌕</span><input id="conversationSearch" type="search" placeholder="搜索好友昵称或聊天内容" autocomplete="off"><button type="button" id="clearConversationSearch" aria-label="清空搜索">×</button></div>
 <div id="messageList"></div>
 <div id="messageThread" style="display:none"></div>
+<div id="inlineReplyComposer" class="inline-reply-composer" style="display:none">
+ <div class="inline-reply-heading"><strong>写一封回信</strong><button type="button" id="inlineReplyCancel">取消</button></div>
+ <p id="inlineReplyTarget" class="sub">发送一条消息</p>
+ <textarea id="inlineReplyText" maxlength="500" placeholder="写下你想说的话……"></textarea>
+ <button type="button" id="inlineReplySend" class="btn primary block">发送消息</button>
+</div>
 </section>
 
 <section class="page" id="profile">
@@ -1673,15 +1686,7 @@ html,body{max-width:100%;overflow-x:hidden!important}
 </div>
 </div>
 
-<div class="modal" id="messageModal">
-<div class="modalbox">
-<h2>写一封回信</h2>
-<p class="sub" id="messageTarget"></p>
-<textarea id="messageText" maxlength="500" placeholder="写下你想说的话……"></textarea>
-<button type="button" id="messageSendButton" class="btn primary block">发送消息</button>
-<button type="button" id="messageCancelButton" class="btn ghost block">取消</button>
-</div>
-</div>
+
 
 <script>
 const SUPABASE_URL='https://zqbyltitcskpmhulfhib.supabase.co';
@@ -2361,20 +2366,24 @@ function openMessage(receiver){
 if(!requireLogin())return;
 if(receiver===user.id){notify('提示','不能给自己发送消息。');return}
 messageReceiver=receiver;
-$('messageTarget').textContent='发送一条消息';
-$('messageText').value='';
-$('messageModal').classList.add('show');
+$('inlineReplyTarget').textContent='发送给好友';
+$('inlineReplyText').value='';
+$('inlineReplyComposer').style.display='block';
+showPage('messages');
+$('inlineReplyComposer').scrollIntoView({behavior:'smooth',block:'nearest'});
+setTimeout(()=>$('inlineReplyText').focus({preventScroll:true}),250);
 }
 async function submitMessage(){
 if(!requireLogin()||!messageReceiver)return;
-const content=$('messageText').value.trim();
+const content=$('inlineReplyText').value.trim();
 if(!content){notify('消息不能为空','请输入你想说的话。');return}
 try{
 const {error}=await db.from('messages').insert({
 sender_id:user.id,receiver_id:messageReceiver,content
 });
 if(error)throw error;
-$('messageModal').classList.remove('show');
+$('inlineReplyComposer').style.display='none';
+$('inlineReplyText').value='';
 messageReceiver=null;
 await loadMessages();renderMessages();
 notify('发送成功','你的消息已经发送。');
@@ -2625,22 +2634,18 @@ $('conversationSearch')?.addEventListener('input',()=>renderMessages());
 $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conversationSearch');if(input){input.value='';renderMessages();input.focus()}});
 
 
-/* 回信弹窗：在按钮本身绑定事件，避免全局事件委托和 iOS 点击穿透问题 */
-const replySendButton=$('messageSendButton');
-const replyCancelButton=$('messageCancelButton');
-replySendButton.addEventListener('click',async function(e){
- e.preventDefault();e.stopPropagation();
- if(replySendButton.dataset.busy==='1')return;
- replySendButton.dataset.busy='1';replySendButton.disabled=true;
+/* 行内回信区：直接绑定按钮事件，不再使用模态弹窗 */
+const inlineReplySend=$('inlineReplySend'),inlineReplyCancel=$('inlineReplyCancel');
+inlineReplySend.addEventListener('click',async function(){
+ if(inlineReplySend.dataset.busy==='1')return;
+ inlineReplySend.dataset.busy='1';inlineReplySend.disabled=true;
  try{await submitMessage()}
- catch(err){showError(err)}
- finally{replySendButton.dataset.busy='0';replySendButton.disabled=false}
+ finally{inlineReplySend.dataset.busy='0';inlineReplySend.disabled=false}
 });
-replyCancelButton.addEventListener('click',function(e){
- e.preventDefault();e.stopPropagation();
- $('messageModal').classList.remove('show');
+inlineReplyCancel.addEventListener('click',function(){
+ $('inlineReplyComposer').style.display='none';
+ $('inlineReplyText').value='';
  messageReceiver=null;
- $('messageText').value='';
 });
 
 // 事件
