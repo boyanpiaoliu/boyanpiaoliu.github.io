@@ -2263,7 +2263,16 @@ if(chatSkin){document.querySelectorAll('[data-chat-skin]').forEach(b=>b.classLis
 const petChoice=e.target.closest('[data-pet-choice]');
 if(petChoice){selectedPetType=petChoice.dataset.petChoice;document.querySelectorAll('[data-pet-choice]').forEach(b=>b.classList.toggle('selected',b===petChoice));return}
 const profileTheme=e.target.closest('[data-profile-theme]');
-if(profileTheme){document.querySelectorAll('[data-profile-theme]').forEach(b=>b.classList.toggle('selected',b===profileTheme));return}
+if(profileTheme){
+ const theme=profileTheme.dataset.profileTheme;
+ if(user&&theme!=='sea'&&theme!==(profile?.profile_theme||'sea')){
+  const {data,error}=await db.from('ocean_inventory').select('item_code').eq('user_id',user.id).eq('item_code','theme_'+theme).maybeSingle();
+  if(error){showError(error);return}
+  if(!data){notify('主题尚未解锁','请先在海洋商店兑换这套主页主题。');return}
+ }
+ document.querySelectorAll('[data-profile-theme]').forEach(b=>b.classList.toggle('selected',b===profileTheme));
+ return
+}
 const avatarFrame=e.target.closest('[data-avatar-frame]');
 if(avatarFrame){document.querySelectorAll('[data-avatar-frame]').forEach(b=>b.classList.toggle('selected',b===avatarFrame));return}
 const oceanTheme=e.target.closest('[data-ocean-theme]');
