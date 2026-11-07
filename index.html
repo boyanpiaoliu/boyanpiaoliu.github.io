@@ -798,6 +798,15 @@ body[data-ocean-theme="sea"]{--bg:#f4f8fc;--blue:#347fbd;--blue2:#eaf4fc}
 .cottage-friend{flex:none;min-width:86px;border:1px solid #e8eef0;border-radius:14px;background:#fff;padding:9px 8px;text-align:center;color:#627e8d}
 .cottage-friend span{display:block;font-size:23px}.cottage-friend b{display:block;font-size:9px;margin-top:5px}
 .cottage-visit-note{text-align:center;color:#9aabb3;font-size:10px;margin:14px 0}
+
+/* 首页主操作按钮：同宽、同高、同一基线，适配窄屏 */
+.hero-actions{display:flex!important;align-items:stretch!important;justify-content:flex-start!important;gap:12px!important;width:min(100%,330px)!important;}
+.hero-actions .hero-cta,.hero-actions .hero-pick{flex:1 1 0!important;width:0!important;min-width:0!important;height:52px!important;min-height:52px!important;margin:0!important;padding:0 9px!important;box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;line-height:1!important;font-size:clamp(10px,3.1vw,12px)!important;border-radius:17px!important;}
+.hero-actions .hero-cta span{font-size:15px!important;line-height:1!important;}
+@media(max-width:390px){.hero-actions{gap:8px!important;width:min(100%,300px)!important}.hero-actions .hero-cta,.hero-actions .hero-pick{padding:0 6px!important;font-size:11px!important;height:49px!important;min-height:49px!important}}
+@media(max-width:340px){.hero-actions{width:100%!important;gap:6px!important}.hero-actions .hero-cta,.hero-actions .hero-pick{font-size:10px!important;padding:0 4px!important}}
+/* 页面导航按钮固定在安全区上方，不遮挡底部导航 */
+#globalFloatingBack{bottom:calc(112px + env(safe-area-inset-bottom))!important;right:16px!important;}
 </style>
 </head>
 
@@ -1306,6 +1315,10 @@ let chatProfileCache={};
 let activeRecorder=null;
 let recorderChunks=[];
 let recordingStream=null;
+// 页面导航历史：悬浮返回按钮回到真实的上一个页面
+let pageHistory=[];
+let currentPageId='home';
+const seenBottleKey='boyan-seen-bottles-v1';
 // 官方体验示例漂流瓶
 const demoBottles=[
 {
@@ -1343,22 +1356,39 @@ $('modalBody').textContent=body;
 $('genericModal').classList.add('show');
 }
 function closeGeneric(){$('genericModal').classList.remove('show')}
-function showPage(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
-const floatingBack=document.getElementById('globalFloatingBack');
-const currentPage=document.getElementById(id);
-const canGoBack=!!(currentPage&&currentPage.querySelector('.page-head .back, [data-action="backDetail"]'));
-if(floatingBack){
- floatingBack.classList.add('is-visible');
- floatingBack.style.setProperty('display','flex','important');
- floatingBack.style.setProperty('visibility','visible','important');
- floatingBack.textContent=canGoBack?'‹':(id==='home'?'↑':'⌂');
- floatingBack.dataset.action=canGoBack?'backProfile':(id==='home'?'scrollTop':'backHome');
- floatingBack.setAttribute('aria-label',canGoBack?'返回上一层':(id==='home'?'返回顶部':'返回首页'));
+function showPage(id,options={}){
+ const target=document.getElementById(id);
+ if(!target)return;
+ const previous=document.querySelector('.page.active')?.id||currentPageId||'home';
+ if(id!==previous&&!options.fromHistory&&!options.replace){
+  pageHistory.push(previous);
+  if(pageHistory.length>40)pageHistory.shift();
+ }
+ currentPageId=id;
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+ const floatingBack=document.getElementById('globalFloatingBack');
+ if(floatingBack){
+  floatingBack.classList.add('is-visible');
+  floatingBack.style.setProperty('display','flex','important');
+  floatingBack.style.setProperty('visibility','visible','important');
+  const atHome=id==='home'&&window.scrollY<80;
+  floatingBack.textContent=atHome?'↑':'‹';
+  floatingBack.dataset.action=id==='home'?'scrollTop':'goBackPage';
+  floatingBack.setAttribute('aria-label',atHome?'返回顶部':'返回上一页');
+ }
+ document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ $('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications','growthCenter','cottageVisit'].includes(id)?'none':'flex';
+ window.scrollTo({top:0,behavior:'auto'});
 }
-document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-$('mainNav').style.display=['detail','auth','myBottles','favorites','editProfile','settings','friends','notifications','growthCenter','cottageVisit'].includes(id)?'none':'flex';
-window.scrollTo(0,0);
+function goBackPage(){
+ const previous=pageHistory.pop();
+ if(previous&&document.getElementById(previous)){
+  showPage(previous,{fromHistory:true});
+ }else if(currentPageId!=='home'){
+  showPage('home',{replace:true});
+ }else{
+  window.scrollTo({top:0,behavior:'smooth'});
+ }
 }
 function escapeText(value){return String(value??'')}
 function dateText(value){
@@ -1895,15 +1925,22 @@ notify('投递成功','你的漂流瓶已经投进云端大海。');
 
 // 随机捡瓶
 async function pickBottle(){
-try{
-const pool=[...demoBottles,...bottles.filter(b=>b.is_public&&b.user_id!==user?.id)];
-if(!pool.length){
-notify('海面暂时很安静','暂时没有其他用户公开投递的漂流瓶。');
-return;
-}
-const b=pool[Math.floor(Math.random()*pool.length)];
-openDetail(b);
-}catch(e){showError(e)}
+ try{
+  const seen=new Set();
+  try{JSON.parse(localStorage.getItem(seenBottleKey)||'[]').forEach(id=>seen.add(String(id)))}catch(_){}
+  const eligible=[
+   ...demoBottles.filter(b=>!seen.has(String(b.id))),
+   ...bottles.filter(b=>b.is_public&&b.user_id!==user?.id&&!b.picked_up_by&&!['picked','collected','claimed'].includes(String(b.status||'').toLowerCase())&&!seen.has(String(b.id)))
+  ];
+  if(!eligible.length){
+   notify('海面暂时很安静','目前没有新的公开漂流瓶。你可以稍后再来，或去「发现」看看大家分享的故事。');
+   return;
+  }
+  const bottle=eligible[Math.floor(Math.random()*eligible.length)];
+  seen.add(String(bottle.id));
+  try{localStorage.setItem(seenBottleKey,JSON.stringify([...seen].slice(-300)))}catch(_){}
+  openDetail(bottle);
+ }catch(e){showError(e)}
 }
 
 // 消息
@@ -2292,6 +2329,7 @@ case'copyFriendId':await copyFriendId();break;
 case'saveProfile':await saveProfile();break;
 case'logout':await logout();break;
 case'backProfile':showPage('profile');break;
+case'goBackPage':goBackPage();break;
 case'scrollTop':window.scrollTo({top:0,behavior:'smooth'});break;
 case'backHome':showPage('home');break;
 case'backDetail':showPage('discover');break;
