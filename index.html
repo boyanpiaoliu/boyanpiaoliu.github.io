@@ -1959,12 +1959,12 @@ if(error)throw error;
 messages=(data||[]).filter(m=>!blockedUserIds.includes(m.sender_id)&&!blockedUserIds.includes(m.receiver_id));
 }
 async function refreshAll(){
-try{
-await loadBottles();
-await loadFavorites();
-await loadMessages();
-renderAll();
-}catch(e){showError(e)}
+const failures=[];
+try{await loadBottles()}catch(e){console.error('漂流瓶列表加载失败：',e);failures.push('漂流瓶')}
+try{await loadFavorites()}catch(e){console.error('收藏列表加载失败：',e);favorites=[];failures.push('收藏')}
+try{await loadMessages()}catch(e){console.error('消息列表加载失败：',e);messages=[];failures.push('消息')}
+try{renderAll()}catch(e){console.error('页面内容渲染失败：',e);failures.push('页面渲染')}
+if(failures.length)console.warn('部分数据暂不可用，页面仍保持可操作：'+failures.join('、'));
 }
 function renderAll(){
 renderList('homeFeed',[...bottles.filter(b=>b.is_public),...demoBottles].slice(0,3),'海面暂时很安静，写下第一只漂流瓶吧。');
@@ -2688,6 +2688,8 @@ notify('保存成功','昵称、头像和聊天气泡外观已同步到云端。
 
 // 登录状态
 async function initSession(){
+// 先渲染静态首页和导航，任何云端请求失败都不应让页面变成空白
+try{renderAll()}catch(initialRenderError){console.error('初始页面渲染失败：',initialRenderError)}
 let session=null;
 try{
 const result=await db.auth.getSession();
@@ -3408,7 +3410,9 @@ document.getElementById('languageSelect')?.addEventListener('change',e=>setLangu
 await initSession();
 }catch(e){
 console.error('页面初始化异常（不阻断页面操作）：',e);
-try{user=null;profile=null;syncProfile();renderAll()}catch(renderError){console.error(renderError)}
+user=null;profile=null;
+try{syncProfile()}catch(syncError){console.error(syncError)}
+try{renderAll()}catch(renderError){console.error('首页渲染仍有异常：',renderError)}
 }
 })();
 </script>
