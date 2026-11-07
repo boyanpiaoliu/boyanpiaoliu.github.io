@@ -1219,6 +1219,12 @@ html,body{max-width:100%;overflow-x:hidden!important}
 #inlineReplyText{display:block;width:100%;min-height:120px;max-width:100%;box-sizing:border-box;padding:14px;border:1px solid #dce6ef;border-radius:13px;background:#f8fbfd;color:#30465b;font:inherit;resize:vertical}
 #inlineReplySend{width:100%;margin-top:13px;min-height:48px}
 
+/* 投递弹窗按钮触控修复 */
+#writeModal{z-index:2147482500!important;pointer-events:auto!important;touch-action:manipulation!important}
+#writeModal .modalbox{position:relative!important;z-index:1!important;pointer-events:auto!important;max-height:calc(100dvh - 36px);overflow-y:auto;overscroll-behavior:contain}
+#writeModal button{position:relative!important;z-index:5!important;pointer-events:auto!important;touch-action:manipulation!important;cursor:pointer!important;-webkit-tap-highlight-color:rgba(70,130,170,.18)}
+#writeModal textarea,#writeModal input{position:relative;z-index:2;pointer-events:auto!important}
+
 </style>
 </head>
 
@@ -1661,17 +1667,12 @@ html,body{max-width:100%;overflow-x:hidden!important}
 <h2>投递一只漂流瓶</h2>
 <p class="sub">写下此刻想说的话，让它随海风漂向远方。</p>
 <textarea id="bottleText" maxlength="500" placeholder="你好，远方的陌生人……"></textarea>
-<label class="form-label">心情分类</label>
-<select id="bottleMood" style="width:100%;padding:13px;border:1px solid #e0e9f1;border-radius:13px;background:#f9fbfd">
-<option value="warm">温暖</option>
-<option value="thought">心事</option>
-</select>
 <label style="display:block;margin:14px 0;font-size:14px">
 <input id="isPublic" type="checkbox" checked style="width:auto;margin-right:7px">
 公开漂流（允许其他用户捡到）
 </label>
-<button class="btn primary block" data-action="submitBottle">投进大海</button>
-<button class="btn ghost block" data-action="closeWrite">取消</button>
+<button type="button" id="submitBottleButton" class="btn primary block">投进大海</button>
+<button type="button" id="closeWriteButton" class="btn ghost block">取消</button>
 </div>
 </div>
 
@@ -2331,7 +2332,7 @@ const {error}=await db.from('bottles').insert({
 user_id:user.id,
 content,
 is_public:$('isPublic').checked,
-mood:$('bottleMood').value
+mood:'warm'
 });
 if(error)throw error;
 $('bottleText').value='';
@@ -2633,6 +2634,25 @@ function showChatImage(src){
 $('conversationSearch')?.addEventListener('input',()=>renderMessages());
 $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conversationSearch');if(input){input.value='';renderMessages();input.focus()}});
 
+
+/* 投递弹窗按钮直接绑定，避免全局点击委托造成按钮无响应 */
+const submitBottleButton=$('submitBottleButton');
+const closeWriteButton=$('closeWriteButton');
+submitBottleButton.addEventListener('click',async function(e){
+ e.preventDefault();e.stopPropagation();
+ if(submitBottleButton.dataset.busy==='1')return;
+ submitBottleButton.dataset.busy='1';submitBottleButton.disabled=true;
+ try{await submitBottle()}
+ finally{submitBottleButton.dataset.busy='0';submitBottleButton.disabled=false}
+});
+closeWriteButton.addEventListener('click',function(e){
+ e.preventDefault();e.stopPropagation();
+ $('writeModal').classList.remove('show');
+ $('bottleText').value='';
+});
+$('writeModal').addEventListener('click',function(e){
+ if(e.target===$('writeModal'))$('writeModal').classList.remove('show');
+});
 
 /* 行内回信区：直接绑定按钮事件，不再使用模态弹窗 */
 const inlineReplySend=$('inlineReplySend'),inlineReplyCancel=$('inlineReplyCancel');
