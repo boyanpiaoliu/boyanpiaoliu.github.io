@@ -1843,9 +1843,6 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 .cloud-compose-panel[hidden],.cloud-action-notice[hidden]{display:none!important}
 .cloud-compose-title{font-weight:700;color:#57436f;margin:0 0 9px}
 .cloud-compose-panel textarea{display:block;width:100%;min-height:86px;resize:vertical;border:1px solid #e9e2f0;border-radius:12px;padding:11px;background:#fcfbfe;color:#352946;font:inherit;outline:none}
-.cloud-compose-options{display:flex;justify-content:space-between;align-items:center;margin:9px 0;color:#837393;font-size:12px}
-.cloud-compose-options select{border:1px solid #e9e2f0;border-radius:9px;padding:6px;background:#fff;color:#57436f}
-.cloud-compose-options label{display:flex;align-items:center;gap:5px}
 .cloud-compose-buttons{display:flex;justify-content:flex-end;gap:9px}
 .cloud-compose-buttons button{border:0;border-radius:11px;padding:9px 16px;font-size:13px}
 .cloud-compose-cancel{background:#f3eff7;color:#78668d}
@@ -1983,12 +1980,8 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <div id="messageList"></div>
 <div id="messageThread" style="display:none"></div>
 <div id="cloudComposePanel" class="cloud-compose-panel" hidden>
-  <div class="cloud-compose-title">写下一片云</div>
+  <div class="cloud-compose-title">放一片云</div>
   <textarea id="cloudComposeText" maxlength="500" placeholder="写下此刻想说的话……"></textarea>
-  <div class="cloud-compose-options">
-    <select id="cloudComposeMood" aria-label="选择心情"><option value="warm">温暖</option><option value="thought">心事</option></select>
-    <label><input id="cloudComposePublic" type="checkbox" checked> 公开漂流</label>
-  </div>
   <div class="cloud-compose-buttons">
     <button type="button" class="cloud-compose-cancel" onclick="hideCloudComposer()">收起</button>
     <button type="button" class="cloud-compose-send" onclick="submitCloudComposer()">放入大海</button>
@@ -3089,8 +3082,8 @@ async function submitCloudComposer(){
     const {error}=await db.from('bottles').insert({
       user_id:user.id,
       content,
-      is_public:$('cloudComposePublic').checked,
-      mood:$('cloudComposeMood').value
+      is_public:true,
+      mood:'warm'
     });
     if(error)throw error;
     $('cloudComposeText').value='';
