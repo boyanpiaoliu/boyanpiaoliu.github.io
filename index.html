@@ -2400,6 +2400,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <button class="btn primary block" data-action="verifyEmailCode">验证邮箱并完成注册</button>
 <p class="toastnote">注册后请查看邮箱，输入邮件中的验证码完成验证。</p>
 </div>
+<button type="button" class="btn primary block" id="submitAuth" data-action="submitAuth">登录</button>
 <div class="auth-inline-actions" id="authInlineActions">
 <button type="button" class="auth-text-link" data-action="forgotPassword" id="forgotPasswordButton">忘记密码？</button>
 </div>
@@ -3488,7 +3489,7 @@ $('phoneFields').style.display='none';
 $('registerFields').style.display=authMode==='register'?'block':'none';
 $('emailOtpFields').style.display=authMode==='register'?'block':'none';
 $('emailLoginOtpFields').style.display=authMode==='login'?'block':'none';
-$('submitAuth').textContent=authMode==='login'?'使用密码登录':'注册';
+$('submitAuth').textContent=authMode==='login'?'登录':'注册';
 $('resendEmailButton').style.display='none';
 document.querySelectorAll('[data-authmode]').forEach(b=>b.classList.toggle('active',b.dataset.authmode===authMode));
 
