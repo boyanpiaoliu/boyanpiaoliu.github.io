@@ -2774,6 +2774,14 @@ profile={...data,...(privateRows?.[0]||{})};
 syncProfile();
 }
 
+function closeProfileView(){
+ const overlay=$('profileViewModal');
+ if(overlay)overlay.style.display='none';
+ if(user&&viewedProfileId===user.id){
+  showPage('profile',{replace:true});
+ }
+}
+
 async function showUserProfile(id){
  try{
   viewedProfileId=id;
@@ -3740,7 +3748,7 @@ const closeReportButton=e.target.closest('[data-action="closeReport"]');if(close
 const closeMatch=e.target.closest('[data-action="closeHeartMatch"]');if(closeMatch){$('heartMatchModal').style.display='none';return}
 const matchAgain=e.target.closest('[data-action="heartMatchAgain"]');if(matchAgain){startHeartMatch();return}
 const match=e.target.closest('[data-action="heartMatch"]');if(match){startHeartMatch();return}
-const closeProfile=e.target.closest('[data-action="closeProfileView"]');if(closeProfile){$('profileViewModal').style.display='none';return}
+const closeProfile=e.target.closest('[data-action="closeProfileView"]');if(closeProfile){closeProfileView();return}
 const profileActions=e.target.closest('[data-action="toggleProfileActions"]');if(profileActions){const actions=$('profileSafetyActions');actions.style.display=actions.style.display==='flex'?'none':'flex';return}
 const avatarTarget=e.target.closest('.chat-avatar');if(avatarTarget?.dataset.profileId){await showUserProfile(avatarTarget.dataset.profileId);return}
 const ownAvatar=e.target.closest('#avatar');if(ownAvatar&&user){await showUserProfile(user.id);return}
