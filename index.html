@@ -1838,6 +1838,20 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  border-width:1.7px!important;
  font-size:23px!important;
 }
+
+.cloud-compose-panel,.cloud-action-notice{position:fixed;left:16px;right:16px;bottom:176px;z-index:29;background:#fff;border:1px solid #eee8f5;border-radius:18px;padding:14px;box-shadow:0 8px 28px rgba(60,40,80,.12)}
+.cloud-compose-panel[hidden],.cloud-action-notice[hidden]{display:none!important}
+.cloud-compose-title{font-weight:700;color:#57436f;margin:0 0 9px}
+.cloud-compose-panel textarea{display:block;width:100%;min-height:86px;resize:vertical;border:1px solid #e9e2f0;border-radius:12px;padding:11px;background:#fcfbfe;color:#352946;font:inherit;outline:none}
+.cloud-compose-options{display:flex;justify-content:space-between;align-items:center;margin:9px 0;color:#837393;font-size:12px}
+.cloud-compose-options select{border:1px solid #e9e2f0;border-radius:9px;padding:6px;background:#fff;color:#57436f}
+.cloud-compose-options label{display:flex;align-items:center;gap:5px}
+.cloud-compose-buttons{display:flex;justify-content:flex-end;gap:9px}
+.cloud-compose-buttons button{border:0;border-radius:11px;padding:9px 16px;font-size:13px}
+.cloud-compose-cancel{background:#f3eff7;color:#78668d}
+.cloud-compose-send{background:#b99bdd;color:#fff}
+.cloud-action-notice{bottom:178px;text-align:center;color:#6d5885;font-size:13px;padding:13px 16px}
+
 </style>
 </head>
 
@@ -1945,10 +1959,23 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <div class="conversation-search"><span>⌕</span><input id="conversationSearch" type="search" placeholder="搜索会话" autocomplete="off"><button type="button" id="clearConversationSearch" aria-label="清空搜索">×</button></div>
 <div id="messageList"></div>
 <div id="messageThread" style="display:none"></div>
+<div id="cloudComposePanel" class="cloud-compose-panel" hidden>
+  <div class="cloud-compose-title">写下一片云</div>
+  <textarea id="cloudComposeText" maxlength="500" placeholder="写下此刻想说的话……"></textarea>
+  <div class="cloud-compose-options">
+    <select id="cloudComposeMood" aria-label="选择心情"><option value="warm">温暖</option><option value="thought">心事</option></select>
+    <label><input id="cloudComposePublic" type="checkbox" checked> 公开漂流</label>
+  </div>
+  <div class="cloud-compose-buttons">
+    <button type="button" class="cloud-compose-cancel" onclick="hideCloudComposer()">收起</button>
+    <button type="button" class="cloud-compose-send" onclick="submitCloudComposer()">放入大海</button>
+  </div>
+</div>
+<div id="cloudActionNotice" class="cloud-action-notice" hidden></div>
 <div class="two-page-actions">
-<button type="button" onclick="document.getElementById('writeModal').classList.add('show')">采一片云</button>
-<button type="button" class="swap" onclick="pickBottle()" aria-label="捡取纸条">⇄</button>
-<button type="button" onclick="pickBottle()">放一片云</button>
+<button type="button" onclick="showCloudComposer()">采一片云</button>
+<button type="button" class="swap" onclick="pickBottle(true)" aria-label="捡取纸条">⇄</button>
+<button type="button" onclick="pickBottle(true)">放一片云</button>
 </div>
 </section>
 
@@ -3014,6 +3041,42 @@ showPage('favorites');
 }catch(e){showError(e)}
 }
 
+function showCloudComposer(){
+  const panel=$('cloudComposePanel');
+  if(!panel)return;
+  $('cloudActionNotice').hidden=true;
+  panel.hidden=false;
+  setTimeout(()=>$('cloudComposeText')?.focus(),80);
+}
+function hideCloudComposer(){
+  const panel=$('cloudComposePanel');
+  if(panel)panel.hidden=true;
+}
+function showCloudNotice(message){
+  const notice=$('cloudActionNotice');
+  if(!notice)return;
+  notice.textContent=message;
+  notice.hidden=false;
+}
+async function submitCloudComposer(){
+  if(!requireLogin())return;
+  const content=$('cloudComposeText').value.trim();
+  if(!content){showCloudNotice('先写下一段想分享的话。');return}
+  try{
+    const {error}=await db.from('bottles').insert({
+      user_id:user.id,
+      content,
+      is_public:$('cloudComposePublic').checked,
+      mood:$('cloudComposeMood').value
+    });
+    if(error)throw error;
+    $('cloudComposeText').value='';
+    hideCloudComposer();
+    showCloudNotice('已放入大海，等待远方的回应。');
+    await refreshAll(true);
+  }catch(e){showError(e)}
+}
+
 // 投递
 async function submitBottle(){
 if(!requireLogin())return;
@@ -3035,7 +3098,7 @@ notify('投递成功','你的漂流瓶已经投进云端大海。');
 }
 
 // 随机捡瓶
-async function pickBottle(){
+async function pickBottle(inline=false){
  try{
   const seen=new Set();
   try{JSON.parse(localStorage.getItem(seenBottleKey)||'[]').forEach(id=>seen.add(String(id)))}catch(_){}
@@ -3053,7 +3116,8 @@ async function pickBottle(){
    }else eligible=[];
   }
   if(!eligible.length){
-   notify('海面暂时很安静','目前没有新的公开漂流瓶。你可以稍后再来，或去「发现」看看大家分享的故事。');
+   if(inline)showCloudNotice('海面暂时很安静，暂时没有新的公开漂流瓶。');
+   else notify('海面暂时很安静','目前没有新的公开漂流瓶。你可以稍后再来，或去「发现」看看大家分享的故事。');
    return;
   }
   const bottle=eligible[Math.floor(Math.random()*eligible.length)];
