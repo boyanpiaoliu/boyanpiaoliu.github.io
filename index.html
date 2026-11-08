@@ -1383,6 +1383,18 @@ header,.global-brand-bar,.two-page-message-head,#settings .page-head,.message-th
  text-align:right!important;
 }
 #settings .settings-reference-row:active{background:#faf8fd!important}
+/* 设置页统一返回与列表箭头：加大触控区，统一线性图标 */
+#settings .page-head .back{
+ position:absolute!important;left:14px!important;top:50%!important;transform:translateY(-50%)!important;
+ width:44px!important;height:44px!important;display:grid!important;place-items:center!important;
+ padding:0!important;border:0!important;border-radius:50%!important;
+ color:#fff!important;background:rgba(255,255,255,.13)!important;
+ -webkit-tap-highlight-color:transparent!important;
+}
+#settings .page-head .back svg{display:block!important;width:26px!important;height:26px!important;fill:none!important;stroke:#fff!important;stroke-width:2.4!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+#settings .settings-reference-row .settings-arrow{font-size:0!important}
+#settings .settings-reference-row .settings-arrow svg{display:block!important;width:20px!important;height:20px!important;fill:none!important;stroke:#a98be2!important;stroke-width:2.3!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+
 @media(max-width:380px){
  #settings.page.active{padding-left:18px!important;padding-right:18px!important}
  #settings .settings-reference-row .settings-label{font-size:14px!important}
@@ -2566,9 +2578,9 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 </section>
 
 <section class="page" id="settings">
-<div class="page-head"><button class="back" type="button" onclick="showPage('profile')">‹</button><h2>设置</h2></div>
+<div class="page-head"><button class="back settings-back" type="button" onclick="showPage('profile')" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4.5 8 12l7.5 7.5"/></svg></button><h2>设置</h2></div>
 <div class="settings-reference-list">
-<button class="settings-reference-row" type="button" onclick="shareInvite()"><span class="settings-icon">♧</span><span class="settings-label">邀请好友得云朵币</span><span class="settings-arrow">›</span></button>
+<button class="settings-reference-row" type="button" onclick="shareInvite()"><span class="settings-icon">♧</span><span class="settings-label">邀请好友得云朵币</span><span class="settings-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8.5 4.5 7.5 7.5-7.5 7.5"/></svg></span></button>
 <button class="settings-reference-row" type="button" onclick="notify('关注官方公众号','官方公众号入口暂未配置。请留意云朵岛站内公告，避免通过非官方渠道提供账号信息。')"><span class="settings-icon">♡</span><span class="settings-label">关注官方公众号</span><span class="settings-arrow">›</span></button>
 <button class="settings-reference-row" type="button" onclick="notify('联系客服','客服通道正在完善中。你可以通过云朵岛官方通知了解后续联系渠道。')"><span class="settings-icon">♧</span><span class="settings-label">联系客服</span><span class="settings-arrow">›</span></button>
 <button class="settings-reference-row" type="button" onclick="notify('隐私政策','云朵岛仅在提供账号、漂流瓶和消息功能所需范围内处理相关数据。请勿在公开漂流瓶或聊天中分享密码、验证码及其他敏感信息。')"><span class="settings-icon">▤</span><span class="settings-label">隐私政策</span><span class="settings-arrow">›</span></button>
