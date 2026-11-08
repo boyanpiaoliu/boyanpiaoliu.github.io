@@ -1958,6 +1958,40 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  border:0!important;outline:0!important;
  background:transparent!important;box-shadow:none!important;
 }
+
+/* 个人主页微调：无框设置图标、加深淡紫渐变、圆形发布入口 */
+#profile .profile-settings{
+ top:16px!important;right:20px!important;
+ width:42px!important;height:42px!important;padding:0!important;
+ display:grid!important;place-items:center!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ color:#9674bd!important;font-size:0!important;
+}
+#profile .profile-settings svg{
+ width:26px!important;height:26px!important;
+ fill:none!important;stroke:#9674bd!important;
+ stroke-width:1.55!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+#profile .two-page-profile-hero{
+ background:linear-gradient(155deg,#dfcff7 0%,#eee5fc 58%,#fff 100%)!important;
+}
+#profile .two-page-add{
+ width:72px!important;height:72px!important;min-width:72px!important;
+ right:20px!important;bottom:105px!important;
+ padding:0!important;border:0!important;border-radius:50%!important;
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;gap:0!important;
+ background:linear-gradient(145deg,#c2a5e8,#a987d8)!important;
+ color:#fff!important;box-shadow:0 5px 16px rgba(143,111,190,.2)!important;
+ line-height:1!important;
+}
+#profile .two-page-add b{
+ display:block!important;font-size:25px!important;font-weight:400!important;line-height:1!important;
+}
+#profile .two-page-add span{
+ display:block!important;font-size:12px!important;font-weight:600!important;line-height:1.2!important;
+}
 </style>
 </head>
 
@@ -2083,7 +2117,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 
 <section class="page" id="profile">
 <div class="two-page-profile-hero">
-<button class="profile-settings" type="button" onclick="showPage('settings')" aria-label="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"/><path d="m19.2 13.7 1.1.9-1.4 2.4-1.4-.5a7.7 7.7 0 0 1-1.5.9l-.2 1.5h-2.8l-.3-1.5a7.7 7.7 0 0 1-1.5-.9l-1.4.5-1.4-2.4 1.1-.9a7 7 0 0 1 0-1.8l-1.1-.9 1.4-2.4 1.4.5a7.7 7.7 0 0 1 1.5-.9l.3-1.5h2.8l.2 1.5a7.7 7.7 0 0 1 1.5.9l1.4-.5 1.4 2.4-1.1.9a7 7 0 0 1 0 1.8Z" transform="translate(-1.2 -1.2)"/></svg></button>
+<button class="profile-settings" type="button" onclick="showPage('settings')" aria-label="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2.1"/><circle cx="15" cy="12" r="2.1"/><circle cx="8" cy="18" r="2.1"/></svg></button>
 <div class="two-page-profile-main">
 <div class="avatar" id="avatar">🌊</div>
 <div class="two-page-profile-identity"><div class="profile-name-line"><h2 id="nickname">海边的风</h2><span id="vipBadge" class="vip-badge" style="display:none">VIP</span></div><p class="sub profile-id" id="userId">尚未登录</p><small id="profileIp">IP · 未知</small></div>
@@ -2092,7 +2126,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <div class="two-page-coins"><div><strong id="permanentCoins">0　⊕</strong><span>永久云朵币</span></div><i></i><div><strong id="dailyCoins">0　⊕</strong><span>今日云朵币</span></div></div>
 </div>
 <div class="two-page-notes"><h2>我的笔记</h2><div class="notes-empty"><div class="notes-art" aria-hidden="true"><svg viewBox="0 0 64 48" role="img"><path d="M17 39h31a11 11 0 0 0 1-22 17 17 0 0 0-32-3A13 13 0 0 0 17 39Z"/></svg></div><span>～ 空空如也 ～</span></div></div>
-<button class="two-page-add" type="button" onclick="showPage('community');document.getElementById('communityContent')?.focus()">＋ 发布</button>
+<button class="two-page-add" type="button" onclick="showPage('community');document.getElementById('communityContent')?.focus()"><b>＋</b><span>发布</span></button>
 <div style="display:none">
 <button id="authButton" data-action="auth">登录 / 注册</button>
 <span id="myCountStat">0</span><span id="favCountStat">0</span>
