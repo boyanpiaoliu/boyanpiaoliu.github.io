@@ -2845,13 +2845,13 @@ async function showUserProfile(id){
 }
 function syncProfile(){
  applyProfileTheme();
-$('nickname').textContent=profile?.nickname||(user?'漂流者':'云朵岛');
+$('nickname').textContent=user?(profile?.nickname||'漂流者'):'云朵岛';
 const vipUntil=profile?.membership_until?new Date(profile.membership_until):null;
 const isVip=!!(user&&vipUntil&&!Number.isNaN(vipUntil.getTime())&&vipUntil.getTime()>Date.now());
 const vipBadge=$('vipBadge');if(vipBadge)vipBadge.style.display=isVip?'inline-flex':'none';
 const nickname=$('nickname');if(nickname)nickname.classList.toggle('vip-name',isVip);
 const userId=$('userId');if(userId){userId.textContent=user?'好友 ID：'+(profile?.friend_code||'生成中…'):'尚未登录';userId.classList.toggle('vip-id',isVip)}
-const av=$('avatar');if(av){av.replaceChildren();if(profile?.avatar_url){const img=document.createElement('img');img.src=profile.avatar_url;img.alt='头像';av.append(img)}else av.textContent=(profile?.nickname||(user?'我':'云')).slice(0,1);}
+const av=$('avatar');if(av){av.replaceChildren();if(user&&profile?.avatar_url){const img=document.createElement('img');img.src=profile.avatar_url;img.alt='头像';av.append(img)}else if(!user){av.innerHTML='<svg class="guest-cloud-avatar" viewBox="0 0 64 48" aria-hidden="true"><path d="M18 41h29a13 13 0 0 0 1-26A17 17 0 0 0 16 18a12 12 0 0 0 2 23Z"/></svg>';}else av.textContent=(profile?.nickname||'我').slice(0,1);}
 $('authButton').textContent=user?'已登录':'登录 / 注册';
 const primaryAction=$('profilePrimaryAction');if(primaryAction){primaryAction.textContent=user?'开通会员':'登录 / 注册';primaryAction.dataset.action=user?'membership':'auth';}
 $('logoutRow').style.display=user?'flex':'none';
