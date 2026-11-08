@@ -3925,6 +3925,7 @@ function openWriteNotePage(){
  showPage('writeNote');
 }
 function closeWriteNotePage(){
+ if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();
  showPage('profile',{replace:true});
 }
 async function submitWriteNote(){
@@ -3957,7 +3958,7 @@ async function publishCommunity(){
  const {error}=await db.from('community_posts').insert({user_id:user.id,content,mood:$('communityMood').value,image_url});
  if(error){showError(error);return}
  $('communityContent').value='';$('communityImageInput').value='';$('communityImageName').textContent='支持 JPG、PNG、WEBP，最大 5MB';$('communityCount').textContent='0 / 500';
- await loadCommunity();if(currentPageId==='writeNote'){showPage('profile',{replace:true});}notify('发布成功','你的心情已经漂到海上。');
+ await loadCommunity();if(currentPageId==='writeNote'){if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();showPage('profile',{replace:true});}notify('发布成功','你的心情已经漂到海上。');
 }
 const oceanShopItems=[
  {code:'frame_pearl',name:'珍珠光环',icon:'🫧',cost:30,desc:'清透珍珠头像框'},
