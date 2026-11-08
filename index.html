@@ -1942,6 +1942,22 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  font-size:14px!important;font-weight:400!important;
  letter-spacing:.5px!important;line-height:1.2!important;
 }
+
+/* 聊天右上角更多按钮：去掉圆圈 */
+#messageThread .message-thread-head .thread-more{
+ width:40px!important;height:40px!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ outline:0!important;
+ font-size:24px!important;font-weight:500!important;
+ letter-spacing:3px!important;
+ padding:0 0 5px 3px!important;
+}
+#messageThread .message-thread-head .thread-more:focus,
+#messageThread .message-thread-head .thread-more:active{
+ border:0!important;outline:0!important;
+ background:transparent!important;box-shadow:none!important;
+}
 </style>
 </head>
 
