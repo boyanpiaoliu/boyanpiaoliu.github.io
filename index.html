@@ -2010,16 +2010,19 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  font-weight:500!important;line-height:1!important;
 }
 #editProfile .edit-profile-back{
- position:absolute;left:15px;top:calc(env(safe-area-inset-top) + 7px);
- width:46px;height:46px;padding:0;border:0;background:transparent;
- color:#fff;font-size:48px;font-weight:300;line-height:40px;
+ position:absolute;left:14px;top:calc(env(safe-area-inset-top) + 5px);
+ width:52px;height:52px;padding:0;border:0;border-radius:50%;
+ background:rgba(255,255,255,.12);display:grid;place-items:center;
+ color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+ -webkit-tap-highlight-color:transparent;
 }
+#editProfile .edit-profile-back svg{width:25px;height:25px;display:block;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 #editProfile .edit-profile-form{
  width:100%;display:flex;flex-direction:column;align-items:center;
- padding:64px 0 50px;background:#fff;
+ box-sizing:border-box;padding:42px 24px 48px;background:#fff;
 }
 #editProfile .edit-profile-avatar{
- position:relative;width:102px;height:102px;padding:0;
+ position:relative;width:108px;height:108px;padding:0;flex:0 0 auto;
  border:0;background:transparent;border-radius:50%;overflow:visible;
 }
 #editProfile .edit-profile-avatar-image{
@@ -2040,11 +2043,11 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;
 }
 #editProfile .edit-profile-avatar-caption{
- margin-top:12px;color:#78698d;font-size:18px;line-height:1.4;
+ margin-top:14px;color:#78698d;font-size:17px;line-height:1.4;
 }
 #editProfile #avatarFile{display:none!important}
 #editProfile .edit-profile-nickname{
- display:block;width:73%!important;max-width:360px;height:45px;
+ display:block;width:100%!important;max-width:360px;height:48px;
  margin:8px auto 0!important;padding:0 18px!important;
  border:1px solid #e7dff0!important;border-radius:22px!important;
  background:#fff!important;box-shadow:none!important;
@@ -2056,7 +2059,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 }
 #editProfile .edit-profile-nickname::placeholder{color:#b8a8ce}
 #editProfile .edit-profile-submit{
- width:73%;max-width:360px;height:52px;margin:43px auto 0;
+ width:100%;max-width:360px;height:54px;margin:34px auto 0;
  border:0;border-radius:16px;
  background:linear-gradient(105deg,#c6adeb,#a98bd8);
  color:#fff;font-size:21px;font-weight:600;
@@ -2309,7 +2312,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 
 <section class="page" id="editProfile">
 <header class="edit-profile-header">
-<button type="button" class="edit-profile-back" data-action="backProfile" aria-label="返回">‹</button>
+<button type="button" class="edit-profile-back" data-action="backProfile" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4.5 8 12l7.5 7.5"/></svg></button>
 <h2>修改资料</h2>
 </header>
 <div class="edit-profile-form">
