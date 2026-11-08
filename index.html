@@ -2789,11 +2789,9 @@ async function openConversation(peer){
  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send.click()}});
  const tools=document.createElement('div');tools.className='message-tools';
  const imageBtn=document.createElement('button');imageBtn.textContent='▧  图片';imageBtn.addEventListener('click',()=>$('chatImageInput').click());
- const flashBtn=document.createElement('button');flashBtn.textContent='✧  闪照';flashBtn.addEventListener('click',()=>$('chatFlashInput').click());
  const videoBtn=document.createElement('button');videoBtn.textContent='▷  视频';videoBtn.addEventListener('click',()=>$('chatVideoInput').click());
- const audioBtn=document.createElement('button');audioBtn.textContent='♫  语音';audioBtn.addEventListener('click',()=>toggleVoiceRecording(peer,audioBtn));
  plus.addEventListener('click',()=>{tools.classList.toggle('is-open');plus.classList.toggle('active')});
- tools.append(imageBtn,flashBtn,videoBtn,audioBtn);composer.append(voiceBtn,input,send,plus,tools);thread.append(composer);thread.scrollIntoView({behavior:'smooth',block:'end'});updateUnreadBadge();
+ tools.append(imageBtn,videoBtn);composer.append(voiceBtn,input,send,plus,tools);thread.append(composer);thread.scrollIntoView({behavior:'smooth',block:'end'});updateUnreadBadge();
  }catch(e){showError(e)}
 }
 
