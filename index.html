@@ -2063,6 +2063,37 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 #editProfile .gender-choice-wrap[hidden],
 #editProfile .edit-profile-hidden-data[hidden]{display:none!important}
 #editProfile .gender-choice-wrap .form-label{color:#d47f88}
+
+/* 写笔记页：香芋紫独立编辑界面 */
+#writeNote{min-height:100vh!important;padding:0!important;margin:0!important;background:#fff!important;color:#51456a!important}
+#writeNote .write-note-header{
+ position:relative;width:100%;height:calc(64px + env(safe-area-inset-top));
+ padding:env(safe-area-inset-top) 20px 0;box-sizing:border-box;
+ display:flex;align-items:center;justify-content:center;
+ background:linear-gradient(110deg,#c8b0f0,#bda2eb)!important;color:#fff!important
+}
+#writeNote .write-note-header h2{margin:0!important;color:#fff!important;font-size:20px!important;font-weight:500!important;line-height:1}
+#writeNote .write-note-back{
+ position:absolute;left:17px;top:calc(env(safe-area-inset-top) + 9px);
+ width:38px;height:40px;padding:0;border:0;background:transparent;
+ color:#fff;font-size:38px;font-weight:300;line-height:32px
+}
+#writeNote .write-note-body{padding:22px 20px 40px;background:#fff}
+#writeNote .write-note-body textarea{
+ display:block;width:100%;min-height:320px;resize:none;padding:0;
+ border:0!important;outline:none!important;box-shadow:none!important;
+ border-radius:0!important;background:#fff!important;color:#51456a!important;
+ font-size:20px!important;line-height:1.8
+}
+#writeNote .write-note-body textarea::placeholder{color:#9993a8}
+#writeNote .write-note-divider{height:1px;background:#eee7f7;margin:18px 0 28px}
+#writeNote .write-note-submit{
+ display:block;width:82%;max-width:420px;height:54px;margin:0 auto;
+ border:0;border-radius:28px;
+ background:linear-gradient(120deg,#c8b0f0,#a98be2)!important;
+ color:#fff!important;font-size:22px!important;font-weight:600;letter-spacing:1px;
+ box-shadow:none
+}
 </style>
 </head>
 
@@ -2197,11 +2228,23 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <div class="two-page-coins"><div><strong id="permanentCoins">0　⊕</strong><span>永久云朵币</span></div><i></i><div><strong id="dailyCoins">0　⊕</strong><span>今日云朵币</span></div></div>
 </div>
 <div class="two-page-notes"><h2>我的笔记</h2><div class="notes-empty"><div class="notes-art" aria-hidden="true"><svg viewBox="0 0 64 48" role="img"><path d="M17 39h31a11 11 0 0 0 1-22 17 17 0 0 0-32-3A13 13 0 0 0 17 39Z"/></svg></div><span>～ 空空如也 ～</span></div></div>
-<button class="two-page-add" type="button" onclick="showPage('community');document.getElementById('communityContent')?.focus()"><b>＋</b><span>发布</span></button>
+<button class="two-page-add" type="button" onclick="openWriteNotePage()"><b>＋</b><span>发布</span></button>
 <div style="display:none">
 <button id="authButton" data-action="auth">登录 / 注册</button>
 <span id="myCountStat">0</span><span id="favCountStat">0</span>
 <span id="logoutRow"></span><span id="friendUnreadBadge"></span><span id="communityNoticeBadge"></span>
+</div>
+</section>
+
+<section class="page" id="writeNote">
+<header class="write-note-header">
+<button type="button" class="write-note-back" onclick="closeWriteNotePage()" aria-label="返回">‹</button>
+<h2>写笔记</h2>
+</header>
+<div class="write-note-body">
+<textarea id="writeNoteContent" maxlength="500" placeholder="碎碎念..." aria-label="笔记内容"></textarea>
+<div class="write-note-divider"></div>
+<button type="button" class="write-note-submit" onclick="submitWriteNote()">发布</button>
 </div>
 </section>
 
@@ -2662,7 +2705,7 @@ window.closeGeneric=closeGeneric;
 function showPage(id,options={}){
  const target=document.getElementById(id);
  if(!target)return;
- if(!['messages','profile','settings','editProfile'].includes(id))return;
+ if(!['messages','profile','settings','editProfile','writeNote'].includes(id))return;
  const previous=document.querySelector('.page.active')?.id||currentPageId||'home';
  if(id!==previous&&!options.fromHistory&&!options.replace){
   pageHistory.push(previous);
@@ -2681,9 +2724,9 @@ function showPage(id,options={}){
   floatingBack.setAttribute('aria-label',atHome?'返回顶部':'返回上一页');
  }
  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
- $('mainNav').style.display=id==='editProfile'?'none':'flex';
+ $('mainNav').style.display=['editProfile','writeNote'].includes(id)?'none':'flex';
  if(floatingBack){
-  floatingBack.style.setProperty('display',id==='editProfile'?'none':'flex','important');
+  floatingBack.style.setProperty('display',['editProfile','writeNote'].includes(id)?'none':'flex','important');
  }
  window.scrollTo({top:0,behavior:'auto'});
 }
@@ -3875,6 +3918,26 @@ async function loadCommunity(){
   card.append(actions,commentArea);feed.append(card);
  });
 }
+
+function openWriteNotePage(){
+ if(!requireLogin())return;
+ const input=$('writeNoteContent');if(input)input.value='';
+ showPage('writeNote');
+}
+function closeWriteNotePage(){
+ showPage('profile',{replace:true});
+}
+async function submitWriteNote(){
+ const input=$('writeNoteContent');
+ const content=input?.value.trim()||'';
+ if(!content){notify('还没有写内容','写下一点心情再发布吧。');return}
+ if(content.length>500){notify('内容太长','笔记最多500字。');return}
+ $('communityContent').value=content;
+ $('communityMood').value='日常';
+ $('communityImageInput').value='';
+ $('communityImageName').textContent='支持 JPG、PNG、WEBP，最大 5MB';
+ await publishCommunity();
+}
 async function publishCommunity(){
  if(!user){openAuth();return}
  const content=$('communityContent').value.trim();
@@ -3894,7 +3957,7 @@ async function publishCommunity(){
  const {error}=await db.from('community_posts').insert({user_id:user.id,content,mood:$('communityMood').value,image_url});
  if(error){showError(error);return}
  $('communityContent').value='';$('communityImageInput').value='';$('communityImageName').textContent='支持 JPG、PNG、WEBP，最大 5MB';$('communityCount').textContent='0 / 500';
- await loadCommunity();notify('发布成功','你的心情已经漂到海上。');
+ await loadCommunity();if(currentPageId==='writeNote'){showPage('profile',{replace:true});}notify('发布成功','你的心情已经漂到海上。');
 }
 const oceanShopItems=[
  {code:'frame_pearl',name:'珍珠光环',icon:'🫧',cost:30,desc:'清透珍珠头像框'},
