@@ -3749,7 +3749,7 @@ const match=e.target.closest('[data-action="heartMatch"]');if(match){startHeartM
 const closeProfile=e.target.closest('[data-action="closeProfileView"]');if(closeProfile){closeProfileView();return}
 const profileActions=e.target.closest('[data-action="toggleProfileActions"]');if(profileActions){const actions=$('profileSafetyActions');actions.style.display=actions.style.display==='flex'?'none':'flex';return}
 const avatarTarget=e.target.closest('.chat-avatar');if(avatarTarget?.dataset.profileId){await showUserProfile(avatarTarget.dataset.profileId);return}
-const ownAvatar=e.target.closest('#avatar');if(ownAvatar&&user){await showUserProfile(user.id);return}
+const ownAvatar=e.target.closest('#avatar');if(ownAvatar){if(user){editProfile()}else{openAuth()}return}
 const gender=e.target.closest('[data-gender]');
 if(gender){if(profile?.gender){notify('性别已锁定','性别只能选择一次。');return}selectedGender=gender.dataset.gender;document.querySelectorAll('[data-gender]').forEach(b=>b.classList.toggle('selected',b.dataset.gender===selectedGender));return}
 const a=e.target.closest('[data-action]');
