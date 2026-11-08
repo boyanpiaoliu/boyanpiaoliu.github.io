@@ -1852,6 +1852,29 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 .cloud-compose-send{background:#b99bdd;color:#fff}
 .cloud-action-notice{bottom:178px;text-align:center;color:#6d5885;font-size:13px;padding:13px 16px}
 
+
+/* 我的页面细节优化 */
+#profile .two-page-profile-main{align-items:center}
+#profile .avatar{
+ width:82px!important;height:82px!important;flex:0 0 82px!important;
+ border-radius:20px!important;overflow:hidden!important;
+}
+#profile .avatar img{width:100%;height:100%;object-fit:cover;border-radius:20px}
+#profile .profile-name-line{justify-content:flex-start!important;align-items:center!important}
+#profile .two-page-profile-identity{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px}
+#profile .two-page-profile-identity .profile-name-line{margin:0!important}
+#profile .two-page-profile-identity .profile-id{margin:0!important;text-align:left}
+#profile .two-page-profile-identity small{display:block;text-align:left}
+#profile .notes-empty{gap:12px}
+#profile .notes-art{width:76px;height:64px;display:grid;place-items:center;color:#c5b4df}
+#profile .notes-art svg{width:66px;height:50px;fill:#eee8f7;stroke:#b9a5d8;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#profile .two-page-add{
+ width:auto!important;height:48px!important;min-width:130px;padding:0 19px!important;
+ border-radius:24px!important;background:linear-gradient(135deg,#c9b3ec,#a987d8)!important;
+ color:#fff!important;font-size:14px!important;font-weight:650!important;
+ white-space:nowrap;box-shadow:0 5px 16px rgba(143,111,190,.18)!important;
+}
+
 </style>
 </head>
 
@@ -1987,10 +2010,10 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <div class="two-page-profile-identity"><div class="profile-name-line"><h2 id="nickname">海边的风</h2><span id="vipBadge" class="vip-badge" style="display:none">VIP</span></div><p class="sub profile-id" id="userId">尚未登录</p><small id="profileIp">IP · 暂未获取</small></div>
 <button class="two-page-vip" type="button" data-action="membership">开通会员</button>
 </div>
-<div class="two-page-coins"><div><strong id="permanentCoins">0　⊕</strong><span>永久星球币</span></div><i></i><div><strong id="dailyCoins">0　⊕</strong><span>今日星球币</span></div></div>
+<div class="two-page-coins"><div><strong id="permanentCoins">0　⊕</strong><span>永久云朵币</span></div><i></i><div><strong id="dailyCoins">0　⊕</strong><span>今日云朵币</span></div></div>
 </div>
-<div class="two-page-notes"><h2>我的笔记</h2><div class="notes-empty"><div class="notes-art">⌕</div><span>～ 空空如也 ～</span></div></div>
-<button class="two-page-add" type="button" onclick="document.getElementById('writeModal').classList.add('show')">＋</button>
+<div class="two-page-notes"><h2>我的笔记</h2><div class="notes-empty"><div class="notes-art" aria-hidden="true"><svg viewBox="0 0 64 48" role="img"><path d="M17 39h31a11 11 0 0 0 1-22 17 17 0 0 0-32-3A13 13 0 0 0 17 39Z"/></svg></div><span>～ 空空如也 ～</span></div></div>
+<button class="two-page-add" type="button" onclick="document.getElementById('writeModal').classList.add('show')">＋ 发布笔记</button>
 <div style="display:none">
 <button id="authButton" data-action="auth">登录 / 注册</button>
 <span id="myCountStat">0</span><span id="favCountStat">0</span>
