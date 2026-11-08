@@ -1915,6 +1915,33 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  width:23px;height:23px;display:block;fill:none;
  stroke:#9475bb;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;
 }
+
+/* 聊天加号菜单：图标缩小、细线条香芋紫 */
+#messageThread .message-tools{
+ gap:12px!important;padding:9px 0 4px!important;
+}
+#messageThread .message-tools button.message-tool-card{
+ flex:0 0 clamp(68px,18vw,88px)!important;
+ width:clamp(68px,18vw,88px)!important;
+ gap:5px!important;
+}
+#messageThread .message-tool-icon{
+ width:100%!important;aspect-ratio:1!important;
+ border-radius:16px!important;
+}
+#messageThread .message-tool-icon svg{
+ width:50%!important;height:50%!important;
+ stroke:#a58acb!important;stroke-width:1.35!important;
+ stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+#messageThread .message-tool-icon svg circle{
+ fill:#a58acb!important;stroke:#a58acb!important;
+}
+#messageThread .message-tool-label{
+ color:#a58acb!important;
+ font-size:14px!important;font-weight:400!important;
+ letter-spacing:.5px!important;line-height:1.2!important;
+}
 </style>
 </head>
 
