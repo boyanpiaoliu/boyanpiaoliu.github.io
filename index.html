@@ -2395,8 +2395,8 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <input id="chatVideoInput" type="file" accept="video/mp4,video/quicktime" hidden>
 
 <div id="bottleFilterOverlay" aria-hidden="true">
-<div class="bottle-filter-card" role="dialog" aria-modal="true" aria-label="纸条筛选">
-<h3 class="bottle-filter-title">纸条筛选<em>VIP</em></h3>
+<div class="bottle-filter-card" role="dialog" aria-modal="true" aria-label="云朵筛选">
+<h3 class="bottle-filter-title">云朵筛选<em>VIP</em></h3>
 <div class="bottle-filter-label">性别：</div>
 <div class="bottle-filter-genders">
 <label><input type="radio" name="bottleGender" value="all" checked>随机</label>
@@ -2504,7 +2504,7 @@ function openBottleFilter(){
 function closeBottleFilter(){const overlay=$('bottleFilterOverlay');overlay?.classList.remove('show');overlay?.setAttribute('aria-hidden','true')}
 function applyBottleFilter(){
  bottleGenderFilter=document.querySelector('input[name="bottleGender"]:checked')?.value||'all';
- closeBottleFilter();pickBottle();
+ closeBottleFilter();
 }
 async function shareInvite(){
  if(!user){notify('请先登录','登录后才能邀请好友。');return}
