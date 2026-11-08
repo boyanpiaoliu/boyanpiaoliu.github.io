@@ -2095,6 +2095,28 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  color:#fff!important;font-size:19px!important;font-weight:600;letter-spacing:1px;
  box-shadow:none
 }
+
+/* 登录注册页面恢复：白底、香芋紫标题栏与清晰入口 */
+.page.active#auth{display:block!important;min-height:100dvh!important;background:#fff!important;padding:0 18px calc(28px + env(safe-area-inset-bottom))!important;box-sizing:border-box!important}
+#auth .page-head{height:64px!important;margin:0 -18px 26px!important;padding:0 16px!important;position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;background:linear-gradient(110deg,#cbb5ee,#b99ce3)!important;color:#fff!important;border:0!important}
+#auth .page-head h2{margin:0!important;color:#fff!important;font-size:19px!important;font-weight:600!important}
+#auth .page-head .back{position:absolute!important;left:12px!important;top:50%!important;transform:translateY(-50%)!important;border:0!important;background:transparent!important;color:#fff!important;font-size:27px!important;padding:6px 9px!important}
+#auth .auth-mode-switch{position:absolute!important;right:12px!important;top:50%!important;transform:translateY(-50%)!important;border:0!important;background:rgba(255,255,255,.18)!important;color:#fff!important;border-radius:16px!important;padding:7px 9px!important;font-size:11px!important}
+#auth>.card{width:100%!important;max-width:460px!important;margin:0 auto!important;padding:22px 18px!important;border:1px solid #eee8f5!important;border-radius:19px!important;background:#fff!important;box-shadow:0 8px 28px rgba(112,86,145,.07)!important;box-sizing:border-box!important}
+#auth .form-label{display:block!important;margin:13px 0 7px!important;color:#665579!important;font-size:13px!important;font-weight:600!important}
+#auth input,#auth select{width:100%!important;min-height:45px!important;margin:0 0 8px!important;padding:11px 13px!important;border:1px solid #e7dff0!important;border-radius:12px!important;background:#fff!important;color:#453852!important;box-sizing:border-box!important;font-size:14px!important}
+#auth input:focus,#auth select:focus{outline:none!important;border-color:#b99ce3!important;box-shadow:0 0 0 3px #f4effb!important}
+#auth .fieldline{display:flex!important;align-items:center!important;gap:8px!important}
+#auth .fieldline input{min-width:0!important;flex:1!important}
+#auth .fieldline .btn{flex:none!important;white-space:nowrap!important}
+#auth .btn.block{width:100%!important;min-height:45px!important;margin-top:13px!important;border-radius:13px!important;font-size:14px!important}
+#auth .btn.primary{background:linear-gradient(110deg,#c6adeb,#a98bd8)!important;color:#fff!important}
+#auth .btn.ghost{background:#f7f4fb!important;color:#80699f!important;border:1px solid #eee7f5!important}
+#auth .toastnote{font-size:11px!important;line-height:1.65!important;color:#a094b0!important;margin:12px 2px!important}
+.modal{background:rgba(255,255,255,.94)!important;backdrop-filter:blur(8px)!important}
+#genericModal .modalbox{background:#fff!important;border:1px solid #eee8f5!important;box-shadow:0 12px 36px rgba(90,70,115,.12)!important}
+@media(max-width:380px){#auth>.card{padding:18px 14px!important}#auth .auth-mode-switch{font-size:10px!important;padding:7px!important}}
+
 </style>
 </head>
 
@@ -2224,7 +2246,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <div class="two-page-profile-main">
 <div class="avatar" id="avatar" role="button" tabindex="0" aria-label="修改头像和资料" data-action="openOwnProfile">🌊</div>
 <div class="two-page-profile-identity"><div class="profile-name-line"><h2 id="nickname">海边的风</h2><span id="vipBadge" class="vip-badge" style="display:none">VIP</span></div><p class="sub profile-id" id="userId">尚未登录</p><small id="profileIp">IP · 未知</small></div>
-<button class="two-page-vip" type="button" data-action="membership">开通会员</button>
+<button class="two-page-vip" id="profilePrimaryAction" type="button" data-action="membership">开通会员</button>
 </div>
 <div class="two-page-coins"><div><strong id="permanentCoins">0　⊕</strong><span>永久云朵币</span></div><i></i><div><strong id="dailyCoins">0　⊕</strong><span>今日云朵币</span></div></div>
 </div>
@@ -2706,7 +2728,7 @@ window.closeGeneric=closeGeneric;
 function showPage(id,options={}){
  const target=document.getElementById(id);
  if(!target)return;
- if(!['messages','profile','settings','editProfile','writeNote'].includes(id))return;
+ if(!['messages','profile','settings','editProfile','writeNote','auth'].includes(id))return;
  const previous=document.querySelector('.page.active')?.id||currentPageId||'home';
  if(id!==previous&&!options.fromHistory&&!options.replace){
   pageHistory.push(previous);
@@ -2725,9 +2747,9 @@ function showPage(id,options={}){
   floatingBack.setAttribute('aria-label',atHome?'返回顶部':'返回上一页');
  }
  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
- $('mainNav').style.display=['editProfile','writeNote'].includes(id)?'none':'flex';
+ $('mainNav').style.display=['editProfile','writeNote','auth'].includes(id)?'none':'flex';
  if(floatingBack){
-  floatingBack.style.setProperty('display',['editProfile','writeNote'].includes(id)?'none':'flex','important');
+  floatingBack.style.setProperty('display',['editProfile','writeNote','auth'].includes(id)?'none':'flex','important');
  }
  window.scrollTo({top:0,behavior:'auto'});
 }
@@ -2811,14 +2833,15 @@ async function showUserProfile(id){
 }
 function syncProfile(){
  applyProfileTheme();
-$('nickname').textContent=profile?.nickname||'海边的风';
+$('nickname').textContent=profile?.nickname||(user?'漂流者':'云朵岛');
 const vipUntil=profile?.membership_until?new Date(profile.membership_until):null;
 const isVip=!!(user&&vipUntil&&!Number.isNaN(vipUntil.getTime())&&vipUntil.getTime()>Date.now());
 const vipBadge=$('vipBadge');if(vipBadge)vipBadge.style.display=isVip?'inline-flex':'none';
 const nickname=$('nickname');if(nickname)nickname.classList.toggle('vip-name',isVip);
 const userId=$('userId');if(userId){userId.textContent=user?'好友 ID：'+(profile?.friend_code||'生成中…'):'尚未登录';userId.classList.toggle('vip-id',isVip)}
-const av=$('avatar');if(av){av.replaceChildren();if(profile?.avatar_url){const img=document.createElement('img');img.src=profile.avatar_url;img.alt='头像';av.append(img)}else av.textContent=(profile?.nickname||(user?'我':'漂')).slice(0,1);}
+const av=$('avatar');if(av){av.replaceChildren();if(profile?.avatar_url){const img=document.createElement('img');img.src=profile.avatar_url;img.alt='头像';av.append(img)}else av.textContent=(profile?.nickname||(user?'我':'云')).slice(0,1);}
 $('authButton').textContent=user?'已登录':'登录 / 注册';
+const primaryAction=$('profilePrimaryAction');if(primaryAction){primaryAction.textContent=user?'开通会员':'登录 / 注册';primaryAction.dataset.action=user?'membership':'auth';}
 $('logoutRow').style.display=user?'flex':'none';
 }
 
