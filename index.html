@@ -1872,6 +1872,35 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  white-space:nowrap;box-shadow:0 5px 16px rgba(143,111,190,.18)!important;
 }
 
+
+/* 聊天加号菜单：大图标卡片样式 */
+#messageThread .message-tools{
+ grid-column:1/-1!important;grid-row:2!important;
+ display:none!important;flex-wrap:wrap!important;align-items:flex-start!important;
+ gap:clamp(14px,4vw,24px)!important;padding:12px 0 5px!important;margin:0!important;
+}
+#messageThread .message-tools.is-open{display:flex!important}
+#messageThread .message-tools button.message-tool-card{
+ appearance:none!important;flex:0 0 clamp(104px,36vw,170px)!important;
+ width:clamp(104px,36vw,170px)!important;min-width:0!important;height:auto!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:flex-start!important;gap:8px!important;padding:0!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ color:#85858d!important;font-size:inherit!important;box-shadow:none!important;
+}
+#messageThread .message-tool-icon{
+ width:100%;aspect-ratio:1;display:grid;place-items:center;
+ border-radius:24px;background:#fff;overflow:hidden;
+}
+#messageThread .message-tool-icon svg{
+ width:58%;height:58%;display:block;fill:none;stroke:#171717;
+ stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;
+}
+#messageThread .message-tool-icon svg circle{fill:#171717;stroke:#171717}
+#messageThread .message-tool-label{
+ display:block;color:#85858d;font-size:clamp(17px,5vw,25px);
+ font-weight:400;line-height:1.25;letter-spacing:1px;text-align:center;
+}
 </style>
 </head>
 
@@ -2788,8 +2817,8 @@ async function openConversation(peer){
  input.addEventListener('input',()=>{send.style.display=input.value.trim()?'block':'none';plus.style.display=input.value.trim()?'none':'grid'});
  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send.click()}});
  const tools=document.createElement('div');tools.className='message-tools';
- const imageBtn=document.createElement('button');imageBtn.textContent='▧  图片';imageBtn.addEventListener('click',()=>$('chatImageInput').click());
- const videoBtn=document.createElement('button');videoBtn.textContent='▷  视频';videoBtn.addEventListener('click',()=>$('chatVideoInput').click());
+ const imageBtn=document.createElement('button');imageBtn.type='button';imageBtn.className='message-tool-card';imageBtn.innerHTML='<span class="message-tool-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2.5"></rect><circle cx="8.5" cy="8.5" r="2"></circle><path d="M4.5 18l5.1-5.2a2 2 0 0 1 2.9 0l2 2 1.8-2.2a2 2 0 0 1 3.2.1L21 16"></path></svg></span><span class="message-tool-label">图片</span>';imageBtn.addEventListener('click',()=>$('chatImageInput').click());
+ const videoBtn=document.createElement('button');videoBtn.type='button';videoBtn.className='message-tool-card';videoBtn.innerHTML='<span class="message-tool-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5.5" width="13.5" height="13" rx="2.5"></rect><path d="M16 10l5.5-3v10L16 14"></path></svg></span><span class="message-tool-label">视频</span>';videoBtn.addEventListener('click',()=>$('chatVideoInput').click());
  plus.addEventListener('click',()=>{tools.classList.toggle('is-open');plus.classList.toggle('active')});
  tools.append(imageBtn,videoBtn);composer.append(voiceBtn,input,send,plus,tools);thread.append(composer);thread.scrollIntoView({behavior:'smooth',block:'end'});updateUnreadBadge();
  }catch(e){showError(e)}
