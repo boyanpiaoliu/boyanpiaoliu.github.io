@@ -2117,6 +2117,13 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 #genericModal .modalbox{background:#fff!important;border:1px solid #eee8f5!important;box-shadow:0 12px 36px rgba(90,70,115,.12)!important}
 @media(max-width:380px){#auth>.card{padding:18px 14px!important}#auth .auth-mode-switch{font-size:10px!important;padding:7px!important}}
 
+
+/* 登录页辅助操作改为轻量文字链接，避免出现重复的大按钮 */
+#auth .auth-inline-actions{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;margin:19px auto 3px!important;padding:4px!important;color:#b7a9c8!important;font-size:12px!important}
+#auth .auth-inline-actions .auth-text-link{display:inline!important;width:auto!important;min-height:0!important;margin:0!important;padding:4px 2px!important;border:0!important;background:transparent!important;color:#8f78ae!important;font-size:12px!important;font-weight:500!important;line-height:1.5!important;box-shadow:none!important}
+#auth .auth-inline-actions .auth-text-link:active{opacity:.65!important}
+#auth .auth-inline-actions[hidden]{display:none!important}
+
 </style>
 </head>
 
@@ -2389,9 +2396,12 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <button class="btn primary block" data-action="verifyEmailCode">验证邮箱并完成注册</button>
 <p class="toastnote">注册后请查看邮箱，输入邮件中的验证码完成验证。</p>
 </div>
-<button class="btn primary block" data-action="submitAuth" id="submitAuth">使用密码登录</button>
+<div class="auth-inline-actions" id="authInlineActions">
+<button type="button" class="auth-text-link" data-action="submitAuth" id="submitAuth">使用密码登录</button>
+<span aria-hidden="true">·</span>
+<button type="button" class="auth-text-link" data-action="forgotPassword" id="forgotPasswordButton">忘记密码？</button>
+</div>
 <button class="btn ghost block" data-action="resendConfirmation" id="resendEmailButton" style="display:none">重新发送邮箱验证邮件</button>
-<button class="btn ghost block" data-action="forgotPassword" id="forgotPasswordButton">忘记密码？通过邮箱重置</button>
 <p class="toastnote">目前开放邮箱注册和密码登录。手机号注册暂时维护中，短信服务配置完成后再开放。</p>
 </div>
 </section>
