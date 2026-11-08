@@ -1993,26 +1993,26 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  display:block!important;font-size:12px!important;font-weight:600!important;line-height:1.2!important;
 }
 
-/* 修改资料页：按参考图重做为简洁头像昵称表单 */
+/* 修改资料页：香芋紫头像与昵称编辑页 */
 #editProfile{
  min-height:100vh!important;padding:0!important;margin:0!important;
- background:#fff!important;color:#444!important;
+ background:#fff!important;color:#51456a!important;
 }
 #editProfile .edit-profile-header{
  position:relative;width:100%;
  height:calc(64px + env(safe-area-inset-top));
  padding:env(safe-area-inset-top) 20px 0;
  box-sizing:border-box;display:flex;align-items:center;justify-content:center;
- background:#ffa5ac!important;color:#fff!important;
+ background:linear-gradient(110deg,#cbb5ee,#b99ce3)!important;color:#fff!important;
 }
 #editProfile .edit-profile-header h2{
  margin:0!important;color:#fff!important;font-size:20px!important;
  font-weight:500!important;line-height:1!important;
 }
 #editProfile .edit-profile-back{
- position:absolute;left:17px;top:calc(env(safe-area-inset-top) + 9px);
- width:38px;height:40px;padding:0;border:0;background:transparent;
- color:#fff;font-size:38px;font-weight:300;line-height:32px;
+ position:absolute;left:15px;top:calc(env(safe-area-inset-top) + 7px);
+ width:46px;height:46px;padding:0;border:0;background:transparent;
+ color:#fff;font-size:48px;font-weight:300;line-height:40px;
 }
 #editProfile .edit-profile-form{
  width:100%;display:flex;flex-direction:column;align-items:center;
@@ -2024,8 +2024,8 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 }
 #editProfile .edit-profile-avatar-image{
  position:absolute;inset:0;border-radius:50%;overflow:hidden;
- display:grid;place-items:center;background:#f1eef2;
- border:1px solid #e9e5e8;color:#aaa;font-size:30px;
+ display:grid;place-items:center;background:#eee8f7;
+ border:1px solid #e4d9f2;color:#806a9e;font-size:30px;
 }
 #editProfile .edit-profile-avatar-image img{
  width:100%;height:100%;object-fit:cover;border-radius:50%;
@@ -2033,37 +2033,37 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 #editProfile .edit-profile-avatar-pen{
  position:absolute;right:-2px;bottom:0;width:29px;height:29px;
  border-radius:50%;background:#fff;display:grid;place-items:center;
+ box-shadow:0 2px 8px rgba(92,68,125,.12);
 }
 #editProfile .edit-profile-avatar-pen svg{
- width:19px;height:19px;fill:none;stroke:#ff6678;
+ width:19px;height:19px;fill:none;stroke:#9274bb;
  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;
 }
 #editProfile .edit-profile-avatar-caption{
- margin-top:12px;color:#777;font-size:18px;line-height:1.4;
+ margin-top:12px;color:#78698d;font-size:18px;line-height:1.4;
 }
 #editProfile #avatarFile{display:none!important}
 #editProfile .edit-profile-nickname{
  display:block;width:73%!important;max-width:360px;height:45px;
  margin:8px auto 0!important;padding:0 18px!important;
- border:1px solid #e9e6e7!important;border-radius:22px!important;
+ border:1px solid #e7dff0!important;border-radius:22px!important;
  background:#fff!important;box-shadow:none!important;
- color:#ffa0a9!important;text-align:center!important;
+ color:#80699f!important;text-align:center!important;
  font-size:23px!important;font-weight:400!important;
 }
-#editProfile .edit-profile-nickname::placeholder{color:#e9a0a8}
+#editProfile .edit-profile-nickname:focus{
+ border-color:#b99ce3!important;box-shadow:0 0 0 3px #f3eef9!important;
+}
+#editProfile .edit-profile-nickname::placeholder{color:#b8a8ce}
 #editProfile .edit-profile-submit{
- width:73%;max-width:360px;height:45px;margin:43px auto 0;
- border:1px solid #f0919b;border-radius:13px;
- background:#ffa5ac;color:#fff;font-size:23px;font-weight:650;
- box-shadow:none;
+ width:73%;max-width:360px;height:52px;margin:43px auto 0;
+ border:0;border-radius:16px;
+ background:linear-gradient(105deg,#c6adeb,#a98bd8);
+ color:#fff;font-size:21px;font-weight:600;
+ box-shadow:0 7px 18px rgba(153,124,194,.18);
 }
-#editProfile .gender-choice-wrap{
- width:73%;max-width:360px;margin:18px auto 0;
-}
-#editProfile .gender-choice-wrap[hidden],
-#editProfile .edit-profile-hidden-data[hidden]{display:none!important}
-#editProfile .gender-choice-wrap .form-label{color:#d47f88}
-
+#editProfile .gender-choice-wrap,
+#editProfile .edit-profile-hidden-data{display:none!important}
 /* 写笔记页：香芋紫独立编辑界面 */
 #writeNote{min-height:100vh!important;padding:0!important;margin:0!important;background:#fff!important;color:#51456a!important}
 #writeNote .write-note-header{
@@ -3596,16 +3596,13 @@ $('editSignature').value=profile?.signature||'';
 $('sexualOrientation').value=profile?.sexual_orientation||'';
 $('sexualOrientationVisible').checked=!!profile?.sexual_orientation_visible;
 selectedGender=profile?.gender||null;
-const genderWrap=$('genderChoiceWrap');
-if(profile?.gender){genderWrap.innerHTML='<label class="form-label">性别</label><div class="gender-choice-locked">'+(profile.gender==='female'?'女生':'男生')+' · 已确认，性别仅可选择一次</div>';genderWrap.hidden=true}
-else{genderWrap.hidden=false;genderWrap.innerHTML='<label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div>'}
-const img=$('editAvatarPreview'),fallback=$('editAvatarFallback');if(profile?.avatar_url){img.src=profile.avatar_url;img.style.display='block';fallback.style.display='none'}else{img.style.display='none';fallback.style.display='block'}
+const genderWrap=$('genderChoiceWrap');genderWrap.hidden=true;
+const img=$('editAvatarPreview'),fallback=$('editAvatarFallback');if(profile?.avatar_url){img.src=profile.avatar_url;img.style.display='block';fallback.style.display='none'}else{img.style.display='none';fallback.textContent=(profile?.nickname||'我').slice(0,1);fallback.style.display='block'}
 selectedBubbleColor=profile?.bubble_color||'#cbb9e5';document.querySelectorAll('[data-bubble-color]').forEach(b=>b.classList.toggle('selected',b.dataset.bubbleColor===selectedBubbleColor));
 showPage('editProfile');
 }
 async function saveProfile(){
 const nickname=$('editNickname').value.trim();
-if(!profile?.gender&&!selectedGender){notify('请选择性别','性别提交后不可修改，请确认后选择。');return}
 if(!nickname){notify('昵称不能为空','请填写昵称。');return}
 try{
 let avatar_url=profile?.avatar_url||null;
