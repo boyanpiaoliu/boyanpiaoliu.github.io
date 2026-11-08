@@ -3929,11 +3929,47 @@ async function loadCommunity(){
 
 function openWriteNotePage(){
  const input=$('writeNoteContent');if(input)input.value='';
- showPage('writeNote');
+ const target=$('writeNote');
+ if(!target){console.error('写笔记页面不存在');return}
+ const previous=document.querySelector('.page.active')?.id||currentPageId||'profile';
+ if(previous!=='writeNote'){
+  pageHistory.push(previous);
+  if(pageHistory.length>40)pageHistory.shift();
+ }
+ currentPageId='writeNote';
+ document.querySelectorAll('.page').forEach(page=>{
+  const active=page.id==='writeNote';
+  page.classList.toggle('active',active);
+  page.style.setProperty('display',active?'block':'none','important');
+ });
+ target.style.setProperty('display','block','important');
+ target.style.setProperty('visibility','visible','important');
+ target.style.setProperty('opacity','1','important');
+ $('mainNav').style.setProperty('display','none','important');
+ const floatingBack=$('globalFloatingBack');
+ if(floatingBack)floatingBack.style.setProperty('display','none','important');
+ window.scrollTo({top:0,behavior:'auto'});
 }
 function closeWriteNotePage(){
+ const target=$('profile');
+ if(!target)return;
  if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();
- showPage('profile',{replace:true});
+ currentPageId='profile';
+ document.querySelectorAll('.page').forEach(page=>{
+  const active=page.id==='profile';
+  page.classList.toggle('active',active);
+  page.style.removeProperty('display');
+  page.style.removeProperty('visibility');
+  page.style.removeProperty('opacity');
+ });
+ $('mainNav').style.removeProperty('display');
+ const floatingBack=$('globalFloatingBack');
+ if(floatingBack){
+  floatingBack.style.removeProperty('display');
+  floatingBack.dataset.action='goBackPage';
+  floatingBack.textContent='‹';
+ }
+ window.scrollTo({top:0,behavior:'auto'});
 }
 async function submitWriteNote(){
  const input=$('writeNoteContent');
