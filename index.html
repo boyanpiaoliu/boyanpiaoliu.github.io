@@ -3920,7 +3920,6 @@ async function loadCommunity(){
 }
 
 function openWriteNotePage(){
- if(!requireLogin())return;
  const input=$('writeNoteContent');if(input)input.value='';
  showPage('writeNote');
 }
