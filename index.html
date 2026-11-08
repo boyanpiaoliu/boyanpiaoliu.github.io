@@ -2382,15 +2382,6 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <input id="registerNickname" maxlength="20" placeholder="给自己取个昵称">
 <label class="form-label" style="margin-top:12px">好友邀请码（选填）</label><input id="registerInviteCode" maxlength="12" placeholder="有朋友邀请你？填写他的数字 ID">
 </div>
-<div id="emailLoginOtpFields" style="display:none">
-<label class="form-label">邮箱登录验证码</label>
-<div class="fieldline">
-<input id="emailLoginOtpCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="请输入邮箱收到的6位验证码">
-<button class="btn" data-action="sendEmailLoginCode" id="sendEmailLoginCodeButton">发送验证码</button>
-</div>
-<button class="btn primary block" data-action="verifyEmailLoginCode">验证并登录</button>
-<p class="toastnote">输入邮箱后点击发送验证码。请检查收件箱、垃圾邮件和广告邮件文件夹。</p>
-</div>
 <div id="emailOtpFields" style="display:none">
 <label class="form-label">邮箱注册验证码</label>
 <div class="fieldline">
