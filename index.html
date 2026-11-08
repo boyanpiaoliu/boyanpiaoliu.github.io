@@ -1992,6 +1992,77 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 #profile .two-page-add span{
  display:block!important;font-size:12px!important;font-weight:600!important;line-height:1.2!important;
 }
+
+/* 修改资料页：按参考图重做为简洁头像昵称表单 */
+#editProfile{
+ min-height:100vh!important;padding:0!important;margin:0!important;
+ background:#fff!important;color:#444!important;
+}
+#editProfile .edit-profile-header{
+ position:relative;width:100%;
+ height:calc(64px + env(safe-area-inset-top));
+ padding:env(safe-area-inset-top) 20px 0;
+ box-sizing:border-box;display:flex;align-items:center;justify-content:center;
+ background:#ffa5ac!important;color:#fff!important;
+}
+#editProfile .edit-profile-header h2{
+ margin:0!important;color:#fff!important;font-size:20px!important;
+ font-weight:500!important;line-height:1!important;
+}
+#editProfile .edit-profile-back{
+ position:absolute;left:17px;top:calc(env(safe-area-inset-top) + 9px);
+ width:38px;height:40px;padding:0;border:0;background:transparent;
+ color:#fff;font-size:38px;font-weight:300;line-height:32px;
+}
+#editProfile .edit-profile-form{
+ width:100%;display:flex;flex-direction:column;align-items:center;
+ padding:64px 0 50px;background:#fff;
+}
+#editProfile .edit-profile-avatar{
+ position:relative;width:102px;height:102px;padding:0;
+ border:0;background:transparent;border-radius:50%;overflow:visible;
+}
+#editProfile .edit-profile-avatar-image{
+ position:absolute;inset:0;border-radius:50%;overflow:hidden;
+ display:grid;place-items:center;background:#f1eef2;
+ border:1px solid #e9e5e8;color:#aaa;font-size:30px;
+}
+#editProfile .edit-profile-avatar-image img{
+ width:100%;height:100%;object-fit:cover;border-radius:50%;
+}
+#editProfile .edit-profile-avatar-pen{
+ position:absolute;right:-2px;bottom:0;width:29px;height:29px;
+ border-radius:50%;background:#fff;display:grid;place-items:center;
+}
+#editProfile .edit-profile-avatar-pen svg{
+ width:19px;height:19px;fill:none;stroke:#ff6678;
+ stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;
+}
+#editProfile .edit-profile-avatar-caption{
+ margin-top:12px;color:#777;font-size:18px;line-height:1.4;
+}
+#editProfile #avatarFile{display:none!important}
+#editProfile .edit-profile-nickname{
+ display:block;width:73%!important;max-width:360px;height:45px;
+ margin:8px auto 0!important;padding:0 18px!important;
+ border:1px solid #e9e6e7!important;border-radius:22px!important;
+ background:#fff!important;box-shadow:none!important;
+ color:#ffa0a9!important;text-align:center!important;
+ font-size:23px!important;font-weight:400!important;
+}
+#editProfile .edit-profile-nickname::placeholder{color:#e9a0a8}
+#editProfile .edit-profile-submit{
+ width:73%;max-width:360px;height:45px;margin:43px auto 0;
+ border:1px solid #f0919b;border-radius:13px;
+ background:#ffa5ac;color:#fff;font-size:23px;font-weight:650;
+ box-shadow:none;
+}
+#editProfile .gender-choice-wrap{
+ width:73%;max-width:360px;margin:18px auto 0;
+}
+#editProfile .gender-choice-wrap[hidden],
+#editProfile .edit-profile-hidden-data[hidden]{display:none!important}
+#editProfile .gender-choice-wrap .form-label{color:#d47f88}
 </style>
 </head>
 
@@ -2119,7 +2190,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <div class="two-page-profile-hero">
 <button class="profile-settings" type="button" onclick="showPage('settings')" aria-label="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2v2.1M12 18.7v2.1M20.8 12h-2.1M5.3 12H3.2M18.22 5.78l-1.48 1.48M7.26 16.74l-1.48 1.48M18.22 18.22l-1.48-1.48M7.26 7.26 5.78 5.78"/><circle cx="12" cy="12" r="6.1"/><circle cx="12" cy="12" r="2.2"/></svg></button>
 <div class="two-page-profile-main">
-<div class="avatar" id="avatar">🌊</div>
+<div class="avatar" id="avatar" role="button" tabindex="0" aria-label="修改头像和资料" onclick="editProfile()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();editProfile()}">🌊</div>
 <div class="two-page-profile-identity"><div class="profile-name-line"><h2 id="nickname">海边的风</h2><span id="vipBadge" class="vip-badge" style="display:none">VIP</span></div><p class="sub profile-id" id="userId">尚未登录</p><small id="profileIp">IP · 未知</small></div>
 <button class="two-page-vip" type="button" data-action="membership">开通会员</button>
 </div>
@@ -2160,35 +2231,25 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 </section>
 
 <section class="page" id="editProfile">
-<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>编辑资料</h2></div>
-<div class="card">
-<label class="form-label">头像</label>
-<div class="avatar-edit-preview"><img id="editAvatarPreview" alt="头像预览" style="display:none"><span id="editAvatarFallback">🌊</span></div>
-<input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp">
-<label class="form-label">昵称</label>
-<input id="editNickname" maxlength="20" placeholder="请输入昵称">
-<label class="form-label" style="margin-top:14px">个性签名</label><textarea id="editSignature" maxlength="80" placeholder="写一句话介绍自己吧（最多80字）" style="width:100%;min-height:76px;padding:13px;border:1px solid #e7e2ef;border-radius:13px;background:#fbfafc;resize:vertical"></textarea>
+<header class="edit-profile-header">
+<button type="button" class="edit-profile-back" data-action="backProfile" aria-label="返回">‹</button>
+<h2>修改资料</h2>
+</header>
+<div class="edit-profile-form">
+<button type="button" class="edit-profile-avatar" onclick="$('avatarFile').click()" aria-label="上传头像">
+<span class="edit-profile-avatar-image"><img id="editAvatarPreview" alt="头像预览" style="display:none"><span id="editAvatarFallback">🌊</span></span>
+<span class="edit-profile-avatar-pen" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m14.5 5.5 4 4M4 20l4.2-.8L19 8.4a2.8 2.8 0 0 0-4-4L4.8 15.8 4 20Z"/></svg></span>
+</button>
+<div class="edit-profile-avatar-caption">请上传头像</div>
+<input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="previewEditAvatar(this)">
+<input id="editNickname" class="edit-profile-nickname" maxlength="20" placeholder="请输入昵称" autocomplete="nickname">
 <div id="genderChoiceWrap" class="gender-choice-wrap"><label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div></div>
-<div class="orientation-setting">
-<label class="form-label" for="sexualOrientation">选择性取向（选填）</label>
-<select id="sexualOrientation" class="orientation-select">
-<option value="">暂不选择</option>
-<option value="heterosexual">异性恋</option>
-<option value="homosexual">同性恋</option>
-<option value="bisexual">双性恋</option>
-<option value="pansexual">泛性恋</option>
-<option value="asexual">无性恋</option>
-<option value="questioning">探索中</option>
-<option value="other">其他</option>
-<option value="prefer_not_to_say">不愿透露</option>
-</select>
-<label class="orientation-visibility"><input id="sexualOrientationVisible" type="checkbox"> 在我的个人资料中向好友展示</label>
-<p class="orientation-note">默认仅自己可见；只有你主动勾选后，已添加的好友才能看到。你可以随时修改或清空。</p>
+<div class="edit-profile-hidden-data" hidden>
+<textarea id="editSignature" maxlength="80"></textarea>
+<select id="sexualOrientation"><option value="">暂不选择</option><option value="heterosexual">异性恋</option><option value="homosexual">同性恋</option><option value="bisexual">双性恋</option><option value="pansexual">泛性恋</option><option value="asexual">无性恋</option><option value="questioning">探索中</option><option value="other">其他</option><option value="prefer_not_to_say">不愿透露</option></select>
+<input id="sexualOrientationVisible" type="checkbox">
 </div>
-<div class="bubble-color-setting"><label class="form-label">个性外观 · 气泡颜色</label><p class="bubble-color-note">选择你喜欢的颜色，保存后会应用到你发送的消息。</p><div class="bubble-color-options">
-<button type="button" class="bubble-color-swatch" data-bubble-color="#cbb9e5" title="海盐蓝" aria-label="海盐蓝" style="--swatch:#cbb9e5"><span></span><small>海盐蓝</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#d6c8ea" title="樱花粉" aria-label="樱花粉" style="--swatch:#d6c8ea"><span></span><small>樱花粉</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#b9e4c9" title="薄荷绿" aria-label="薄荷绿" style="--swatch:#b9e4c9"><span></span><small>薄荷绿</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#f6d59b" title="奶油黄" aria-label="奶油黄" style="--swatch:#f6d59b"><span></span><small>奶油黄</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#dacdec" title="薰衣草" aria-label="薰衣草" style="--swatch:#dacdec"><span></span><small>薰衣草</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#cec0e1" title="雾霾蓝" aria-label="雾霾蓝" style="--swatch:#cec0e1"><span></span><small>雾霾蓝</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#c9b6e4" title="蜜桃橘" aria-label="蜜桃橘" style="--swatch:#c9b6e4"><span></span><small>蜜桃橘</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#dcd7e3" title="月光灰" aria-label="月光灰" style="--swatch:#dcd7e3"><span></span><small>月光灰</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#e7c6f3" title="梦幻紫" aria-label="梦幻紫" style="--swatch:#e7c6f3"><span></span><small>梦幻紫</small></button><button type="button" class="bubble-color-swatch" data-bubble-color="#c9d9a8" title="青柠绿" aria-label="青柠绿" style="--swatch:#c9d9a8"><span></span><small>青柠绿</small></button>
-</div></div>
-<button class="btn primary block" data-action="saveProfile">保存资料</button>
+<button class="edit-profile-submit" type="button" data-action="saveProfile">提交资料</button>
 </div>
 </section>
 
@@ -2601,7 +2662,7 @@ window.closeGeneric=closeGeneric;
 function showPage(id,options={}){
  const target=document.getElementById(id);
  if(!target)return;
- if(!['messages','profile','settings'].includes(id))return;
+ if(!['messages','profile','settings','editProfile'].includes(id))return;
  const previous=document.querySelector('.page.active')?.id||currentPageId||'home';
  if(id!==previous&&!options.fromHistory&&!options.replace){
   pageHistory.push(previous);
@@ -2620,7 +2681,10 @@ function showPage(id,options={}){
   floatingBack.setAttribute('aria-label',atHome?'返回顶部':'返回上一页');
  }
  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
- $('mainNav').style.display=false?'none':'flex';
+ $('mainNav').style.display=id==='editProfile'?'none':'flex';
+ if(floatingBack){
+  floatingBack.style.setProperty('display',id==='editProfile'?'none':'flex','important');
+ }
  window.scrollTo({top:0,behavior:'auto'});
 }
 function goBackPage(){
@@ -3464,6 +3528,14 @@ async function resendConfirmation(){
     showError(e);
   }
 }
+
+function previewEditAvatar(input){
+ const file=input.files?.[0];if(!file)return;
+ const img=$('editAvatarPreview'),fallback=$('editAvatarFallback');
+ if(img.dataset.previewUrl)URL.revokeObjectURL(img.dataset.previewUrl);
+ const url=URL.createObjectURL(file);img.dataset.previewUrl=url;img.src=url;
+ img.style.display='block';fallback.style.display='none';
+}
 // 编辑资料
 function editProfile(){
 if(!requireLogin())return;
@@ -3473,8 +3545,8 @@ $('sexualOrientation').value=profile?.sexual_orientation||'';
 $('sexualOrientationVisible').checked=!!profile?.sexual_orientation_visible;
 selectedGender=profile?.gender||null;
 const genderWrap=$('genderChoiceWrap');
-if(profile?.gender){genderWrap.innerHTML='<label class="form-label">性别</label><div class="gender-choice-locked">'+(profile.gender==='female'?'女生':'男生')+' · 已确认，性别仅可选择一次</div>'}
-else{genderWrap.innerHTML='<label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div>'}
+if(profile?.gender){genderWrap.innerHTML='<label class="form-label">性别</label><div class="gender-choice-locked">'+(profile.gender==='female'?'女生':'男生')+' · 已确认，性别仅可选择一次</div>';genderWrap.hidden=true}
+else{genderWrap.hidden=false;genderWrap.innerHTML='<label class="form-label">选择性别 <span class="gender-once-note">仅可选择一次，提交后不可修改</span></label><div class="gender-options"><button type="button" data-gender="female" class="gender-option female">♀ 女生</button><button type="button" data-gender="male" class="gender-option male">♂ 男生</button></div>'}
 const img=$('editAvatarPreview'),fallback=$('editAvatarFallback');if(profile?.avatar_url){img.src=profile.avatar_url;img.style.display='block';fallback.style.display='none'}else{img.style.display='none';fallback.style.display='block'}
 selectedBubbleColor=profile?.bubble_color||'#cbb9e5';document.querySelectorAll('[data-bubble-color]').forEach(b=>b.classList.toggle('selected',b.dataset.bubbleColor===selectedBubbleColor));
 showPage('editProfile');
