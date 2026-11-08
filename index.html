@@ -3071,8 +3071,12 @@ function hideCloudComposer(){
 function showCloudNotice(message){
   const notice=$('cloudActionNotice');
   if(!notice)return;
+  clearTimeout(window.cloudActionNoticeTimer);
   notice.textContent=message;
   notice.hidden=false;
+  window.cloudActionNoticeTimer=setTimeout(()=>{
+    notice.hidden=true;
+  },3000);
 }
 async function submitCloudComposer(){
   if(!requireLogin())return;
@@ -3132,7 +3136,7 @@ async function pickBottle(inline=false){
    }else eligible=[];
   }
   if(!eligible.length){
-   if(inline)showCloudNotice('海面暂时很安静，暂时没有新的公开漂流瓶。');
+   if(inline)showCloudNotice('云朵岛暂时很安静，暂时没有新的云朵片。');
    else notify('海面暂时很安静','目前没有新的公开漂流瓶。你可以稍后再来，或去「发现」看看大家分享的故事。');
    return;
   }
