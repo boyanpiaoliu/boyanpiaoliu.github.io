@@ -1129,7 +1129,7 @@ img,video{max-width:100%;height:auto}
 body{background:#fff!important;color:#171717!important}
 main{padding:0 0 94px!important}
 .page{display:none!important;padding:0!important}
-.page.active#messages,.page.active#profile{display:block!important}
+.page.active#messages,.page.active#profile,.page.active#editProfile{display:block!important}
 #mainNav.two-page-nav{position:fixed!important;left:0;right:0;bottom:0;height:88px!important;padding:10px 8% calc(10px + env(safe-area-inset-bottom))!important;display:flex!important;justify-content:space-around!important;align-items:center!important;background:#fff!important;border-top:1px solid #eee!important;z-index:999!important;box-shadow:none!important}
 .two-page-nav .navbtn{flex:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;border:0!important;background:transparent!important;color:#999!important;font-size:14px!important}
 .two-page-nav .navbtn.active{color:#c4afe2!important}
@@ -2222,7 +2222,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
 <div class="two-page-profile-hero">
 <button class="profile-settings" type="button" onclick="showPage('settings')" aria-label="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2v2.1M12 18.7v2.1M20.8 12h-2.1M5.3 12H3.2M18.22 5.78l-1.48 1.48M7.26 16.74l-1.48 1.48M18.22 18.22l-1.48-1.48M7.26 7.26 5.78 5.78"/><circle cx="12" cy="12" r="6.1"/><circle cx="12" cy="12" r="2.2"/></svg></button>
 <div class="two-page-profile-main">
-<div class="avatar" id="avatar" role="button" tabindex="0" aria-label="修改头像和资料" onclick="editProfile()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();editProfile()}">🌊</div>
+<div class="avatar" id="avatar" role="button" tabindex="0" aria-label="修改头像和资料" data-action="openOwnProfile">🌊</div>
 <div class="two-page-profile-identity"><div class="profile-name-line"><h2 id="nickname">海边的风</h2><span id="vipBadge" class="vip-badge" style="display:none">VIP</span></div><p class="sub profile-id" id="userId">尚未登录</p><small id="profileIp">IP · 未知</small></div>
 <button class="two-page-vip" type="button" data-action="membership">开通会员</button>
 </div>
