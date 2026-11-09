@@ -3076,6 +3076,10 @@ function showError(error){
  const code=String(error?.code||'');
  let message=raw||'请稍后重试。';
  if(error?.startupStage)message='失败阶段：'+error.startupStage+'。'+message;
+ // Safari 的 DOMException 常只有通用英文，附上异常类型和首个调用位置以便准确定位
+ const diagnosticStack=String(error?.stack||'').split('\\n').slice(0,4).join(' | ');
+ if(error?.name)message+='\\n异常类型：'+error.name;
+ if(diagnosticStack)message+='\\n调用位置：'+diagnosticStack;
  let title='操作没有完成';
  if(/otp_expired|token has expired|expired or is invalid/i.test(raw+' '+code)){
   title='验证码已过期';
