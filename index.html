@@ -3075,6 +3075,7 @@ function showError(error){
  const raw=String(error?.message||error?.error_description||'');
  const code=String(error?.code||'');
  let message=raw||'请稍后重试。';
+ if(error?.startupStage)message='失败阶段：'+error.startupStage+'。'+message;
  let title='操作没有完成';
  if(/otp_expired|token has expired|expired or is invalid/i.test(raw+' '+code)){
   title='验证码已过期';
@@ -4076,20 +4077,32 @@ finally{inFlightSubmissions.delete(lockKey);if(saveButton){saveButton.disabled=f
 
 // 登录状态
 async function initSession(){
-if(!db)throw new Error('云端服务组件暂时无法加载，请检查网络后刷新页面。');
-const {data,error}=await db.auth.getSession();
-if(error)throw error;
-user=data.session?.user||null;
-if(user){
- try{await loadProfile()}
- catch(profileError){profile=null;profileLoadError=String(profileError?.message||profileError);console.error('用户资料同步失败：',profileError);syncProfile();showError(profileError)}
- const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');
- if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}
-}else profile=null;
-syncProfile();
-await refreshAll(true);
-await Promise.allSettled([refreshFriendRequestCount(),refreshCommunityNoticeBadge()]);
-try{await setupRealtime()}catch(e){console.warn('实时连接暂不可用：',e)}
+ let stage='Supabase 初始化';
+ try{
+  if(!db)throw new Error('云端服务组件暂时无法加载，请检查网络后刷新页面。');
+  stage='恢复登录会话';
+  const sessionResult=await db.auth.getSession();
+  if(sessionResult.error)throw sessionResult.error;
+  user=sessionResult.data.session?.user||null;
+  if(user){
+   stage='读取个人资料';
+   try{await loadProfile()}catch(profileError){profile=null;profileLoadError=String(profileError?.message||profileError);console.error('用户资料暂时无法同步：',profileError);syncProfile();}
+   stage='同步邀请信息';
+   const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');
+   if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}
+  }else profile=null;
+  stage='同步漂流瓶和消息';
+  syncProfile();
+  await refreshAll(true);
+  stage='同步好友和社区通知';
+  await Promise.allSettled([refreshFriendRequestCount(),refreshCommunityNoticeBadge()]);
+  stage='建立实时连接';
+  try{await setupRealtime()}catch(e){console.warn('实时连接暂不可用：',e)}
+ }catch(e){
+  e.startupStage=stage;
+  console.error('页面初始化失败，阶段：'+stage,e);
+  throw e;
+ }
 }
 async function logout(){
 if(!confirm('确定退出当前账号吗？'))return;
