@@ -3597,7 +3597,7 @@ async function searchFriend(){
  const box=$('friendSearchResult');box.replaceChildren();friendSearchResult=null;
  if(!raw){notify('请输入好友 ID','请粘贴对方的完整好友 ID。');return}
  if(raw===profile?.friend_code){notify('这是你自己的 ID','搜索其他用户的数字好友 ID。');return}
- if(!/^\\d{6,8}$/.test(raw)){notify('ID 格式不正确','请输入 6 至 8 位数字好友 ID。');return}
+ if(!/^[0-9]{6,8}$/.test(raw)){notify('ID 格式不正确','请输入 6 至 8 位数字好友 ID。');return}
  try{
   const {data,error}=await db.rpc('search_profile_by_id',{p_id:raw});if(error)throw error;
   const person=data?.[0];if(!person){box.innerHTML='<div class="empty">没有找到这个 ID 对应的用户。</div>';return}
