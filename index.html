@@ -2933,6 +2933,7 @@ const $=id=>document.getElementById(id);
 
 let user=null;
 let profile=null;
+let profileLoadError=null;
 let bottles=[];
 let favorites=[];
 let messages=[];
@@ -3103,22 +3104,26 @@ return false;
 // 用户资料
 async function loadProfile(){
  if(!db)throw new Error('云端服务未连接');
- if(!user){profile=null;return}
+ if(!user){profile=null;profileLoadError=null;return}
  const currentUser=user;
- const columns='id,nickname,friend_code,avatar_url,created_at,gender,bubble_color,signature,profile_theme,location';
- const result=await db.from('profiles').select(columns).eq('id',currentUser.id).maybeSingle();
+ const coreColumns='id,nickname,friend_code,avatar_url,created_at';
+ const fullColumns=coreColumns+',gender,bubble_color,signature,profile_theme,location';
+ let result=await db.from('profiles').select(fullColumns).eq('id',currentUser.id).maybeSingle();
+ // 若旧版 PostgREST schema cache 对新增字段未刷新，退回核心字段查询
+ if(result.error){
+  console.warn('完整资料读取失败，尝试核心字段：',result.error);
+  result=await db.from('profiles').select(coreColumns).eq('id',currentUser.id).maybeSingle();
+ }
  if(result.error)throw result.error;
  let data=result.data;
  if(!data){
-  const nickname=currentUser.user_metadata?.nickname||currentUser.email?.split('@')[0]||'漂流者';
-  const created=await db.from('profiles').insert({id:currentUser.id,nickname}).select(columns).single();
-  if(created.error)throw created.error;
-  data=created.data;
+  throw new Error('登录账号 '+currentUser.id+' 在 profiles 表中没有对应资料行，已停止自动创建，避免覆盖账号。');
  }
  let privateRows=[];
  try{const {data:rows,error}=await db.rpc('get_my_private_profile');if(error)console.warn('会员资料暂时无法同步：',error);else privateRows=rows||[]}catch(e){console.warn('会员资料暂时无法同步：',e)}
  if(!user||user.id!==currentUser.id)return;
  profile={...data,...(privateRows[0]||{})};
+ profileLoadError=null;
  syncProfile();
 }
 function closeProfileView(){
@@ -3167,7 +3172,7 @@ const av=$('avatar');if(av){av.replaceChildren();if(user&&profile?.avatar_url){c
 $('authButton').textContent=user?'已登录':'登录 / 注册';
 const primaryAction=$('profilePrimaryAction');if(primaryAction){primaryAction.textContent=user?'开通会员':'登录 / 注册';primaryAction.dataset.action=user?'membership':'auth';}
 $('logoutRow').style.display=user?'flex':'none';
-const locationLabel=$('profileIp');if(locationLabel)locationLabel.textContent=user?(profile?.location||'资料同步中…'):'';
+const locationLabel=$('profileIp');if(locationLabel)locationLabel.textContent=user?(profileLoadError?'资料读取失败：'+profileLoadError.slice(0,90):(profile?.location||'所在地未设置')):'';
 }
 
 // 加载数据
@@ -4077,7 +4082,7 @@ if(error)throw error;
 user=data.session?.user||null;
 if(user){
  try{await loadProfile()}
- catch(profileError){profile=null;console.error('用户资料同步失败：',profileError);syncProfile();showError(profileError)}
+ catch(profileError){profile=null;profileLoadError=String(profileError?.message||profileError);console.error('用户资料同步失败：',profileError);syncProfile();showError(profileError)}
  const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');
  if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}
 }else profile=null;
