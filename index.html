@@ -4683,24 +4683,47 @@ const uiTranslations={"en":{"心事停泊，偶然被看见":"A quiet place for 
 function translateDocument(lang){
  const dict=uiTranslations[lang]||{};
  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
- const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ const nodes=[];
+ while(walker.nextNode())nodes.push(walker.currentNode);
  nodes.forEach(node=>{
-  if(node.parentElement?.closest('[data-i18n],#mainNav,.page-head .back'))return;
-  if(!node.__sourceText)node.__sourceText=node.nodeValue;
-  const source=node.__sourceText, key=source.trim();
+  const parent=node.parentElement;
+  if(!parent||parent.closest('script,style,noscript,[data-i18n],#mainNav,.page-head .back'))return;
+  if(node.__sourceText===undefined)node.__sourceText=node.nodeValue||'';
+  const source=node.__sourceText,key=source.trim();
   if(!key)return;
   const value=dict[key]||key;
-  const lead=source.match(/^\\s*/)?.[0]||'',tail=source.match(/\\s*$/)?.[0]||'';
+  const lead=(source.match(/^\\s*/)||[''])[0];
+  const tail=(source.match(/\\s*$/)||[''])[0];
   const next=lead+value+tail;
   if(node.nodeValue!==next)node.nodeValue=next;
  });
- ['placeholder','title','aria-label'].forEach(attr=>document.querySelectorAll('['+attr+']').forEach(el=>{
-  const key='source'+attr;if(!el.dataset[key])el.dataset[key]=el.getAttribute(attr);
-  const source=el.dataset[key],value=dict[source]||source;
-  if(el.getAttribute(attr)!==value)el.setAttribute(attr,value);
- }));
+ ['placeholder','title','aria-label'].forEach(attr=>{
+  document.querySelectorAll('['+attr+']').forEach(el=>{
+   const originalAttr='data-original-'+attr;
+   if(!el.hasAttribute(originalAttr)){
+    const current=el.getAttribute(attr);
+    el.setAttribute(originalAttr,current===null?'':current);
+   }
+   const source=el.getAttribute(originalAttr)||'';
+   const value=dict[source]||source;
+   if(el.getAttribute(attr)!==value)el.setAttribute(attr,value);
+  });
+ });
 }
-const languageObserver=new MutationObserver(()=>{if(!window.__translatingUI){window.__translatingUI=true;translateDocument(document.documentElement.lang||'zh-CN');window.__translatingUI=false}});
+let languageObserverRunning=false;
+const languageObserver=new MutationObserver(()=>{
+ if(languageObserverRunning||window.__translatingUI)return;
+ languageObserverRunning=true;
+ window.__translatingUI=true;
+ try{
+  translateDocument(document.documentElement.lang||'zh-CN');
+ }catch(error){
+  console.error('[语言转换异常]',error);
+ }finally{
+  window.__translatingUI=false;
+  languageObserverRunning=false;
+ }
+});
 languageObserver.observe(document.body,{childList:true,subtree:true,characterData:true});
 
 function applyLanguage(lang){
