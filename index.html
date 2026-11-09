@@ -4256,6 +4256,7 @@ case'verifyEmailLoginCode':await verifyEmailLoginCode();break;
 case'toggleFavorite':await toggleFavorite();break;
 case'myBottles':await openMyBottles();break;
 case'favorites':await openFavorites();break;
+case'openOwnProfile':if(user){editProfile()}else{openAuth()}break;
 case'auth':openAuth();break;
 case'submitAuth':await submitAuth();break;
 case'sendCode':await sendCode();break;
