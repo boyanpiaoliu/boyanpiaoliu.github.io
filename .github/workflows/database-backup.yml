@@ -1,0 +1,71 @@
+name: Cloud Island database backup
+
+on:
+  schedule:
+    # Daily at 03:17 China Standard Time (19:17 UTC).
+    - cron: "17 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloud-island-database-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: Encrypted Supabase database backup
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check required secrets
+        shell: bash
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+        run: |
+          test -n "$SUPABASE_DB_URL" || { echo "::error::Missing SUPABASE_DB_URL repository secret"; exit 1; }
+          test -n "$BACKUP_ENCRYPTION_PASSPHRASE" || { echo "::error::Missing BACKUP_ENCRYPTION_PASSPHRASE repository secret"; exit 1; }
+
+      - name: Install pinned Supabase CLI v2
+        run: npm install --global supabase@2.122.1
+
+      - name: Export database roles, schema, data and migration history
+        shell: bash
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          mkdir -p backup
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/roles.sql --role-only
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/schema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/data.sql --use-copy --data-only -x "storage.buckets_vectors" -x "storage.vector_indexes"
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/migration-history-schema.sql --schema supabase_migrations
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/migration-history-data.sql --use-copy --data-only --schema supabase_migrations
+          test -s backup/roles.sql
+          test -s backup/schema.sql
+          test -s backup/data.sql
+          sha256sum backup/*.sql > backup/SHA256SUMS
+          tar -czf cloud-island-db-backup.tar.gz -C backup .
+
+      - name: Encrypt backup before uploading
+        shell: bash
+        env:
+          BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 250000 \
+            -pass env:BACKUP_ENCRYPTION_PASSPHRASE \
+            -in cloud-island-db-backup.tar.gz \
+            -out "cloud-island-db-backup-$(date -u +%Y%m%dT%H%M%SZ).tar.gz.enc"
+          rm -f cloud-island-db-backup.tar.gz
+          rm -rf backup
+
+      - name: Store encrypted backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloud-island-database-backup-${{ github.run_id }}
+          path: cloud-island-db-backup-*.tar.gz.enc
+          if-no-files-found: error
+          retention-days: 30
