@@ -3112,9 +3112,13 @@ const {data:newProfile,error:e}=await db.from('profiles').insert({id:user.id,nic
 if(e)throw e;
 data=newProfile;
 }
-const {data:privateRows,error:privateError}=await db.rpc('get_my_private_profile');
-if(privateError)throw privateError;
-profile={...data,...(privateRows?.[0]||{})};
+let privateRows=[];
+try{
+ const {data:rows,error:privateError}=await db.rpc('get_my_private_profile');
+ if(privateError)console.warn('私密资料暂时无法同步，先显示公开资料：',privateError);
+ else privateRows=rows||[];
+}catch(privateError){console.warn('私密资料暂时无法同步，先显示公开资料：',privateError)}
+profile={...data,...(privateRows[0]||{})};
 syncProfile();
 }
 
