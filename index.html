@@ -3102,26 +3102,42 @@ return false;
 
 // 用户资料
 async function loadProfile(){
-if(!user){profile=null;return}
-const columns='id,nickname,friend_code,avatar_url,created_at,gender,bubble_color,signature,profile_theme,location';
-let {data,error}=await db.from('profiles').select(columns).eq('id',user.id).maybeSingle();
-if(error)throw error;
-if(!data){
-const nickname=user.user_metadata?.nickname||user.email?.split('@')[0]||'漂流者';
-const {data:newProfile,error:e}=await db.from('profiles').insert({id:user.id,nickname}).select(columns).single();
-if(e)throw e;
-data=newProfile;
+ if(!db)throw new Error('云端服务未连接');
+ if(!user){profile=null;return}
+ // 先向 Supabase 校验当前登录身份，避免使用过期的本地会话读取资料
+ let verified=(await db.auth.getUser()).data?.user;
+ if(!verified){
+  const refreshed=await db.auth.refreshSession();
+  if(refreshed.error)throw refreshed.error;
+  verified=refreshed.data?.user||refreshed.data?.session?.user;
+ }
+ if(!verified)throw new Error('登录凭证已失效，请重新登录');
+ user=verified;
+ const columns='id,nickname,friend_code,avatar_url,created_at,gender,bubble_color,signature,profile_theme,location';
+ let result=await db.from('profiles').select(columns).eq('id',user.id).maybeSingle();
+ if(result.error && (result.error.code==='PGRST301'||result.error.status===401||result.error.status===403)){
+  const refreshed=await db.auth.refreshSession();
+  if(refreshed.error)throw refreshed.error;
+  user=refreshed.data?.user||refreshed.data?.session?.user||user;
+  result=await db.from('profiles').select(columns).eq('id',user.id).maybeSingle();
+ }
+ if(result.error)throw result.error;
+ let data=result.data;
+ if(!data){
+  const nickname=user.user_metadata?.nickname||user.email?.split('@')[0]||'漂流者';
+  const created=await db.from('profiles').insert({id:user.id,nickname}).select(columns).single();
+  if(created.error)throw created.error;
+  data=created.data;
+ }
+ let privateRows=[];
+ try{
+  const {data:rows,error:privateError}=await db.rpc('get_my_private_profile');
+  if(privateError)console.warn('会员资料暂时无法同步：',privateError);
+  else privateRows=rows||[];
+ }catch(privateError){console.warn('会员资料暂时无法同步：',privateError)}
+ profile={...data,...(privateRows[0]||{})};
+ syncProfile();
 }
-let privateRows=[];
-try{
- const {data:rows,error:privateError}=await db.rpc('get_my_private_profile');
- if(privateError)console.warn('私密资料暂时无法同步，先显示公开资料：',privateError);
- else privateRows=rows||[];
-}catch(privateError){console.warn('私密资料暂时无法同步，先显示公开资料：',privateError)}
-profile={...data,...(privateRows[0]||{})};
-syncProfile();
-}
-
 function closeProfileView(){
  const overlay=$('profileViewModal');
  if(overlay)overlay.style.display='none';
@@ -3158,17 +3174,17 @@ async function showUserProfile(id){
 }
 function syncProfile(){
  applyProfileTheme();
-$('nickname').textContent=user?(profile?.nickname||'漂流者'):'云朵岛';
+$('nickname').textContent=user?(profile?.nickname||'资料同步中…'):'云朵岛';
 const vipUntil=profile?.membership_until?new Date(profile.membership_until):null;
 const isVip=!!(user&&vipUntil&&!Number.isNaN(vipUntil.getTime())&&vipUntil.getTime()>Date.now());
 const vipBadge=$('vipBadge');if(vipBadge)vipBadge.style.display=isVip?'inline-flex':'none';
 const nickname=$('nickname');if(nickname)nickname.classList.toggle('vip-name',isVip);
-const userId=$('userId');if(userId){userId.textContent=user?'好友 ID：'+(profile?.friend_code||'生成中…'):'尚未登录';userId.classList.toggle('vip-id',isVip)}
+const userId=$('userId');if(userId){userId.textContent=user?'好友 ID：'+(profile?.friend_code||'资料同步中…'):'尚未登录';userId.classList.toggle('vip-id',isVip)}
 const av=$('avatar');if(av){av.replaceChildren();if(user&&profile?.avatar_url){const img=document.createElement('img');img.src=profile.avatar_url;img.alt='头像';av.append(img)}else if(!user){av.innerHTML='<svg class="guest-cloud-avatar" viewBox="0 0 64 48" aria-hidden="true"><path d="M18 41h29a13 13 0 0 0 1-26A17 17 0 0 0 16 18a12 12 0 0 0 2 23Z"/></svg>';}else av.textContent=(profile?.nickname||'我').slice(0,1);}
 $('authButton').textContent=user?'已登录':'登录 / 注册';
 const primaryAction=$('profilePrimaryAction');if(primaryAction){primaryAction.textContent=user?'开通会员':'登录 / 注册';primaryAction.dataset.action=user?'membership':'auth';}
 $('logoutRow').style.display=user?'flex':'none';
-const locationLabel=$('profileIp');if(locationLabel)locationLabel.textContent=user?(profile?.location||'北京'):'';
+const locationLabel=$('profileIp');if(locationLabel)locationLabel.textContent=user?(profile?.location||'资料同步中…'):'';
 }
 
 // 加载数据
