@@ -2848,7 +2848,7 @@ img{max-width:100%;height:auto}
 <div class="settings-reference-list">
 <button class="settings-reference-row" type="button" onclick="shareInvite()"><span class="settings-icon">♧</span><span class="settings-label">邀请好友领会员体验</span><span class="settings-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8.5 4.5 7.5 7.5-7.5 7.5"/></svg></span></button>
 <button class="settings-reference-row" type="button" onclick="notify('关注官方公众号','官方公众号入口暂未配置。请留意云朵岛站内公告，避免通过非官方渠道提供账号信息。')"><span class="settings-icon">♡</span><span class="settings-label">关注官方公众号</span><span class="settings-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8.5 4.5 7.5 7.5-7.5 7.5"/></svg></span></button>
-<button class="settings-reference-row" type="button" onclick="notify('联系客服','客服通道正在完善中。你可以通过云朵岛官方通知了解后续联系渠道。')"><span class="settings-icon">♧</span><span class="settings-label">联系客服</span><span class="settings-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8.5 4.5 7.5 7.5-7.5 7.5"/></svg></span></button>
+<button class="settings-reference-row" type="button" onclick="contactSupport()"><span class="settings-icon">♧</span><span class="settings-label">联系客服</span><span class="settings-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8.5 4.5 7.5 7.5-7.5 7.5"/></svg></span></button>
 <button class="settings-reference-row" type="button" onclick="notify('隐私政策','云朵岛仅在提供账号、漂流瓶和消息功能所需范围内处理相关数据。请勿在公开漂流瓶或聊天中分享密码、验证码及其他敏感信息。')"><span class="settings-icon">▤</span><span class="settings-label">隐私政策</span><span class="settings-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8.5 4.5 7.5 7.5-7.5 7.5"/></svg></span></button>
 <button class="settings-reference-row" type="button" onclick="notify('用户协议','使用云朵岛时，请遵守法律法规，不发布违法、骚扰、欺诈或侵犯他人权益的内容。请尊重其他用户的隐私与表达。')"><span class="settings-icon">▤</span><span class="settings-label">用户协议</span><span class="settings-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8.5 4.5 7.5 7.5-7.5 7.5"/></svg></span></button>
 <button class="settings-reference-row" type="button" onclick="logout()"><span class="settings-icon">⇥</span><span class="settings-label">退出登录</span><span class="settings-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8.5 4.5 7.5 7.5-7.5 7.5"/></svg></span></button>
@@ -3581,13 +3581,23 @@ async function blockViewedUser(){
  }catch(e){showError(e)}
 }
 
+async function contactSupport(){
+ if(!requireLogin())return;
+ showPage('friends');
+ const input=$('friendSearchId');
+ if(!input){notify('暂时无法联系','好友页面暂时无法打开，请稍后重试。');return}
+ input.value='666666';
+ await searchFriend();
+}
+window.contactSupport=contactSupport;
+
 async function searchFriend(){
  if(!requireLogin())return;
  const raw=$('friendSearchId').value.trim();
  const box=$('friendSearchResult');box.replaceChildren();friendSearchResult=null;
  if(!raw){notify('请输入好友 ID','请粘贴对方的完整好友 ID。');return}
  if(raw===profile?.friend_code){notify('这是你自己的 ID','搜索其他用户的数字好友 ID。');return}
- if(!/^\\d{8}$/.test(raw)){notify('ID 格式不正确','请输入 8 位数字好友 ID。');return}
+ if(!/^\\d{6,8}$/.test(raw)){notify('ID 格式不正确','请输入 6 至 8 位数字好友 ID。');return}
  try{
   const {data,error}=await db.rpc('search_profile_by_id',{p_id:raw});if(error)throw error;
   const person=data?.[0];if(!person){box.innerHTML='<div class="empty">没有找到这个 ID 对应的用户。</div>';return}
