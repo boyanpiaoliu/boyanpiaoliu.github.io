@@ -3104,37 +3104,20 @@ return false;
 async function loadProfile(){
  if(!db)throw new Error('云端服务未连接');
  if(!user){profile=null;return}
- // 先向 Supabase 校验当前登录身份，避免使用过期的本地会话读取资料
- let verified=(await db.auth.getUser()).data?.user;
- if(!verified){
-  const refreshed=await db.auth.refreshSession();
-  if(refreshed.error)throw refreshed.error;
-  verified=refreshed.data?.user||refreshed.data?.session?.user;
- }
- if(!verified)throw new Error('登录凭证已失效，请重新登录');
- user=verified;
+ const currentUser=user;
  const columns='id,nickname,friend_code,avatar_url,created_at,gender,bubble_color,signature,profile_theme,location';
- let result=await db.from('profiles').select(columns).eq('id',user.id).maybeSingle();
- if(result.error && (result.error.code==='PGRST301'||result.error.status===401||result.error.status===403)){
-  const refreshed=await db.auth.refreshSession();
-  if(refreshed.error)throw refreshed.error;
-  user=refreshed.data?.user||refreshed.data?.session?.user||user;
-  result=await db.from('profiles').select(columns).eq('id',user.id).maybeSingle();
- }
+ const result=await db.from('profiles').select(columns).eq('id',currentUser.id).maybeSingle();
  if(result.error)throw result.error;
  let data=result.data;
  if(!data){
-  const nickname=user.user_metadata?.nickname||user.email?.split('@')[0]||'漂流者';
-  const created=await db.from('profiles').insert({id:user.id,nickname}).select(columns).single();
+  const nickname=currentUser.user_metadata?.nickname||currentUser.email?.split('@')[0]||'漂流者';
+  const created=await db.from('profiles').insert({id:currentUser.id,nickname}).select(columns).single();
   if(created.error)throw created.error;
   data=created.data;
  }
  let privateRows=[];
- try{
-  const {data:rows,error:privateError}=await db.rpc('get_my_private_profile');
-  if(privateError)console.warn('会员资料暂时无法同步：',privateError);
-  else privateRows=rows||[];
- }catch(privateError){console.warn('会员资料暂时无法同步：',privateError)}
+ try{const {data:rows,error}=await db.rpc('get_my_private_profile');if(error)console.warn('会员资料暂时无法同步：',error);else privateRows=rows||[]}catch(e){console.warn('会员资料暂时无法同步：',e)}
+ if(!user||user.id!==currentUser.id)return;
  profile={...data,...(privateRows[0]||{})};
  syncProfile();
 }
@@ -4094,7 +4077,7 @@ if(error)throw error;
 user=data.session?.user||null;
 if(user){
  try{await loadProfile()}
- catch(profileError){profile=null;console.warn('用户资料暂时无法同步，页面仍可继续使用：',profileError)}
+ catch(profileError){profile=null;console.error('用户资料同步失败：',profileError);syncProfile();showError(profileError)}
  const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');
  if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}
 }else profile=null;
