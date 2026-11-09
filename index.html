@@ -2815,6 +2815,8 @@ let chatProfileCache={};
 let activeRecorder=null;
 let recorderChunks=[];
 let recordingStream=null;
+// 防止快速重复点击导致同一条消息或笔记重复提交
+const inFlightSubmissions=new Set();
 // 页面导航历史：悬浮返回按钮回到真实的上一个页面
 let pageHistory=[];
 let currentPageId='messages';
@@ -3245,10 +3247,23 @@ async function sendThreadReply(peer){
  const input=$('threadReply'),content=input?.value.trim();if(!content)return;
  if(!user||!peer){notify('无法发送','请重新打开这段对话后再发送。');return}
  if(content.length>500){notify('内容过长','单条消息最多500个字符。');return}
- const sendButton=document.querySelector('#messageThread .message-composer button');
+ const replyId=replyTargetMessage?.id||'';
+ const lockKey='chat:'+user.id+':'+peer+':'+replyId+':'+content;
+ if(inFlightSubmissions.has(lockKey))return;
+ inFlightSubmissions.add(lockKey);
+ const sendButton=document.querySelector('#messageThread .message-composer .composer-send');
  if(sendButton){sendButton.disabled=true;sendButton.textContent='发送中…'}
- try{const payload={sender_id:user.id,receiver_id:peer,content};if(replyTargetMessage)payload.reply_to_id=replyTargetMessage.id;const {error}=await db.from('messages').insert(payload);if(error)throw error;replyTargetMessage=null;await loadMessages();await openConversation(peer)}
- catch(e){showError(e);if(sendButton){sendButton.disabled=false;sendButton.textContent='发送'}}
+ try{
+  const payload={sender_id:user.id,receiver_id:peer,content};
+  if(replyTargetMessage)payload.reply_to_id=replyTargetMessage.id;
+  const {error}=await db.from('messages').insert(payload);if(error)throw error;
+  replyTargetMessage=null;
+  if(input)input.value='';
+  try{await loadMessages();await openConversation(peer)}catch(refreshError){console.error('消息已发送，但刷新会话失败：',refreshError);notify('消息已发送','消息已成功发送，刷新会话列表时遇到问题，请稍后刷新。')}
+ }catch(e){
+  showError(e);
+  if(sendButton){sendButton.disabled=false;sendButton.textContent='发送'}
+ }finally{inFlightSubmissions.delete(lockKey)}
 }
 async function deleteMessage(id,peer){
  if(!confirm('确定删除这条消息吗？'))return;
@@ -3570,16 +3585,27 @@ async function submitMessage(){
 if(!requireLogin()||!messageReceiver)return;
 const content=$('messageText').value.trim();
 if(!content){notify('消息不能为空','请输入你想说的话。');return}
+const receiver=messageReceiver;
+const lockKey='modal-message:'+user.id+':'+receiver+':'+content;
+if(inFlightSubmissions.has(lockKey))return;
+inFlightSubmissions.add(lockKey);
+const button=document.querySelector('#messageModal [data-action="submitMessage"]');
+if(button){button.disabled=true;button.textContent='发送中…'}
 try{
-const {error}=await db.from('messages').insert({
-sender_id:user.id,receiver_id:messageReceiver,content
-});
+const {error}=await db.from('messages').insert({sender_id:user.id,receiver_id:receiver,content});
 if(error)throw error;
+$('messageText').value='';
 $('messageModal').classList.remove('show');
 messageReceiver=null;
-await loadMessages();renderMessages();
+try{await loadMessages();renderMessages()}catch(refreshError){console.error('消息已发送，但刷新列表失败：',refreshError)}
 notify('发送成功','你的消息已经发送。');
-}catch(e){showError(e)}
+}catch(e){
+showError(e);
+if(button){button.disabled=false;button.textContent='发送消息'}
+}finally{
+inFlightSubmissions.delete(lockKey);
+if(button&&$('messageModal').classList.contains('show')){button.disabled=false;button.textContent='发送消息'}
+}
 }
 
 
@@ -4209,8 +4235,15 @@ async function publishCommunity(){
  const content=$('communityContent').value.trim();
  if(!content){notify('还没有写内容','写下一点心情再发布吧。');return}
  if(content.length>500){notify('内容太长','动态最多500字。');return}
- let image_url=null;
  const file=$('communityImageInput').files?.[0];
+ const publishKey='publish:'+user.id+':'+content+':'+(file?file.name+':'+file.size+':'+file.lastModified:'');
+ if(inFlightSubmissions.has(publishKey))return;
+ inFlightSubmissions.add(publishKey);
+ const publishButtons=[...document.querySelectorAll('#writeNote .write-note-submit,[data-action="publishCommunity"]')];
+ const originalLabels=publishButtons.map(button=>button.textContent);
+ publishButtons.forEach(button=>{button.disabled=true;button.textContent='发布中…'});
+ let published=false;
+ let image_url=null;
  if(file){
   if(file.size>5*1024*1024){notify('图片太大','动态图片最大支持5MB。');return}
   if(!['image/jpeg','image/png','image/webp'].includes(file.type)){notify('图片格式不支持','请选择 JPG、PNG 或 WEBP 图片。');return}
@@ -4222,8 +4255,13 @@ async function publishCommunity(){
  }
  const {error}=await db.from('community_posts').insert({user_id:user.id,content,mood:$('communityMood').value,image_url});
  if(error){showError(error);return}
+ published=true;
  $('communityContent').value='';$('communityImageInput').value='';$('communityImageName').textContent='支持 JPG、PNG、WEBP，最大 5MB';$('communityCount').textContent='0 / 500';
- try{await loadCommunity()}catch(refreshError){console.error('community feed refresh failed after publish:',refreshError)}await loadMyNotes();if(currentPageId==='writeNote'){if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();showPage('profile',{replace:true});}notify('发布成功','笔记已发布，正在「我的笔记」中显示。');
+ try{await loadCommunity()}catch(refreshError){console.error('community feed refresh failed after publish:',refreshError)}try{await loadMyNotes()}catch(refreshError){console.error('my notes refresh failed after publish:',refreshError)}if(currentPageId==='writeNote'){if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();showPage('profile',{replace:true});}notify('发布成功','笔记已发布，正在「我的笔记」中显示。');
+ }finally{
+  inFlightSubmissions.delete(publishKey);
+  if(!published)publishButtons.forEach((button,index)=>{button.disabled=false;button.textContent=originalLabels[index]||'发布'});
+ }
 }
 const oceanShopItems=[
  {code:'frame_pearl',name:'珍珠光环',icon:'🫧',cost:30,desc:'清透珍珠头像框'},
