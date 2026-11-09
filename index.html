@@ -3456,10 +3456,13 @@ async function openConversation(peer){
 
 async function uploadChatMedia(peer,file,type){
  if(!requireLogin()||!peer||!file)return;
+ const uploadKey='media:'+user.id+':'+peer+':'+type+':'+file.name+':'+file.size+':'+file.lastModified;
+ if(inFlightSubmissions.has(uploadKey))return;
  const limits={image:10*1024*1024,flash_image:10*1024*1024,video:25*1024*1024,audio:5*1024*1024};
  if(file.size>limits[type]){notify('文件过大',type==='video'?'视频不能超过25MB。':type==='audio'?'语音不能超过5MB。':'图片不能超过10MB。');return}
  const allowed={image:['image/jpeg','image/png','image/webp','image/gif'],flash_image:['image/jpeg','image/png','image/webp'],video:['video/mp4','video/quicktime'],audio:['audio/mp4','audio/mpeg','audio/webm','audio/aac','audio/wav','audio/ogg']};
  if(!allowed[type].includes(file.type)){notify('格式不支持','请使用常见的 JPG、PNG、WEBP、MP4 或支持的音频格式。');return}
+ inFlightSubmissions.add(uploadKey);
  try{
   const ext=(file.name.split('.').pop()||({image:'jpg',flash_image:'jpg',video:'mp4',audio:'m4a'}[type])).replace(/[^a-zA-Z0-9]/g,'').slice(0,8);
   const path=user.id+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
@@ -3468,6 +3471,7 @@ async function uploadChatMedia(peer,file,type){
   if(error){await db.storage.from('message-media').remove([path]);throw error}
   await loadMessages();await openConversation(peer);
  }catch(e){showError(e)}
+ finally{inFlightSubmissions.delete(uploadKey)}
 }
 async function toggleVoiceRecording(peer,button){
  if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){notify('设备暂不支持','当前浏览器不支持语音录制，请更新 Safari 后重试。');return}
@@ -3624,12 +3628,21 @@ function openReport(type,id){
 }
 async function submitReport(){
  if(!user||!reportTarget)return;
+ const target={...reportTarget};
+ const details=$('reportDetails').value.trim();
+ if(details.length>300){notify('说明过长','举报补充说明最多300个字符。');return}
+ const lockKey='report:'+user.id+':'+target.type+':'+target.id;
+ if(inFlightSubmissions.has(lockKey))return;
+ inFlightSubmissions.add(lockKey);
+ const button=document.querySelector('#reportModal [data-action="submitReport"]');
+ if(button){button.disabled=true;button.textContent='提交中…'}
  try{
-  const {error}=await db.from('content_reports').insert({reporter_id:user.id,target_type:reportTarget.type,target_id:reportTarget.id,reason:$('reportReason').value,details:$('reportDetails').value.trim()});
+  const {error}=await db.from('content_reports').insert({reporter_id:user.id,target_type:target.type,target_id:target.id,reason:$('reportReason').value,details});
   if(error)throw error;
   $('reportModal').style.display='none';reportTarget=null;
   notify('举报已提交','感谢反馈。平台会根据举报内容进行核查。');
  }catch(e){showError(e)}
+ finally{inFlightSubmissions.delete(lockKey);if(button){button.disabled=false;button.textContent='提交举报'}}
 }
 async function blockViewedUser(){
  if(!requireLogin()||!viewedProfileId)return;
@@ -4085,8 +4098,14 @@ selectedBubbleColor=profile?.bubble_color||'#cbb9e5';document.querySelectorAll('
 showPage('editProfile');
 }
 async function saveProfile(){
+if(!requireLogin())return;
 const nickname=$('editNickname').value.trim();
 if(!nickname){notify('昵称不能为空','请填写昵称。');return}
+const lockKey='profile-save:'+user.id;
+if(inFlightSubmissions.has(lockKey))return;
+inFlightSubmissions.add(lockKey);
+const saveButton=document.querySelector('[data-action="saveProfile"]');
+if(saveButton){saveButton.disabled=true;saveButton.textContent='保存中…'}
 try{
 let avatar_url=profile?.avatar_url||null;
 const file=$('avatarFile').files?.[0];
@@ -4107,6 +4126,7 @@ if(error)throw error;
 await loadProfile();syncProfile();showPage('profile');
 notify('保存成功','昵称、头像和聊天气泡外观已同步到云端。');
 }catch(e){showError(e)}
+finally{inFlightSubmissions.delete(lockKey);if(saveButton){saveButton.disabled=false;saveButton.textContent='提交资料'}}
 }
 
 // 登录状态
@@ -4437,7 +4457,7 @@ async function loadCommunity(){
   const commentArea=document.createElement('div');commentArea.className='community-comment-area';
   const commentList=document.createElement('div');commentList.className='community-comment-list';
   (commentMap[post.id]||[]).slice(-4).forEach(cm=>{const line=document.createElement('div');line.className='community-comment';const nm=document.createElement('strong');nm.textContent=(cm.profiles?.nickname||'海边的朋友')+'：';const txt=document.createElement('span');txt.textContent=cm.content;line.append(nm,txt);commentList.append(line)});
-  const compose=document.createElement('div');compose.className='community-comment-compose';const input=document.createElement('input');input.maxLength=300;input.placeholder='留下一句友善的回应';const send=document.createElement('button');send.textContent='评论';send.addEventListener('click',()=>submitCommunityComment(post.id,input));compose.append(input,send);commentArea.append(commentList,compose);
+  const compose=document.createElement('div');compose.className='community-comment-compose';const input=document.createElement('input');input.maxLength=500;input.placeholder='留下一句友善的回应';const send=document.createElement('button');send.textContent='评论';send.addEventListener('click',()=>submitCommunityComment(post.id,input));compose.append(input,send);commentArea.append(commentList,compose);
   card.append(actions,commentArea);feed.append(card);
  });
 }
@@ -4799,10 +4819,20 @@ async function loadNotifications(){
 }
 async function submitCommunityComment(postId,input){
  if(!user){openAuth();return}
- const content=input.value.trim();if(!content){notify('评论不能为空','写下一句回应再发送。');return}
- const {error}=await db.from('community_comments').insert({post_id:postId,user_id:user.id,content});
- if(error){showError(error);return}
- input.value='';await loadCommunity();
+ const content=input.value.trim();
+ if(!content){notify('评论不能为空','写下一句回应再发送。');return}
+ if(content.length>500){notify('评论过长','评论最多500个字符。');return}
+ const lockKey='comment:'+user.id+':'+postId+':'+content;
+ if(inFlightSubmissions.has(lockKey))return;
+ inFlightSubmissions.add(lockKey);
+ const send=input.parentElement?.querySelector('button');
+ if(send){send.disabled=true;send.textContent='发送中…'}
+ try{
+  const {error}=await db.from('community_comments').insert({post_id:postId,user_id:user.id,content});
+  if(error)throw error;
+  input.value='';await loadCommunity();
+ }catch(e){showError(e)}
+ finally{inFlightSubmissions.delete(lockKey);if(send){send.disabled=false;send.textContent='评论'}}
 }
 async function toggleCommunityLike(postId,isLiked){
  if(!user){openAuth();return}
