@@ -1827,7 +1827,7 @@ body:has(#messageThread[style*="display:block"]) #mainNav{display:none!important
  font-size:23px!important;
 }
 
-.cloud-compose-panel,.cloud-action-notice{position:fixed;left:16px;right:16px;bottom:176px;z-index:29;background:#fff;border:1px solid #eee8f5;border-radius:18px;padding:14px;box-shadow:0 8px 28px rgba(60,40,80,.12)}
+.cloud-compose-panel,.cloud-action-notice{position:fixed;left:16px;right:16px;bottom:210px;z-index:29;background:#fff;border:1px solid #eee8f5;border-radius:18px;padding:14px;box-shadow:0 8px 28px rgba(60,40,80,.12)}
 .cloud-compose-panel[hidden],.cloud-action-notice[hidden]{display:none!important}
 .cloud-compose-title{font-weight:700;color:#57436f;margin:0 0 9px}
 .cloud-compose-panel textarea{display:block;width:100%;min-height:86px;resize:vertical;border:1px solid #e9e2f0;border-radius:12px;padding:11px;background:#fcfbfe;color:#352946;font:inherit;outline:none}
@@ -2519,7 +2519,7 @@ img{max-width:100%;height:auto}
   <textarea id="cloudComposeText" maxlength="500" placeholder="写下此刻想说的话……"></textarea>
   <div class="cloud-compose-buttons">
     <button type="button" class="cloud-compose-cancel" onclick="hideCloudComposer()">收起</button>
-    <button type="button" class="cloud-compose-send" onclick="submitCloudComposer()">放入大海</button>
+    <button type="button" class="cloud-compose-send" onclick="submitCloudComposer()">放入小岛</button>
   </div>
 </div>
 <div id="cloudActionNotice" class="cloud-action-notice" hidden></div>
@@ -3775,12 +3775,12 @@ async function submitCloudComposer(){
     if(error)throw error;
     $('cloudComposeText').value='';
     hideCloudComposer();
-    showCloudNotice('已放入大海，等待远方的回应。');
+    showCloudNotice('已放入小岛，等待远方的回应。');
     await refreshAll(true);
   }catch(e){showError(e)}
   finally{
     inFlightSubmissions.delete(submitKey);
-    if(button){button.disabled=false;button.textContent='放入大海'}
+    if(button){button.disabled=false;button.textContent='放入小岛'}
   }
 }
 
