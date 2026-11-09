@@ -2384,6 +2384,18 @@ img{max-width:100%}
  #membership .member-feature-icon{flex-basis:13px;width:13px;font-size:14px}
 }
 
+
+/* 修复会员中心白屏：双页面布局曾将未列入白名单的页面强制隐藏 */
+#membership.page.active{
+ display:block!important;
+ min-height:100vh!important;
+ padding:calc(12px + env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom))!important;
+ background:linear-gradient(180deg,#f3ebfc 0%,#fbf9fe 30%,#fff 62%)!important;
+}
+@media(max-width:380px){
+ #membership.page.active{padding-left:12px!important;padding-right:12px!important}
+}
+
 </style>
 </head>
 
