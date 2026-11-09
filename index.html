@@ -4114,6 +4114,7 @@ function showChatImage(src){
  viewer.querySelector('img').src=src;viewer.classList.add('show');
  if(!viewer.dataset.escapeBound){document.addEventListener('keydown',e=>{if(e.key==='Escape')viewer.classList.remove('show')});viewer.dataset.escapeBound='1'}
 }
+$('avatar')?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(user)editProfile();else openAuth()}});
 $('conversationSearch')?.addEventListener('input',()=>renderMessages());
 $('clearConversationSearch')?.addEventListener('click',()=>{const input=$('conversationSearch');if(input){input.value='';renderMessages();input.focus()}});
 
@@ -4124,6 +4125,9 @@ $('chatFlashInput').addEventListener('change',e=>{if(e.target.files?.[0])uploadC
 $('chatVideoInput').addEventListener('change',e=>{if(e.target.files?.[0])uploadChatMedia(messageReceiver||activeChatPeer,e.target.files[0],'video');e.target.value=''});
 
 document.addEventListener('click',async e=>{
+const taskButton=e.target.closest('.message-task');
+if(taskButton){if(requireLogin()){showPage('growthCenter');await loadGrowthCenter()}return;}
+
 const memberPlan=e.target.closest('[data-member-plan]');
 if(memberPlan){
  document.querySelectorAll('#membership [data-member-plan]').forEach(card=>{
