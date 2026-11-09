@@ -2269,6 +2269,121 @@ img{max-width:100%}
 #profile .my-notes-loading,#profile .my-notes-error{text-align:center;padding:24px 10px;color:#a99bb7;font-size:12px}
 #profile .notes-empty{min-height:260px}
 
+
+/* 会员中心：香芋紫高级会员卡布局 */
+#membership.page{
+ min-height:100vh;
+ padding:calc(12px + env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom));
+ background:linear-gradient(180deg,#f3ebfc 0%,#fbf9fe 30%,#fff 62%);
+}
+#membership .member-page-head{
+ position:relative;display:flex;align-items:center;justify-content:center;
+ min-height:48px;margin:0 0 14px;padding:0;
+}
+#membership .member-page-head h2{
+ margin:0;font-size:22px;font-weight:750;letter-spacing:1px;color:#44315d;
+}
+#membership .member-back{
+ position:absolute;left:-5px;top:1px;width:42px;height:42px;padding:0;
+ display:grid;place-items:center;border:0;border-radius:50%;
+ background:transparent;color:#49345f;-webkit-tap-highlight-color:transparent;
+}
+#membership .member-back svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#membership .member-hero-card{
+ position:relative;isolation:isolate;overflow:hidden;
+ display:flex;align-items:center;gap:13px;min-height:126px;
+ margin:0 0 24px;padding:20px 17px;border-radius:22px;color:#fff;
+ background:linear-gradient(118deg,#d9c2f1 0%,#bd9be5 52%,#a982d7 100%);
+ border:1px solid rgba(255,255,255,.75);
+ box-shadow:0 12px 25px rgba(137,99,183,.2);
+}
+#membership .member-hero-card:after{
+ content:"";position:absolute;z-index:-1;left:38%;right:-12%;bottom:-48px;height:78px;
+ border:2px solid rgba(255,255,255,.36);border-radius:50%;transform:rotate(-8deg);
+}
+#membership .member-user-avatar{
+ width:62px;height:62px;flex:0 0 62px;overflow:hidden;
+ display:grid;place-items:center;border-radius:50%;
+ border:2px solid rgba(255,255,255,.95);
+ background:rgba(255,255,255,.34);color:#fff;font-size:25px;font-weight:700;
+ box-shadow:0 3px 12px rgba(76,48,109,.12);
+}
+#membership .member-user-avatar img{width:100%;height:100%;object-fit:cover}
+#membership .member-user-avatar svg{width:34px;height:28px;fill:rgba(255,255,255,.94)}
+#membership .member-user-copy{position:relative;z-index:2;display:flex;flex:1;min-width:0;flex-direction:column;gap:5px}
+#membership .member-user-copy strong{font-size:20px;font-weight:750;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#membership .member-user-copy>span{font-size:11px;color:rgba(255,255,255,.82)}
+#membership .member-user-copy p{margin:2px 0 0;font-size:12px;line-height:1.5;color:#fff}
+#membership .member-crown-watermark{
+ position:absolute;right:13px;bottom:8px;width:92px;height:74px;
+ fill:rgba(255,255,255,.15);stroke:rgba(255,255,255,.2);stroke-width:2;
+}
+#membership .member-section-title{display:flex;align-items:center;gap:10px;margin:0 2px 13px}
+#membership .member-section-title i{display:block;width:5px;height:24px;border-radius:8px;background:linear-gradient(180deg,#d7b8f5,#a77ad8)}
+#membership .member-section-title h3{margin:0;font-size:19px;font-weight:750;color:#4a3564}
+#membership .member-plans{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;
+ gap:7px;margin:0 0 22px;
+}
+#membership .member-plan{
+ box-sizing:border-box;min-width:0;min-height:500px;padding:13px 8px 8px;
+ display:flex;flex-direction:column;align-items:center;gap:0;
+ border:1px solid #e9e1f1;border-radius:17px;
+ background:linear-gradient(180deg,#fff 0%,#fdfbff 100%);
+ color:#443454;text-align:center;cursor:pointer;
+ box-shadow:0 5px 16px rgba(100,72,135,.045);
+ transition:border-color .18s,background .18s,box-shadow .18s,transform .18s;
+}
+#membership .member-plan.is-selected{
+ border:2px solid #b27be7;padding:12px 7px 7px;
+ background:linear-gradient(180deg,#f2e7fd 0%,#fffaff 100%);
+ box-shadow:0 8px 20px rgba(151,105,202,.14);
+}
+#membership .member-plan:focus-visible{outline:3px solid rgba(169,119,221,.3);outline-offset:2px}
+#membership .member-plan-top{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:57px;justify-content:flex-start}
+#membership .member-plan-crown{font-size:25px;line-height:1;color:#ad82d6}
+#membership .member-plan-top strong{font-size:13px;line-height:1.35;font-weight:750;color:#403052;white-space:nowrap}
+#membership .member-plan-badge{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:21px;margin:2px 0 4px;padding:2px 10px;border-radius:20px;
+ background:linear-gradient(100deg,#c69be9,#9663cc);color:#fff;font-size:10px;white-space:nowrap;
+}
+#membership .member-plan-spacer{height:27px;flex:0 0 27px}
+#membership .member-plan-price{display:flex;align-items:baseline;justify-content:center;margin:8px 0 1px}
+#membership .member-plan-price b{font-size:27px;line-height:1.15;font-weight:800;letter-spacing:-1px;color:#965acb;white-space:nowrap}
+#membership .member-plan del{display:block;margin:7px 0 14px;font-size:12px;color:#93899e;text-decoration-thickness:1.5px}
+#membership .member-feature-list{width:100%;margin-top:auto;border-top:1px solid #eee6f5}
+#membership .member-feature-row{
+ min-height:44px;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-start;
+ gap:4px;padding:5px 1px;border-bottom:1px solid #eee8f4;
+ color:#51415f;text-align:left;font-size:9.5px;line-height:1.35;white-space:nowrap;
+}
+#membership .member-feature-icon{flex:0 0 15px;width:15px;text-align:center;color:#a579d1;font-size:16px;line-height:1}
+#membership .member-feature-row>span:last-child{min-width:0;overflow:hidden;text-overflow:clip;letter-spacing:-.35px}
+#membership .member-feature-row em{font-style:normal;font-weight:800;color:#965acb}
+#membership .member-feature-row.unavailable{justify-content:center;text-align:center;color:#aaa1b2;font-size:20px;font-weight:600}
+#membership .member-footer{margin:0 0 12px}
+#membership .member-purchase{
+ display:block;width:100%;min-height:62px;padding:12px 18px;border:0;border-radius:999px;
+ background:linear-gradient(105deg,#d2aaf1 0%,#b17cde 48%,#9862cf 100%);
+ color:#fff;font-size:21px;font-weight:750;letter-spacing:1px;
+ box-shadow:0 10px 22px rgba(159,106,207,.22);
+}
+#membership .member-purchase:active{transform:scale(.985)}
+#membership .member-agreement{margin:14px 0 0;text-align:center;color:#51445f;font-size:13px;line-height:1.8}
+#membership .member-agreement button{padding:0;border:0;background:transparent;color:#a36ed5;font-size:inherit}
+#membership .member-disclaimer{margin:10px 4px 0;text-align:center;font-size:10px;line-height:1.6;color:#b1a6bd}
+@media(max-width:380px){
+ #membership.page{padding-left:12px;padding-right:12px}
+ #membership .member-plans{gap:5px}
+ #membership .member-plan{padding-left:6px;padding-right:6px;min-height:485px}
+ #membership .member-plan.is-selected{padding-left:5px;padding-right:5px}
+ #membership .member-plan-top strong{font-size:12px}
+ #membership .member-plan-price b{font-size:24px}
+ #membership .member-feature-row{font-size:9px;gap:2px}
+ #membership .member-feature-icon{flex-basis:13px;width:13px;font-size:14px}
+}
+
 </style>
 </head>
 
@@ -2556,15 +2671,66 @@ img{max-width:100%}
 <div class="card"><div class="section-title">邀请奖励</div><p>每邀请 1 位新用户完成注册，邀请双方各获得 3 天会员体验。每个账号仅可使用一次邀请码，邀请记录以服务器验证为准。</p></div>
 </section>
 <section class="page" id="membership">
-<div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>云朵岛会员</h2></div>
-<div class="member-hero"><span>BOYAN MEMBERSHIP</span><h2>让每一次相遇<br>多一点特别</h2><p id="memberStatus">当前为普通用户</p></div>
-<div class="card"><div class="section-title">会员权益</div><ul class="member-benefits"><li>✦ 专属会员身份标识</li><li>✦ 更多心动匹配机会</li><li>✦ 专属头像框与主页装饰</li><li>✦ 更多个性外观选择</li></ul></div>
-<div class="member-plans">
-<div class="member-plan"><strong>月度会员</strong><b>¥12</b><span>适合短期体验</span></div>
-<div class="member-plan featured"><strong>季度会员</strong><b>¥30</b><span>平均 ¥10 / 月</span></div>
-<div class="member-plan"><strong>年度会员</strong><b>¥98</b><span>平均约 ¥8.2 / 月</span></div>
+<div class="page-head member-page-head">
+<button class="member-back" type="button" onclick="goBackPage()" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4.5 8 12l7.5 7.5"/></svg></button>
+<h2>会员中心</h2>
 </div>
-<p class="member-disclaimer">会员付费功能尚未开放。以上为拟定价格，正式购买将在完成支付接入及平台审核后开放。你可以通过邀请好友获得免费会员体验。</p>
+<div class="member-hero-card">
+<div class="member-user-avatar" id="memberAvatar"><svg viewBox="0 0 64 48" aria-hidden="true"><path d="M18 41h29a13 13 0 0 0 1-26A17 17 0 0 0 16 18a12 12 0 0 0 2 23Z"/></svg></div>
+<div class="member-user-copy">
+<strong id="memberNickname">云朵岛</strong>
+<span id="memberUserId">ID：登录后可见</span>
+<p id="memberStatus">开通会员后可解锁多种特权</p>
+</div>
+<svg class="member-crown-watermark" viewBox="0 0 100 78" aria-hidden="true"><path d="M12 19 31 38 49 10 68 38 88 19 78 66H22Z"/><path d="M22 72H78"/></svg>
+</div>
+<div class="member-section-title"><i></i><h3>会员充值</h3></div>
+<div class="member-plans">
+<article class="member-plan is-selected" data-member-plan="permanent" role="button" tabindex="0" aria-pressed="true">
+<div class="member-plan-top"><span class="member-plan-crown">♛</span><strong>永久VIP</strong></div>
+<span class="member-plan-badge">限时优惠</span>
+<div class="member-plan-price"><b>¥188</b></div>
+<del>¥598</del>
+<div class="member-feature-list">
+<div class="member-feature-row"><span class="member-feature-icon">☁</span><span>每日 <em>100</em> 云朵币</span></div>
+<div class="member-feature-row"><span class="member-feature-icon">▱</span><span>放纸条次数增加</span></div>
+<div class="member-feature-row"><span class="member-feature-icon">☷</span><span>性别筛选</span></div>
+<div class="member-feature-row"><span class="member-feature-icon">⌖</span><span>城市筛选</span></div>
+<div class="member-feature-row"><span class="member-feature-icon">☼</span><span>曝光增加</span></div>
+</div>
+</article>
+<article class="member-plan" data-member-plan="quarterly" role="button" tabindex="0" aria-pressed="false">
+<div class="member-plan-top"><span class="member-plan-crown">♛</span><strong>3个月VIP</strong></div>
+<span class="member-plan-spacer"></span>
+<div class="member-plan-price"><b>¥78</b></div>
+<del>¥128</del>
+<div class="member-feature-list">
+<div class="member-feature-row"><span class="member-feature-icon">☁</span><span>每日 <em>50</em> 云朵币</span></div>
+<div class="member-feature-row"><span class="member-feature-icon">▱</span><span>放纸条次数增加</span></div>
+<div class="member-feature-row"><span class="member-feature-icon">☷</span><span>性别筛选</span></div>
+<div class="member-feature-row unavailable"><span>×</span></div>
+<div class="member-feature-row unavailable"><span>×</span></div>
+</div>
+</article>
+<article class="member-plan" data-member-plan="monthly" role="button" tabindex="0" aria-pressed="false">
+<div class="member-plan-top"><span class="member-plan-crown">♛</span><strong>1个月VIP</strong></div>
+<span class="member-plan-spacer"></span>
+<div class="member-plan-price"><b>¥35</b></div>
+<del>¥39.9</del>
+<div class="member-feature-list">
+<div class="member-feature-row"><span class="member-feature-icon">☁</span><span>每日 <em>50</em> 云朵币</span></div>
+<div class="member-feature-row"><span class="member-feature-icon">▱</span><span>放纸条次数增加</span></div>
+<div class="member-feature-row"><span class="member-feature-icon">☷</span><span>性别筛选</span></div>
+<div class="member-feature-row unavailable"><span>×</span></div>
+<div class="member-feature-row unavailable"><span>×</span></div>
+</div>
+</article>
+</div>
+<div class="member-footer">
+<button type="button" class="member-purchase" data-action="purchaseMembership">开通会员</button>
+<p class="member-agreement">开通会员即同意 <button type="button" data-action="memberAgreement">《会员服务协议》</button></p>
+<p class="member-disclaimer">会员付费功能尚未开放，当前仅展示套餐方案。</p>
+</div>
 </section>
 <section class="page" id="cottageVisit">
  <div class="page-head"><button class="back" data-action="backGrowth">‹ 返回</button><h2 id="visitCottageTitle">海洋小屋</h2></div>
@@ -2883,7 +3049,7 @@ window.closeGeneric=closeGeneric;
 function showPage(id,options={}){
  const target=document.getElementById(id);
  if(!target)return;
- if(!['messages','profile','settings','editProfile','writeNote','auth'].includes(id))return;
+ if(!target.classList.contains('page'))return;
  const previous=document.querySelector('.page.active')?.id||currentPageId||'home';
  if(id!==previous&&!options.fromHistory&&!options.replace){
   pageHistory.push(previous);
@@ -2902,9 +3068,9 @@ function showPage(id,options={}){
   floatingBack.setAttribute('aria-label',atHome?'返回顶部':'返回上一页');
  }
  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
- $('mainNav').style.display=['editProfile','writeNote','auth'].includes(id)?'none':'flex';
+ $('mainNav').style.display=['editProfile','writeNote','auth','membership'].includes(id)?'none':'flex';
  if(floatingBack){
-  floatingBack.style.setProperty('display',['editProfile','writeNote','auth'].includes(id)?'none':'flex','important');
+  floatingBack.style.setProperty('display',['editProfile','writeNote','auth','membership'].includes(id)?'none':'flex','important');
  }
  window.scrollTo({top:0,behavior:'auto'});
 }
@@ -3347,7 +3513,20 @@ async function loadInviteCenter(){
 async function loadMembership(){
  if(!requireLogin())return;
  const until=profile?.membership_until?new Date(profile.membership_until):null;
- $('memberStatus').textContent=until&&until>Date.now()?'会员有效期至 '+until.toLocaleDateString('zh-CN'):'当前为普通用户 · 可通过邀请好友领取体验会员';
+ const isVip=!!(until&&!Number.isNaN(until.getTime())&&until.getTime()>Date.now());
+ const avatar=$('memberAvatar');
+ if(avatar){
+  avatar.replaceChildren();
+  if(profile?.avatar_url){
+   const img=document.createElement('img');img.src=profile.avatar_url;img.alt='头像';avatar.append(img);
+  }else{
+   const cloud=document.createElement('span');cloud.textContent=(profile?.nickname||'☁').slice(0,1);avatar.append(cloud);
+  }
+ }
+ const nickname=$('memberNickname');if(nickname)nickname.textContent=profile?.nickname||'漂流者';
+ const userId=$('memberUserId');if(userId)userId.textContent='ID：'+(profile?.friend_code||'—');
+ const status=$('memberStatus');
+ if(status)status.textContent=isVip?'会员有效期至 '+until.toLocaleDateString('zh-CN'):'开通会员后可解锁多种特权';
 }
 async function copyInvite(){
  if(!requireLogin())return;
@@ -3868,6 +4047,19 @@ $('chatFlashInput').addEventListener('change',e=>{if(e.target.files?.[0])uploadC
 $('chatVideoInput').addEventListener('change',e=>{if(e.target.files?.[0])uploadChatMedia(messageReceiver||activeChatPeer,e.target.files[0],'video');e.target.value=''});
 
 document.addEventListener('click',async e=>{
+const memberPlan=e.target.closest('[data-member-plan]');
+if(memberPlan){
+ document.querySelectorAll('#membership [data-member-plan]').forEach(card=>{
+  const selected=card===memberPlan;
+  card.classList.toggle('is-selected',selected);
+  card.setAttribute('aria-pressed',String(selected));
+ });
+ return;
+}
+const memberPurchase=e.target.closest('[data-action="purchaseMembership"]');
+if(memberPurchase){notify('暂未开放','当前会员支付通道尚未接入，暂时无法完成购买。');return;}
+const memberAgreement=e.target.closest('[data-action="memberAgreement"]');
+if(memberAgreement){notify('会员服务协议','会员支付功能开放前，正式会员服务协议将在此处公布。');return;}
 const nav=e.target.closest('[data-page]');
 if(nav){
 showPage(nav.dataset.page);
@@ -4513,7 +4705,7 @@ const languageMap={
  '首页':'home','发现':'discover','消息':'messages','我的':'profile','设置':'settings','返回':'back','投递漂流瓶':'write','收取漂流瓶':'pick','我的收藏':'favorites','海上来信':'mail','云朵岛会员':'member','退出登录':'logout','取消':'cancel','发送消息':'send','保存我的外观':'save'
 };
 
-const uiTranslations={"en":{"心事停泊，偶然被看见":"A quiet place for thoughts","投递漂流瓶":"Send a bottle","收取漂流瓶":"Pick up a bottle","每一段心事，都值得被听见":"Every story deserves to be heard","我的收藏":"My favorites","珍藏温暖话语":"Save warm words","海上来信":"Letters from the sea","查看回复消息":"View replies","遇见新故事":"Discover stories","看看陌生人的心情":"Read someone's thoughts","心动匹配":"Heart match","寻找频率相近的人":"Meet like-minded people","开始匹配":"Start matching","朋友来信":"Friends' messages","和认识的人保持联系":"Keep in touch","分享这片海":"Share the sea","邀请朋友一起加入":"Invite friends","给今天选一种心情":"Choose today's mood","轻轻点一下":"Tap to choose","想要温暖":"Need warmth","想说心事":"Have something to share","随便逛逛":"Just browsing","海上故事":"Stories at sea","探索更多":"Explore more","发现故事":"Discover stories","故事分类":"Story categories","选择一种心情":"Choose a mood","全部推荐":"Recommended","温暖":"Warm","心事":"Thoughts","正在漂流":"Drifting","刷新消息":"Refresh messages","搜索好友昵称或聊天内容":"Search names or messages","登录 / 注册":"Log in / Sign up","我的瓶子":"My bottles","收藏":"Favorites","编辑资料":"Edit profile","个性外观":"Appearance","海洋收藏馆":"Ocean collection","海洋成长中心":"Ocean growth","心情动态广场":"Community","互动通知":"Notifications","邀请好友":"Invite friends","云朵岛会员":"Membership","好友与好友申请":"Friends and requests","退出登录":"Log out","输入对方的好友 ID，发送好友申请。":"Enter a friend's ID to send a request.","搜索好友 ID":"Search friend ID","搜索":"Search","复制":"Copy","好友申请":"Friend requests","我的好友":"My friends","头像":"Avatar","昵称":"Nickname","个性签名":"Bio","选择性别":"Choose gender","女生":"Female","男生":"Male","选择性取向（选填）":"Orientation (optional)","暂不选择":"Prefer not to say","异性恋":"Straight","同性恋":"Gay / Lesbian","双性恋":"Bisexual","泛性恋":"Pansexual","无性恋":"Asexual","探索中":"Questioning","其他":"Other","不愿透露":"Prefer not to disclose","保存资料":"Save profile","漂流瓶详情":"Bottle details","给瓶子主人写信":"Write to the sender","欢迎回来":"Welcome back","没有账号？立即注册":"No account? Sign up","邮箱":"Email","密码":"Password","手机号":"Phone number","发送验证码":"Send code","设置昵称":"Set a nickname","好友邀请码（选填）":"Invite code (optional)","验证并登录":"Verify and log in","重新发送":"Resend","验证邮箱并完成注册":"Verify email and sign up","使用密码登录":"Sign in with password","忘记密码？通过邮箱重置":"Forgot password? Reset by email","复制邀请码":"Copy invite code","会员权益":"Membership benefits","月度会员":"Monthly membership","季度会员":"Quarterly membership","年度会员":"Annual membership","海洋小屋":"Ocean home","海洋等级":"Ocean level","成长经验":"Experience","贝壳余额":"Shell balance","我的海洋小屋":"My ocean home","海洋伙伴":"Ocean companions","今日海洋任务":"Today's ocean tasks","每日签到":"Daily check-in","签到领取奖励":"Claim reward","贝壳装扮铺":"Shell shop","心情动态":"Community posts","发布动态":"Publish post","发现":"Discover","关注":"Following","海边来信":"Letters from the sea","真实用户分享":"Shared by members","海面主题":"Ocean themes","头像装扮":"Avatar frames","漂流瓶与聊天主题":"Bottle and chat themes","个人主页背景":"Profile background","保存我的外观":"Save appearance","海洋足迹":"Ocean journey","航海纪念章":"Ocean badges","账号 ID":"Account ID","性别":"Gender","未设置":"Not set","性取向":"Orientation","未公开":"Not shared","最近的动态":"Recent activity","暂时没有公开动态":"No public activity yet","编辑我的资料":"Edit my profile","举报用户":"Report user","拉黑用户":"Block user","遇见一位漂流者":"You met a fellow drifter","再找一位":"Find another","申请加好友":"Add friend","提交举报":"Submit report","取消":"Cancel","知道了":"Got it","写一封回信":"Write a reply","发送消息":"Send message","投递一只漂流瓶":"Send a bottle","心情分类":"Mood","投进大海":"Send into the sea","提示":"Notice","关于漂流瓶":"About Boyan Bottle","刷新云端数据":"Refresh cloud data","设置":"Settings","语言设置":"Language","选择你使用的界面语言":"Choose your display language","简体中文":"Simplified Chinese","繁體中文":"Traditional Chinese"},"zh-TW":{"投递漂流瓶":"投遞漂流瓶","每一段心事，都值得被听见":"每一段心事，都值得被聽見","珍藏温暖话语":"珍藏溫暖話語","海上来信":"海上來信","查看回复消息":"查看回覆訊息","遇见新故事":"遇見新故事","心动匹配":"心動配對","寻找频率相近的人":"尋找頻率相近的人","开始匹配":"開始配對","朋友来信":"朋友來信","和认识的人保持联系":"和認識的人保持聯繫","分享这片海":"分享這片海","邀请朋友一起加入":"邀請朋友一起加入","给今天选一种心情":"為今天選一種心情","轻轻点一下":"輕輕點一下","想要温暖":"想要溫暖","想说心事":"想說心事","随便逛逛":"隨意逛逛","海上故事":"海上故事","探索更多":"探索更多","发现故事":"發現故事","故事分类":"故事分類","选择一种心情":"選擇一種心情","全部推荐":"全部推薦","温暖":"溫暖","刷新消息":"重新整理訊息","搜索好友昵称或聊天内容":"搜尋好友暱稱或聊天內容","登录 / 注册":"登入 / 註冊","编辑资料":"編輯資料","个性外观":"個人外觀","海洋收藏馆":"海洋收藏館","海洋成长中心":"海洋成長中心","心情动态广场":"心情動態廣場","互动通知":"互動通知","邀请好友":"邀請好友","云朵岛会员":"云朵岛會員","好友与好友申请":"好友與好友申請","退出登录":"登出","输入对方的好友 ID，发送好友申请。":"輸入對方的好友 ID，傳送好友申請。","搜索好友 ID":"搜尋好友 ID","搜索":"搜尋","复制":"複製","好友申请":"好友申請","我的好友":"我的好友","头像":"頭像","昵称":"暱稱","个性签名":"個性簽名","选择性别":"選擇性別","仅可选择一次，提交后不可修改":"僅可選擇一次，提交後不可修改","女生":"女生","男生":"男生","选择性取向（选填）":"選擇性傾向（選填）","暂不选择":"暫不選擇","异性恋":"異性戀","同性恋":"同性戀","双性恋":"雙性戀","泛性恋":"泛性戀","无性恋":"無性戀","不愿透露":"不願透露","保存资料":"儲存資料","漂流瓶详情":"漂流瓶詳情","给瓶子主人写信":"寫信給瓶子主人","欢迎回来":"歡迎回來","没有账号？立即注册":"沒有帳號？立即註冊","邮箱":"電子郵件","密码":"密碼","手机号":"手機號碼","发送验证码":"傳送驗證碼","设置昵称":"設定暱稱","验证并登录":"驗證並登入","重新发送":"重新傳送","验证邮箱并完成注册":"驗證電子郵件並完成註冊","使用密码登录":"使用密碼登入","忘记密码？通过邮箱重置":"忘記密碼？透過電子郵件重設","会员权益":"會員權益","月度会员":"月度會員","季度会员":"季度會員","年度会员":"年度會員","海洋小屋":"海洋小屋","海洋等级":"海洋等級","成长经验":"成長經驗","贝壳余额":"貝殼餘額","我的海洋小屋":"我的海洋小屋","海洋伙伴":"海洋夥伴","今日海洋任务":"今日海洋任務","每日签到":"每日簽到","签到领取奖励":"簽到領取獎勵","贝壳装扮铺":"貝殼裝扮舖","心情动态":"心情動態","发布动态":"發布動態","发现":"發現","关注":"追蹤","海边来信":"海邊來信","真实用户分享":"真實使用者分享","海面主题":"海面主題","头像装扮":"頭像裝扮","漂流瓶与聊天主题":"漂流瓶與聊天主題","个人主页背景":"個人頁背景","保存我的外观":"儲存我的外觀","海洋足迹":"海洋足跡","航海纪念章":"航海紀念章","账号 ID":"帳號 ID","性别":"性別","未设置":"未設定","性取向":"性傾向","未公开":"未公開","最近的动态":"最近的動態","暂时没有公开动态":"暫時沒有公開動態","编辑我的资料":"編輯我的資料","举报用户":"檢舉使用者","拉黑用户":"封鎖使用者","再找一位":"再找一位","申请加好友":"申請加好友","提交举报":"提交檢舉","取消":"取消","写一封回信":"寫一封回信","发送消息":"傳送訊息","投递一只漂流瓶":"投遞一只漂流瓶","心情分类":"心情分類","投进大海":"投入大海","关于漂流瓶":"關於漂流瓶","刷新云端数据":"重新整理雲端資料","设置":"設定","语言设置":"語言設定","选择你使用的界面语言":"選擇你使用的介面語言","简体中文":"簡體中文","语言选择会自动保存，并在下次打开时继续使用。":"語言選擇會自動儲存，下次開啟時繼續使用。"}};
+const uiTranslations={"en":{"心事停泊，偶然被看见":"A quiet place for thoughts","投递漂流瓶":"Send a bottle","收取漂流瓶":"Pick up a bottle","每一段心事，都值得被听见":"Every story deserves to be heard","我的收藏":"My favorites","珍藏温暖话语":"Save warm words","海上来信":"Letters from the sea","查看回复消息":"View replies","遇见新故事":"Discover stories","看看陌生人的心情":"Read someone's thoughts","心动匹配":"Heart match","寻找频率相近的人":"Meet like-minded people","开始匹配":"Start matching","朋友来信":"Friends' messages","和认识的人保持联系":"Keep in touch","分享这片海":"Share the sea","邀请朋友一起加入":"Invite friends","给今天选一种心情":"Choose today's mood","轻轻点一下":"Tap to choose","想要温暖":"Need warmth","想说心事":"Have something to share","随便逛逛":"Just browsing","海上故事":"Stories at sea","探索更多":"Explore more","发现故事":"Discover stories","故事分类":"Story categories","选择一种心情":"Choose a mood","全部推荐":"Recommended","温暖":"Warm","心事":"Thoughts","正在漂流":"Drifting","刷新消息":"Refresh messages","搜索好友昵称或聊天内容":"Search names or messages","登录 / 注册":"Log in / Sign up","我的瓶子":"My bottles","收藏":"Favorites","编辑资料":"Edit profile","个性外观":"Appearance","海洋收藏馆":"Ocean collection","海洋成长中心":"Ocean growth","心情动态广场":"Community","互动通知":"Notifications","邀请好友":"Invite friends","云朵岛会员":"Membership","好友与好友申请":"Friends and requests","退出登录":"Log out","输入对方的好友 ID，发送好友申请。":"Enter a friend's ID to send a request.","搜索好友 ID":"Search friend ID","搜索":"Search","复制":"Copy","好友申请":"Friend requests","我的好友":"My friends","头像":"Avatar","昵称":"Nickname","个性签名":"Bio","选择性别":"Choose gender","女生":"Female","男生":"Male","选择性取向（选填）":"Orientation (optional)","暂不选择":"Prefer not to say","异性恋":"Straight","同性恋":"Gay / Lesbian","双性恋":"Bisexual","泛性恋":"Pansexual","无性恋":"Asexual","探索中":"Questioning","其他":"Other","不愿透露":"Prefer not to disclose","保存资料":"Save profile","漂流瓶详情":"Bottle details","给瓶子主人写信":"Write to the sender","欢迎回来":"Welcome back","没有账号？立即注册":"No account? Sign up","邮箱":"Email","密码":"Password","手机号":"Phone number","发送验证码":"Send code","设置昵称":"Set a nickname","好友邀请码（选填）":"Invite code (optional)","验证并登录":"Verify and log in","重新发送":"Resend","验证邮箱并完成注册":"Verify email and sign up","使用密码登录":"Sign in with password","忘记密码？通过邮箱重置":"Forgot password? Reset by email","复制邀请码":"Copy invite code","会员中心":"Membership Center","会员充值":"Membership plans","开通会员后可解锁多种特权":"Unlock exclusive privileges with VIP","永久VIP":"Lifetime VIP","3个月VIP":"3-month VIP","1个月VIP":"1-month VIP","限时优惠":"Limited-time offer","每日":"Daily","云朵币":"Cloud coins","放纸条次数增加":"More note drops","性别筛选":"Gender filter","城市筛选":"City filter","曝光增加":"More exposure","开通会员":"Subscribe","开通会员即同意":"By subscribing, you agree to","《会员服务协议》":"Membership Service Agreement","会员付费功能尚未开放，当前仅展示套餐方案。":"Membership payments are not available yet. Plans are for preview only.","会员服务协议":"Membership Service Agreement","会员权益":"Membership benefits","月度会员":"Monthly membership","季度会员":"Quarterly membership","年度会员":"Annual membership","海洋小屋":"Ocean home","海洋等级":"Ocean level","成长经验":"Experience","贝壳余额":"Shell balance","我的海洋小屋":"My ocean home","海洋伙伴":"Ocean companions","今日海洋任务":"Today's ocean tasks","每日签到":"Daily check-in","签到领取奖励":"Claim reward","贝壳装扮铺":"Shell shop","心情动态":"Community posts","发布动态":"Publish post","发现":"Discover","关注":"Following","海边来信":"Letters from the sea","真实用户分享":"Shared by members","海面主题":"Ocean themes","头像装扮":"Avatar frames","漂流瓶与聊天主题":"Bottle and chat themes","个人主页背景":"Profile background","保存我的外观":"Save appearance","海洋足迹":"Ocean journey","航海纪念章":"Ocean badges","账号 ID":"Account ID","性别":"Gender","未设置":"Not set","性取向":"Orientation","未公开":"Not shared","最近的动态":"Recent activity","暂时没有公开动态":"No public activity yet","编辑我的资料":"Edit my profile","举报用户":"Report user","拉黑用户":"Block user","遇见一位漂流者":"You met a fellow drifter","再找一位":"Find another","申请加好友":"Add friend","提交举报":"Submit report","取消":"Cancel","知道了":"Got it","写一封回信":"Write a reply","发送消息":"Send message","投递一只漂流瓶":"Send a bottle","心情分类":"Mood","投进大海":"Send into the sea","提示":"Notice","关于漂流瓶":"About Boyan Bottle","刷新云端数据":"Refresh cloud data","设置":"Settings","语言设置":"Language","选择你使用的界面语言":"Choose your display language","简体中文":"Simplified Chinese","繁體中文":"Traditional Chinese"},"zh-TW":{"投递漂流瓶":"投遞漂流瓶","每一段心事，都值得被听见":"每一段心事，都值得被聽見","珍藏温暖话语":"珍藏溫暖話語","海上来信":"海上來信","查看回复消息":"查看回覆訊息","遇见新故事":"遇見新故事","心动匹配":"心動配對","寻找频率相近的人":"尋找頻率相近的人","开始匹配":"開始配對","朋友来信":"朋友來信","和认识的人保持联系":"和認識的人保持聯繫","分享这片海":"分享這片海","邀请朋友一起加入":"邀請朋友一起加入","给今天选一种心情":"為今天選一種心情","轻轻点一下":"輕輕點一下","想要温暖":"想要溫暖","想说心事":"想說心事","随便逛逛":"隨意逛逛","海上故事":"海上故事","探索更多":"探索更多","发现故事":"發現故事","故事分类":"故事分類","选择一种心情":"選擇一種心情","全部推荐":"全部推薦","温暖":"溫暖","刷新消息":"重新整理訊息","搜索好友昵称或聊天内容":"搜尋好友暱稱或聊天內容","登录 / 注册":"登入 / 註冊","编辑资料":"編輯資料","个性外观":"個人外觀","海洋收藏馆":"海洋收藏館","海洋成长中心":"海洋成長中心","心情动态广场":"心情動態廣場","互动通知":"互動通知","邀请好友":"邀請好友","云朵岛会员":"云朵岛會員","好友与好友申请":"好友與好友申請","退出登录":"登出","输入对方的好友 ID，发送好友申请。":"輸入對方的好友 ID，傳送好友申請。","搜索好友 ID":"搜尋好友 ID","搜索":"搜尋","复制":"複製","好友申请":"好友申請","我的好友":"我的好友","头像":"頭像","昵称":"暱稱","个性签名":"個性簽名","选择性别":"選擇性別","仅可选择一次，提交后不可修改":"僅可選擇一次，提交後不可修改","女生":"女生","男生":"男生","选择性取向（选填）":"選擇性傾向（選填）","暂不选择":"暫不選擇","异性恋":"異性戀","同性恋":"同性戀","双性恋":"雙性戀","泛性恋":"泛性戀","无性恋":"無性戀","不愿透露":"不願透露","保存资料":"儲存資料","漂流瓶详情":"漂流瓶詳情","给瓶子主人写信":"寫信給瓶子主人","欢迎回来":"歡迎回來","没有账号？立即注册":"沒有帳號？立即註冊","邮箱":"電子郵件","密码":"密碼","手机号":"手機號碼","发送验证码":"傳送驗證碼","设置昵称":"設定暱稱","验证并登录":"驗證並登入","重新发送":"重新傳送","验证邮箱并完成注册":"驗證電子郵件並完成註冊","使用密码登录":"使用密碼登入","忘记密码？通过邮箱重置":"忘記密碼？透過電子郵件重設","会员权益":"會員權益","月度会员":"月度會員","季度会员":"季度會員","年度会员":"年度會員","海洋小屋":"海洋小屋","海洋等级":"海洋等級","成长经验":"成長經驗","贝壳余额":"貝殼餘額","我的海洋小屋":"我的海洋小屋","海洋伙伴":"海洋夥伴","今日海洋任务":"今日海洋任務","每日签到":"每日簽到","签到领取奖励":"簽到領取獎勵","贝壳装扮铺":"貝殼裝扮舖","心情动态":"心情動態","发布动态":"發布動態","发现":"發現","关注":"追蹤","海边来信":"海邊來信","真实用户分享":"真實使用者分享","海面主题":"海面主題","头像装扮":"頭像裝扮","漂流瓶与聊天主题":"漂流瓶與聊天主題","个人主页背景":"個人頁背景","保存我的外观":"儲存我的外觀","海洋足迹":"海洋足跡","航海纪念章":"航海紀念章","账号 ID":"帳號 ID","性别":"性別","未设置":"未設定","性取向":"性傾向","未公开":"未公開","最近的动态":"最近的動態","暂时没有公开动态":"暫時沒有公開動態","编辑我的资料":"編輯我的資料","举报用户":"檢舉使用者","拉黑用户":"封鎖使用者","再找一位":"再找一位","申请加好友":"申請加好友","提交举报":"提交檢舉","取消":"取消","写一封回信":"寫一封回信","发送消息":"傳送訊息","投递一只漂流瓶":"投遞一只漂流瓶","心情分类":"心情分類","投进大海":"投入大海","关于漂流瓶":"關於漂流瓶","刷新云端数据":"重新整理雲端資料","设置":"設定","语言设置":"語言設定","选择你使用的界面语言":"選擇你使用的介面語言","简体中文":"簡體中文","语言选择会自动保存，并在下次打开时继续使用。":"語言選擇會自動儲存，下次開啟時繼續使用。"}};
 function translateDocument(lang){
  const dict=uiTranslations[lang]||{};
  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
