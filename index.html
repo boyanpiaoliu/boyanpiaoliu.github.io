@@ -3,8 +3,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#c8b0f0">
+<meta name="description" content="云朵岛：漂流瓶、好友私信、社区分享与海洋收藏。把心事交给大海，在云朵岛遇见温柔。">
 <title>云朵岛</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2405,6 +2406,31 @@ img{max-width:100%}
 }
 #cloudNetworkBanner.is-offline{background:#6d6577}
 #cloudNetworkBanner[hidden]{display:none!important}
+
+
+/* 全站体验升级：可访问性、触控反馈与移动端性能 */
+:root{
+ --island-lavender:#8b70b2;
+ --island-lavender-soft:#f1ebf8;
+ --island-lavender-line:#e7deef;
+ --island-focus:rgba(139,112,178,.32);
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,[role="button"],a,input,textarea,select{-webkit-tap-highlight-color:transparent}
+button:focus-visible,[role="button"]:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{
+ outline:3px solid var(--island-focus);outline-offset:2px
+}
+button:not(:disabled){touch-action:manipulation}
+button:disabled{cursor:not-allowed;opacity:.58;filter:saturate(.72)}
+button:not(:disabled){transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
+button:not(:disabled):active{transform:scale(.975);filter:brightness(.98)}
+img{max-width:100%;height:auto}
+::selection{background:#e7dcf3;color:#49365f}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto!important}
+ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+@media(hover:hover) and (pointer:fine){button:not(:disabled):hover{filter:brightness(.985)}}
 
 </style>
 </head>
@@ -4876,6 +4902,28 @@ function renderOceanCollection(){
  document.body.dataset.oceanTheme=theme;
  document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b.dataset.oceanTheme===theme));
 }
+// 图片延迟解码：减少长列表和非首屏图片的初始加载压力
+function prepareLazyImages(root=document){
+ const images=root.querySelectorAll?root.querySelectorAll('img'):[];
+ images.forEach(img=>{
+  if(!img.hasAttribute('loading'))img.loading='lazy';
+  if(!img.hasAttribute('decoding'))img.decoding='async';
+ });
+}
+prepareLazyImages();
+if('MutationObserver' in window){
+ const imageObserver=new MutationObserver(records=>{
+  records.forEach(record=>record.addedNodes.forEach(node=>{
+   if(node.nodeType!==1)return;
+   if(node.tagName==='IMG'){
+    if(!node.hasAttribute('loading'))node.loading='lazy';
+    if(!node.hasAttribute('decoding'))node.decoding='async';
+   }else prepareLazyImages(node);
+  }));
+ });
+ imageObserver.observe(document.body,{childList:true,subtree:true});
+}
+
 // 稳定性增强：网络恢复、运行时异常与启动失败兜底
 let networkReconnectPromise=null;
 let lastRuntimeNoticeAt=0;
