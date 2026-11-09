@@ -1129,7 +1129,7 @@ img,video{max-width:100%;height:auto}
 body{background:#fff!important;color:#171717!important}
 main{padding:0 0 94px!important}
 .page{display:none!important;padding:0!important}
-.page.active#messages,.page.active#profile,.page.active#editProfile{display:block!important}
+.page.active{display:block!important}
 #mainNav.two-page-nav{position:fixed!important;left:0;right:0;bottom:0;height:88px!important;padding:10px 8% calc(10px + env(safe-area-inset-bottom))!important;display:flex!important;justify-content:space-around!important;align-items:center!important;background:#fff!important;border-top:1px solid #eee!important;z-index:999!important;box-shadow:none!important}
 .two-page-nav .navbtn{flex:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;border:0!important;background:transparent!important;color:#999!important;font-size:14px!important}
 .two-page-nav .navbtn.active{color:#c4afe2!important}
@@ -2396,6 +2396,16 @@ img{max-width:100%}
  #membership.page.active{padding-left:12px!important;padding-right:12px!important}
 }
 
+
+/* 稳定性增强：网络状态提示 */
+#cloudNetworkBanner{
+ position:fixed;z-index:10050;left:16px;right:16px;top:calc(8px + env(safe-area-inset-top));
+ padding:11px 14px;border-radius:13px;text-align:center;font-size:12px;line-height:1.45;
+ color:#fff;background:#8b75a9;box-shadow:0 6px 18px rgba(55,35,80,.16);
+}
+#cloudNetworkBanner.is-offline{background:#6d6577}
+#cloudNetworkBanner[hidden]{display:none!important}
+
 </style>
 </head>
 
@@ -2966,7 +2976,7 @@ img{max-width:100%}
 const SUPABASE_URL='https://zqbyltitcskpmhulfhib.supabase.co';
 const SUPABASE_KEY='sb_publishable_4kKbdlqKL5IojR1KUtbSzA_c95eKOUG';
 
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const db=window.supabase?.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}}):null;
 const $=id=>document.getElementById(id);
 
 let user=null;
@@ -3052,9 +3062,15 @@ async function shareInvite(){
 }
 
 function notify(title,body){
-$('modalTitle').textContent=title;
-$('modalBody').textContent=body;
-$('genericModal').classList.add('show');
+ const titleNode=$('modalTitle'),bodyNode=$('modalBody'),modal=$('genericModal');
+ if(titleNode&&bodyNode&&modal){
+  titleNode.textContent=title;
+  bodyNode.textContent=body;
+  modal.classList.add('show');
+  return;
+ }
+ console.warn('[云朵岛提示]',title,body);
+ if(typeof window.alert==='function')window.alert(String(title)+'\n'+String(body));
 }
 function closeGeneric(){$('genericModal').classList.remove('show')}
 window.closeGeneric=closeGeneric;
@@ -3102,8 +3118,28 @@ if(!value)return '';
 return new Date(value).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
 }
 function showError(error){
-console.error(error);
-notify('操作没有完成',error?.message||'请检查网络连接和数据库权限。');
+ console.error(error);
+ const raw=String(error?.message||error?.error_description||'');
+ const code=String(error?.code||'');
+ let message=raw||'请稍后重试。';
+ let title='操作没有完成';
+ if(/otp_expired|token has expired|expired or is invalid/i.test(raw+' '+code)){
+  title='验证码已过期';
+  message='验证码已失效或已使用，请重新发送验证码后再试。';
+ }else if(/invalid jwt|jwt expired|refresh token.*not found|session.*expired/i.test(raw+' '+code)){
+  title='登录状态需要更新';
+  message='登录凭证已失效，请重新登录后继续操作。';
+ }else if(/failed to fetch|networkerror|load failed|network request failed|offline/i.test(raw+' '+code)){
+  title='网络连接不稳定';
+  message='请检查网络连接。网络恢复后可以重新加载数据，再继续操作。';
+ }else if(error?.status===401){
+  title='登录状态已失效';
+  message='请重新登录后继续操作。';
+ }else if(error?.status===403){
+  title='当前操作暂不可用';
+  message='账号权限或验证码状态不符合要求，请检查后重试。';
+ }
+ notify(title,message);
 }
 function requireLogin(){
 if(user)return true;
@@ -3203,12 +3239,17 @@ if(error)throw error;
 messages=(data||[]).filter(m=>!blockedUserIds.includes(m.sender_id)&&!blockedUserIds.includes(m.receiver_id));
 }
 async function refreshAll(silent=false){
-try{
-await loadBottles();
-await loadFavorites();
-await loadMessages();
-renderAll();
-}catch(e){if(silent)console.error('启动数据同步失败：',e);else showError(e)}
+ const failures=[];
+ try{await loadBottles()}catch(e){failures.push(e)}
+ const results=await Promise.allSettled([loadFavorites(),loadMessages()]);
+ results.forEach(result=>{if(result.status==='rejected')failures.push(result.reason)});
+ try{renderAll()}catch(renderError){failures.push(renderError)}
+ if(failures.length){
+  if(silent)console.warn('部分云端数据暂时无法同步：',failures);
+  else showError(failures[0]);
+  return false;
+ }
+ return true;
 }
 function renderAll(){
 renderList('homeFeed',[...bottles.filter(b=>b.is_public),...demoBottles].slice(0,3),'海面暂时很安静，写下第一只漂流瓶吧。');
@@ -3698,6 +3739,11 @@ async function submitCloudComposer(){
   if(!requireLogin())return;
   const content=$('cloudComposeText').value.trim();
   if(!content){showCloudNotice('先写下一段想分享的话。');return}
+  const submitKey='cloud-bottle:'+user.id+':'+content;
+  if(inFlightSubmissions.has(submitKey))return;
+  inFlightSubmissions.add(submitKey);
+  const button=document.querySelector('#cloudComposePanel .cloud-compose-send');
+  if(button){button.disabled=true;button.textContent='正在放入…'}
   try{
     const {error}=await db.from('bottles').insert({
       user_id:user.id,
@@ -3711,6 +3757,10 @@ async function submitCloudComposer(){
     showCloudNotice('已放入大海，等待远方的回应。');
     await refreshAll(true);
   }catch(e){showError(e)}
+  finally{
+    inFlightSubmissions.delete(submitKey);
+    if(button){button.disabled=false;button.textContent='放入大海'}
+  }
 }
 
 // 投递
@@ -3718,19 +3768,30 @@ async function submitBottle(){
 if(!requireLogin())return;
 const content=$('bottleText').value.trim();
 if(!content){notify('还没有写内容','先写下一段心情。');return}
+const isPublic=$('isPublic').checked;
+const mood=$('bottleMood').value;
+const submitKey='bottle:'+user.id+':'+content+':'+isPublic+':'+mood;
+if(inFlightSubmissions.has(submitKey))return;
+inFlightSubmissions.add(submitKey);
+const button=document.querySelector('#writeModal [data-action="submitBottle"]');
+if(button){button.disabled=true;button.textContent='投递中…'}
 try{
 const {error}=await db.from('bottles').insert({
 user_id:user.id,
 content,
-is_public:$('isPublic').checked,
-mood:$('bottleMood').value
+is_public:isPublic,
+mood
 });
 if(error)throw error;
 $('bottleText').value='';
 $('writeModal').classList.remove('show');
-await refreshAll();
+await refreshAll(true);
 notify('投递成功','你的漂流瓶已经投进云端大海。');
 }catch(e){showError(e)}
+finally{
+inFlightSubmissions.delete(submitKey);
+if(button){button.disabled=false;button.textContent='投进大海'}
+}
 }
 
 // 随机捡瓶
@@ -4024,16 +4085,20 @@ notify('保存成功','昵称、头像和聊天气泡外观已同步到云端。
 
 // 登录状态
 async function initSession(){
+if(!db)throw new Error('云端服务组件暂时无法加载，请检查网络后刷新页面。');
 const {data,error}=await db.auth.getSession();
 if(error)throw error;
 user=data.session?.user||null;
-if(user){await loadProfile();const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}}
-else profile=null;
+if(user){
+ try{await loadProfile()}
+ catch(profileError){profile=null;console.warn('用户资料暂时无法同步，页面仍可继续使用：',profileError)}
+ const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');
+ if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}
+}else profile=null;
 syncProfile();
 await refreshAll(true);
-await refreshFriendRequestCount();
-try{await refreshCommunityNoticeBadge()}catch(e){console.warn('启动通知同步失败：',e)}
-try{setupRealtime()}catch(e){console.warn('实时连接暂不可用：',e)}
+await Promise.allSettled([refreshFriendRequestCount(),refreshCommunityNoticeBadge()]);
+try{await setupRealtime()}catch(e){console.warn('实时连接暂不可用：',e)}
 }
 async function logout(){
 if(!confirm('确定退出当前账号吗？'))return;
@@ -4219,24 +4284,36 @@ case'closeGeneric':closeGeneric();break;
 });
 
 // 实时监听登录状态
-db.auth.onAuthStateChange(async(event,session)=>{
-if(event==='PASSWORD_RECOVERY'){await completePasswordRecovery();return}
-if(event==='SIGNED_IN'||event==='SIGNED_OUT'){
-user=session?.user||null;
-try{
-if(user)await loadProfile();else profile=null;
-syncProfile();
-await refreshAll();
-await refreshFriendRequestCount();await refreshCommunityNoticeBadge();
-await setupRealtime();
-}catch(e){console.error(e)}
-}
+if(db)db.auth.onAuthStateChange((event,session)=>{
+ if(event==='PASSWORD_RECOVERY'){
+  queueMicrotask(()=>completePasswordRecovery().catch(showError));
+  return;
+ }
+ if(event==='TOKEN_REFRESHED'){
+  user=session?.user||user;
+  return;
+ }
+ if(event==='SIGNED_IN'||event==='SIGNED_OUT'){
+  user=session?.user||null;
+  queueMicrotask(async()=>{
+   try{
+    if(user){
+     try{await loadProfile()}catch(e){profile=null;console.warn('登录后资料同步失败：',e)}
+    }else profile=null;
+    syncProfile();
+    await refreshAll(true);
+    await Promise.allSettled([refreshFriendRequestCount(),refreshCommunityNoticeBadge()]);
+    await setupRealtime();
+   }catch(e){showError(e)}
+  });
+ }
 });
 
 
 // 实时同步：新消息、已读状态和好友申请无需手动刷新
 async function setupRealtime(){
- if(realtimeChannel){await db.removeChannel(realtimeChannel);realtimeChannel=null}
+ if(!db)return;
+ if(realtimeChannel){try{await db.removeChannel(realtimeChannel)}catch(e){console.warn('旧实时连接关闭失败：',e)}realtimeChannel=null}
  if(!user)return;
  const currentUserId=user.id;
  realtimeChannel=db.channel('boyan-live-'+currentUserId)
@@ -4266,7 +4343,7 @@ async function setupRealtime(){
   .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('实时连接暂不可用，页面切回时会自动同步')});
 }
 document.addEventListener('visibilitychange',async()=>{
- if(document.visibilityState!=='visible'||!user)return;
+ if(document.visibilityState!=='visible'||!user||!navigator.onLine)return;
  try{
   await loadBottles();await loadFavorites();await loadMessages();await refreshFriendRequestCount();await refreshCommunityNoticeBadge();
   if(activeChatPeer&&$('messageThread')?.style.display==='block')await openConversation(activeChatPeer);
@@ -4275,7 +4352,7 @@ document.addEventListener('visibilitychange',async()=>{
 });
 
 // 定时检查好友申请数量：不必先进入好友页面也能看到新申请
-setInterval(()=>{if(user)refreshFriendRequestCount()},20000);
+setInterval(()=>{if(user&&navigator.onLine)refreshFriendRequestCount()},20000);
 
 $('communityContent')?.addEventListener('input',e=>{$('communityCount').textContent=e.target.value.length+' / 500'});
 $('communityImageInput')?.addEventListener('change',e=>{$('communityImageName').textContent=e.target.files?.[0]?.name||'支持 JPG、PNG、WEBP，最大 5MB'});
@@ -4794,6 +4871,56 @@ function renderOceanCollection(){
  document.body.dataset.oceanTheme=theme;
  document.querySelectorAll('[data-ocean-theme]').forEach(b=>b.classList.toggle('selected',b.dataset.oceanTheme===theme));
 }
+// 稳定性增强：网络恢复、运行时异常与启动失败兜底
+let networkReconnectPromise=null;
+let lastRuntimeNoticeAt=0;
+function setCloudNetworkBanner(online,message){
+ let banner=$('cloudNetworkBanner');
+ if(!banner){
+  banner=document.createElement('div');
+  banner.id='cloudNetworkBanner';
+  banner.hidden=true;
+  document.body.append(banner);
+ }
+ banner.textContent=message;
+ banner.classList.toggle('is-offline',!online);
+ banner.hidden=false;
+ if(online){
+  clearTimeout(window.cloudNetworkBannerTimer);
+  window.cloudNetworkBannerTimer=setTimeout(()=>{banner.hidden=true},2600);
+ }
+}
+window.addEventListener('offline',()=>{
+ setCloudNetworkBanner(false,'网络连接已断开，恢复网络后会自动同步。');
+});
+window.addEventListener('online',()=>{
+ setCloudNetworkBanner(true,'网络已恢复，正在同步云端数据…');
+ if(!db||networkReconnectPromise)return;
+ networkReconnectPromise=(async()=>{
+  try{
+   await initSession();
+   setCloudNetworkBanner(true,'连接已恢复，数据同步完成。');
+  }catch(e){
+   showError(e);
+   setCloudNetworkBanner(false,'暂时无法同步，请稍后重试。');
+  }finally{networkReconnectPromise=null}
+ })();
+});
+function reportRuntimeIssue(error){
+ const now=Date.now();
+ if(now-lastRuntimeNoticeAt<5000)return;
+ lastRuntimeNoticeAt=now;
+ showError(error);
+}
+window.addEventListener('unhandledrejection',event=>{
+ console.error('未处理的异步错误：',event.reason);
+ reportRuntimeIssue(event.reason||new Error('请求暂时失败，请稍后重试。'));
+});
+window.addEventListener('error',event=>{
+ console.error('页面运行错误：',event.error||event.message);
+ if(event.error||event.message)reportRuntimeIssue(event.error||new Error('页面组件加载异常，请刷新页面重试。'));
+});
+
 // 启动
 (async()=>{
 try{
@@ -4801,7 +4928,10 @@ const savedLanguage=localStorage.getItem('boyan-language')||'zh-CN';
 applyLanguage(savedLanguage);
 document.getElementById('languageSelect')?.addEventListener('change',e=>setLanguage(e.target.value));
 await initSession();
-}catch(e){console.error('页面启动时的后台初始化失败：',e)}
+}catch(e){
+ console.error('页面启动时的后台初始化失败：',e);
+ showError(e);
+}
 })();
 </script>
 </body>
