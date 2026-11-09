@@ -2256,6 +2256,19 @@ img{max-width:100%}
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
+
+/* 我的笔记：发布后从 community_posts 加载本人记录 */
+#profile .my-notes-list{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+#profile .my-note-card{padding:15px 16px;border:1px solid #eee8f5;border-radius:18px;background:linear-gradient(145deg,#fff,#fcfaff);box-shadow:0 5px 16px rgba(83,60,111,.045)}
+#profile .my-note-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;color:#a18db9;font-size:11px}
+#profile .my-note-meta span{padding:4px 9px;border-radius:20px;background:#f3edf9;color:#8a70ac}
+#profile .my-note-content{margin:0;color:#51465f;font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+#profile .my-note-image{display:block;width:100%;max-height:280px;object-fit:cover;border-radius:12px;margin-top:12px}
+#profile .my-note-actions{display:flex;justify-content:flex-end;margin-top:10px}
+#profile .my-note-actions button{border:0;background:transparent;color:#a99bb7;font-size:11px;padding:6px 2px}
+#profile .my-notes-loading,#profile .my-notes-error{text-align:center;padding:24px 10px;color:#a99bb7;font-size:12px}
+#profile .notes-empty{min-height:260px}
+
 </style>
 </head>
 
@@ -2389,7 +2402,7 @@ img{max-width:100%}
 </div>
 <div class="two-page-coins"><div><strong id="permanentCoins">0　⊕</strong><span>永久云朵币</span></div><i></i><div><strong id="dailyCoins">0　⊕</strong><span>今日云朵币</span></div></div>
 </div>
-<div class="two-page-notes"><h2>我的笔记</h2><div class="notes-empty"><div class="notes-art" aria-hidden="true"><svg viewBox="0 0 64 48" role="img"><path d="M17 39h31a11 11 0 0 0 1-22 17 17 0 0 0-32-3A13 13 0 0 0 17 39Z"/></svg></div><span>～ 空空如也 ～</span></div></div>
+<div class="two-page-notes"><h2>我的笔记</h2><div id="myNotesList" class="my-notes-list"><div class="notes-empty"><div class="notes-art" aria-hidden="true"><svg viewBox="0 0 64 48" role="img"><path d="M17 39h31a11 11 0 0 0 1-22 17 17 0 0 0-32-3A13 13 0 0 0 17 39Z"/></svg></div><span>～ 空空如也 ～</span></div></div></div>
 <button class="two-page-add" type="button" onclick="openWriteNotePage()"><b>＋</b><span>发布</span></button>
 <div style="display:none">
 <button id="authButton" data-action="auth">登录 / 注册</button>
@@ -3833,7 +3846,7 @@ const nav=e.target.closest('[data-page]');
 if(nav){
 showPage(nav.dataset.page);
 if(nav.dataset.page==='messages'){await loadMessages();renderMessages()}
-if(nav.dataset.page==='profile'){await refreshFriendRequestCount()}
+if(nav.dataset.page==='profile'){await refreshFriendRequestCount();await loadMyNotes()}
 return;
 }
 const method=e.target.closest('[data-method]');
@@ -4091,6 +4104,51 @@ async function loadCommunity(){
  });
 }
 
+
+async function loadMyNotes(){
+ const list=$('myNotesList');
+ if(!list)return;
+ if(!user){
+  list.innerHTML='<div class="notes-empty"><div class="notes-art" aria-hidden="true">☁</div><span>登录后查看自己的笔记</span></div>';
+  return;
+ }
+ list.innerHTML='<div class="my-notes-loading">正在加载笔记…</div>';
+ const {data,error}=await db.from('community_posts')
+  .select('id,content,mood,image_url,created_at')
+  .eq('user_id',user.id)
+  .order('created_at',{ascending:false})
+  .limit(100);
+ if(error){
+  list.innerHTML='<div class="my-notes-error">笔记加载失败，请稍后下拉刷新。</div>';
+  console.error('loadMyNotes failed:',error);
+  return;
+ }
+ list.replaceChildren();
+ if(!data?.length){
+  const empty=document.createElement('div');empty.className='notes-empty';
+  const art=document.createElement('div');art.className='notes-art';art.setAttribute('aria-hidden','true');
+  art.innerHTML='<svg viewBox="0 0 64 48" role="img"><path d="M17 39h31a11 11 0 0 0 1-22 17 17 0 0 0-32-3A13 13 0 0 0 17 39Z"/></svg>';
+  const label=document.createElement('span');label.textContent='～ 空空如也 ～';
+  empty.append(art,label);list.append(empty);return;
+ }
+ data.forEach(post=>{
+  const card=document.createElement('article');card.className='my-note-card';
+  const meta=document.createElement('div');meta.className='my-note-meta';
+  const mood=document.createElement('span');mood.textContent=post.mood||'日常';
+  const date=document.createElement('time');date.textContent=dateText(post.created_at);
+  meta.append(mood,date);
+  const content=document.createElement('p');content.className='my-note-content';content.textContent=post.content||'';
+  card.append(meta,content);
+  if(post.image_url){
+   const img=document.createElement('img');img.className='my-note-image';img.src=post.image_url;img.alt='笔记图片';img.loading='lazy';card.append(img);
+  }
+  const actions=document.createElement('div');actions.className='my-note-actions';
+  const del=document.createElement('button');del.type='button';del.textContent='删除笔记';
+  del.addEventListener('click',()=>deleteCommunityPost(post.id));
+  actions.append(del);card.append(actions);list.append(card);
+ });
+}
+
 function openWriteNotePage(){
  const input=$('writeNoteContent');if(input)input.value='';
  const target=$('writeNote');
@@ -4165,7 +4223,7 @@ async function publishCommunity(){
  const {error}=await db.from('community_posts').insert({user_id:user.id,content,mood:$('communityMood').value,image_url});
  if(error){showError(error);return}
  $('communityContent').value='';$('communityImageInput').value='';$('communityImageName').textContent='支持 JPG、PNG、WEBP，最大 5MB';$('communityCount').textContent='0 / 500';
- await loadCommunity();if(currentPageId==='writeNote'){if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();showPage('profile',{replace:true});}notify('发布成功','你的心情已经漂到海上。');
+ await loadCommunity();await loadMyNotes();if(currentPageId==='writeNote'){if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();showPage('profile',{replace:true});}notify('发布成功','笔记已发布，并已显示在「我的笔记」中。');
 }
 const oceanShopItems=[
  {code:'frame_pearl',name:'珍珠光环',icon:'🫧',cost:30,desc:'清透珍珠头像框'},
@@ -4403,7 +4461,7 @@ async function toggleCommunityLike(postId,isLiked){
 async function deleteCommunityPost(postId){
  if(!confirm('确定删除这条动态吗？'))return;
  const {error}=await db.from('community_posts').delete().eq('id',postId).eq('user_id',user.id);
- if(error){showError(error);return}await loadCommunity();
+ if(error){showError(error);return}await loadCommunity();await loadMyNotes();
 }
 
 const languageText={
