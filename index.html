@@ -3205,7 +3205,7 @@ async function refreshAll(silent=false){
  try{await loadBottles()}catch(e){failures.push(e)}
  const results=await Promise.allSettled([loadFavorites(),loadMessages()]);
  results.forEach(result=>{if(result.status==='rejected')failures.push(result.reason)});
- try{renderAll()}catch(renderError){failures.push(renderError)}
+ try{await renderAll()}catch(renderError){failures.push(renderError)}
  if(failures.length){
   if(silent)console.warn('部分云端数据暂时无法同步：',failures);
   else showError(failures[0]);
@@ -3213,10 +3213,10 @@ async function refreshAll(silent=false){
  }
  return true;
 }
-function renderAll(){
+async function renderAll(){
 renderList('homeFeed',[...bottles.filter(b=>b.is_public),...demoBottles].slice(0,3),'海面暂时很安静，写下第一只漂流瓶吧。');
 renderDiscover();
-renderMessages();
+await renderMessages();
 renderStats();
 }
 function renderStats(){
