@@ -4692,8 +4692,8 @@ function translateDocument(lang){
   const source=node.__sourceText,key=source.trim();
   if(!key)return;
   const value=dict[key]||key;
-  const lead=(source.match(/^\\s*/)||[''])[0];
-  const tail=(source.match(/\\s*$/)||[''])[0];
+  const lead=(source.match(/^\s*/)||[''])[0];
+  const tail=(source.match(/\s*$/)||[''])[0];
   const next=lead+value+tail;
   if(node.nodeValue!==next)node.nodeValue=next;
  });
