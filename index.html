@@ -1108,9 +1108,11 @@ main{padding:0 0 94px!important}
 .two-page-nav .navbtn{flex:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;border:0!important;background:transparent!important;color:#999!important;font-size:14px!important}
 .two-page-nav .navbtn.active{color:#c4afe2!important}
 .two-page-nav .ico{font-size:26px!important;line-height:1.1!important}
-.two-page-message-head{height:74px;background:#cebde6;display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:white}
-.two-page-message-head strong{font-size:25px;letter-spacing:5px}
-.two-page-message-head button{border:0;background:none;color:white;font-size:18px}
+.two-page-message-head{height:74px;background:#cebde6;display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:white;position:relative}
+.two-page-message-head strong{font-size:25px;letter-spacing:5px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap}
+.two-page-message-head button{border:0;background:none;color:white;font-size:18px;position:relative;z-index:1;padding:8px 0}
+.two-page-message-head .message-task{min-width:42px;text-align:left}
+.two-page-message-head .message-filter{min-width:42px;text-align:right}
 .two-page-official{display:flex;gap:16px;align-items:center;padding:14px 18px;border-bottom:1px solid #eee;min-height:110px}
 .official-icon{width:64px;height:64px;border-radius:50%;background:#cebde6;color:#fff;display:grid;place-items:center;font-size:30px;flex:none}
 .official-copy{min-width:0;flex:1}.official-title{font-size:18px;color:#222}.official-title time{float:right;color:#bbb;font-size:13px}.official-copy p{font-size:14px;color:#aaa;margin:8px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2500,8 +2502,8 @@ img{max-width:100%;height:auto}
 
 <section class="page active" id="messages">
 <div class="two-page-message-head">
-
-<strong>会话</strong>
+<button type="button" class="message-task" onclick="notify('任务','任务功能正在规划中，敬请期待。')">任务</button>
+<strong>聊天</strong>
 <button type="button" class="message-filter" onclick="openBottleFilter()">筛选</button>
 </div>
 <div class="two-page-official">
