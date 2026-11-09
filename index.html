@@ -766,33 +766,6 @@ body[data-ocean-theme="sea"]{--bg:#f8f5fb;--blue:#7047aa;--blue2:#f2edf9}
 .notification-copy small{font-size:9px;color:#9baab3;display:block;margin-top:3px}
 .notification-dot{width:7px;height:7px;border-radius:50%;background:#bca5dd;flex:none}
 .notification-empty{padding:38px 12px;text-align:center;color:#9baab3;font-size:11px}
-/* 海洋成长中心 */
-.growth-hero{padding:23px 19px 18px;border-radius:24px;background:radial-gradient(circle at 80% 8%,rgba(255,255,255,.8),transparent 29%),linear-gradient(145deg,#e4f4f5,#e7e0f2 58%,#eeebf2);text-align:center;color:#6d5c84;margin:8px 0 13px;overflow:hidden}
-.growth-orb{width:54px;height:54px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:rgba(255,255,255,.7);box-shadow:0 7px 20px rgba(101,148,166,.12)}
-.growth-eyebrow,.growth-kicker{font-size:9px;letter-spacing:2px;color:#9d8eb1;font-weight:750}
-.growth-hero h2{font-size:17px;margin:8px 0 5px;color:#5f5075}
-.growth-hero>p{font-size:10px;color:#998aad;margin:0}
-.growth-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:19px 0 14px}
-.growth-stats>div{padding:10px 4px;border-radius:13px;background:rgba(255,255,255,.55)}
-.growth-stats strong{display:block;font-size:17px;color:#715f8a}.growth-stats small{display:block;font-size:9px;color:#9e8fb2;margin-top:3px}
-.growth-progress{height:6px;background:rgba(255,255,255,.7);border-radius:9px;overflow:hidden;margin:0 2px 7px}
-.growth-progress i{display:block;width:0;height:100%;border-radius:9px;background:linear-gradient(90deg,#ad99ca,#c0afd7);transition:width .3s}
-.growth-hero>small{font-size:9px;color:#9283a8}
-.growth-checkin{padding:16px!important;margin-bottom:19px}
-.growth-checkin>div{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.growth-checkin h3,.growth-shop-head h3{font-size:14px;color:#6c5b83;margin:4px 0}
-.growth-checkin p{font-size:10px;color:#a497b6;margin:0}
-.growth-reward{font-size:10px;color:#8d7da4;background:#eff8f5;padding:7px 9px;border-radius:12px;white-space:nowrap}
-.growth-checkin .btn{width:100%;margin-top:13px}
-.growth-shop-head{display:flex;justify-content:space-between;align-items:end;margin:0 2px 10px}
-.growth-shop-head small{font-size:9px;color:#a497b6}
-.growth-shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.growth-shop-item{border:1px solid #efedf2;border-radius:17px;background:#fff;padding:13px 10px;text-align:center}
-.growth-shop-art{height:61px;display:grid;place-items:center;font-size:30px;border-radius:12px;background:linear-gradient(145deg,#f6f3f9,#f4f2f7);margin-bottom:9px}
-.growth-shop-item strong{display:block;font-size:11px;color:#72608b}.growth-shop-item small{display:block;font-size:9px;color:#a497b6;margin:5px 0 9px}
-.growth-shop-item button{border:0;border-radius:14px;padding:7px 10px;background:#f2eff6;color:#7d689b;font-size:10px;width:100%}
-.growth-shop-item button:disabled{background:#f1f3f4;color:#9aa6ac}
-.growth-footnote{font-size:9px;color:#a5b0b7;text-align:center;padding:16px 5px}
 /* 海洋伙伴与每日任务 */
 .pet-section{border:1px solid #ece9f0;border-radius:21px;padding:14px;background:linear-gradient(145deg,#fbfefe,#f6f3f9);margin:8px 0 18px}
 .pet-choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -2527,7 +2500,7 @@ img{max-width:100%;height:auto}
 
 <section class="page active" id="messages">
 <div class="two-page-message-head">
-<button type="button" class="message-task" aria-label="任务">任务</button>
+
 <strong>会话</strong>
 <button type="button" class="message-filter" onclick="openBottleFilter()">筛选</button>
 </div>
@@ -2787,55 +2760,6 @@ img{max-width:100%;height:auto}
   <div class="cottage-window">🌊</div><div class="cottage-floor"></div><div class="cottage-pet" id="visitCottagePet">🐬</div><div class="cottage-decor-layer" id="visitCottageDecor"></div>
  </div>
  <p class="cottage-visit-note">每一间小屋，都收藏着一份独特的海边心情。</p>
-</section><section class="page" id="growthCenter">
- <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>海洋成长中心</h2></div>
- <div class="growth-hero">
-  <div class="growth-orb">🐚</div><div class="growth-eyebrow">YOUR OCEAN JOURNEY</div>
-  <h2>每一次停留，都值得被記錄</h2><p>签到积累贝壳，成长解锁海边装扮。</p>
-  <div class="growth-stats"><div><strong id="growthLevel">Lv.1</strong><small>海洋等级</small></div><div><strong id="growthXp">0</strong><small>成长经验</small></div><div><strong id="growthShells">0</strong><small>贝壳余额</small></div></div>
-  <div class="growth-progress"><i id="growthProgressBar"></i></div><small id="growthProgressText">距离下一级还差 100 经验</small>
- </div>
- <div class="cottage-section">
- <div class="growth-shop-head"><div><span class="growth-kicker">MY LITTLE OCEAN HOME</span><h3>我的海洋小屋</h3></div><small>布置一处心灵港湾</small></div>
- <div class="cottage-room" id="cottageRoom">
-  <div class="cottage-sun">☀️</div><div class="cottage-bubbles">○　·　○　　·</div>
-  <div class="cottage-window">🌊</div><div class="cottage-floor"></div>
-  <div class="cottage-pet" id="cottagePet">🐬</div>
-  <div class="cottage-decor-layer" id="cottageDecor"></div>
- </div>
- <div class="cottage-actions" id="cottageActions">
-  <button data-action="decorateCottage" data-item="coral_plant">🪸 珊瑚盆栽</button>
-  <button data-action="decorateCottage" data-item="shell_lamp">🐚 贝壳灯</button>
-  <button data-action="decorateCottage" data-item="starfish_rug">⭐ 海星地毯</button>
-  <button data-action="decorateCottage" data-item="sea_window">🪟 海景窗</button>
-  <button data-action="decorateCottage" data-item="pearl_table">真珠小桌</button>
- </div>
- <div class="cottage-visitors-head"><strong>去朋友的小屋看看</strong><small>访问你关注的海洋伙伴</small></div>
- <div id="cottageFriends" class="cottage-friends"><div class="empty">正在寻找朋友的小屋…</div></div>
-</div>
-<div class="pet-section">
- <div class="growth-shop-head"><div><span class="growth-kicker">YOUR OCEAN FRIEND</span><h3>海洋伙伴</h3></div><small>陪你一起成长</small></div>
- <div id="petAdoption" class="pet-adoption">
-  <div class="pet-choice-grid">
-   <button data-pet-choice="dolphin"><span>🐬</span><b>小海豚</b><small>活泼友善</small></button>
-   <button data-pet-choice="turtle"><span>🐢</span><b>小海龟</b><small>安静温柔</small></button>
-   <button data-pet-choice="seal"><span>🦭</span><b>小海豹</b><small>软萌陪伴</small></button>
-  </div>
-  <input id="petNameInput" maxlength="12" placeholder="给海洋伙伴取个名字（最多12字）">
-  <button class="btn primary" data-action="adoptPet">领养我的海洋伙伴</button>
- </div>
- <div id="petOwned" class="pet-owned" style="display:none">
-  <div class="pet-scene"><span id="petEmoji">🐬</span><div><strong id="petName">小海星</strong><small id="petDescription">正在海里等你</small></div></div>
-  <div class="pet-progress"><div><span>亲密度</span><b id="petAffection">50 / 100</b></div><i><em id="petAffectionBar"></em></i><div><span>成长经验</span><b id="petXp">0 XP</b></div></div>
-  <button class="btn primary" data-action="feedPet">喂养伙伴 · 3 🐚</button>
- </div>
-</div>
-<div class="growth-shop-head"><div><span class="growth-kicker">DAILY QUESTS</span><h3>今日海洋任务</h3></div><small>每项完成可领取3贝壳+5 XP</small></div>
-<div id="oceanDailyTasks" class="ocean-daily-tasks"></div>
-<div class="growth-checkin card"><div><div><span class="growth-kicker">DAILY MOMENT</span><h3>每日签到</h3><p id="growthStreak">连续签到从今天开始</p></div><span class="growth-reward">+5 🐚　+10 XP</span></div><button class="btn primary" id="growthCheckinButton" data-action="claimDaily">签到领取奖励</button></div>
- <div class="growth-shop-head"><div><span class="growth-kicker">SHELL COLLECTION</span><h3>贝壳装扮铺</h3></div><small>签到积累贝壳兑换</small></div>
- <div class="growth-shop-grid" id="growthShop"></div>
- <div class="growth-footnote">贝壳和经验为站内虚拟成长值，不可提现、转让或兑换现金。</div>
 </section>
 <section class="page" id="notifications">
  <div class="page-head"><button class="back" data-action="backProfile">‹ 返回</button><h2>互动通知</h2><button class="community-refresh" data-action="loadNotifications">↻</button></div>
@@ -4171,9 +4095,6 @@ $('chatFlashInput').addEventListener('change',e=>{if(e.target.files?.[0])uploadC
 $('chatVideoInput').addEventListener('change',e=>{if(e.target.files?.[0])uploadChatMedia(messageReceiver||activeChatPeer,e.target.files[0],'video');e.target.value=''});
 
 document.addEventListener('click',async e=>{
-const taskButton=e.target.closest('.message-task');
-if(taskButton){if(requireLogin()){showPage('growthCenter');await loadGrowthCenter()}return;}
-
 const memberPlan=e.target.closest('[data-member-plan]');
 if(memberPlan){
  document.querySelectorAll('#membership [data-member-plan]').forEach(card=>{
@@ -4287,16 +4208,8 @@ case'pick':await pickBottle();break;
 case'submitBottle':await submitBottle();break;
 case'community':if(requireLogin()){activeCommunityFilter='all';document.querySelectorAll('[data-community-filter]').forEach(b=>b.classList.toggle('active',b.dataset.communityFilter==='all'));showPage('community');await loadCommunity()}break;
 case'notifications':if(requireLogin()){showPage('notifications');await loadNotifications()}break;
-case'growthCenter':if(requireLogin()){showPage('growthCenter');await loadGrowthCenter()}break;
 case'decorateCottage':await decorateCottage(a.dataset.item);break;
 case'visitCottage':await visitCottage(a.dataset.user);break;
-case'backGrowth':showPage('growthCenter');break;
-case'claimDaily':await claimDailyReward();break;
-case'adoptPet':await adoptOceanPet();break;
-case'feedPet':await feedOceanPet();break;
-case'claimOceanTask':await claimOceanTask(a.dataset.task);break;
-case'buyOceanItem':await buyOceanItem(a.dataset.item);break;
-case'useOceanItem':await useOceanItem(a.dataset.item);break;
 case'loadNotifications':await loadNotifications();break;
 case'loadCommunity':await loadCommunity();break;
 case'publishCommunity':await publishCommunity();break;
@@ -4596,64 +4509,7 @@ async function publishCommunity(){
   if(!published)publishButtons.forEach((button,index)=>{button.disabled=false;button.textContent=originalLabels[index]||'发布'});
  }
 }
-const oceanShopItems=[
- {code:'frame_pearl',name:'珍珠光环',icon:'🫧',cost:30,desc:'清透珍珠头像框'},
- {code:'frame_coral',name:'珊瑚花环',icon:'🪸',cost:50,desc:'海底珊瑚头像装饰'},
- {code:'frame_starlight',name:'星河环绕',icon:'✨',cost:80,desc:'星光闪烁头像框'},
- {code:'theme_sunset',name:'落日余晖',icon:'🌅',cost:60,desc:'温柔蜜桃色主页'},
- {code:'theme_starlight',name:'月光星海',icon:'🌙',cost:80,desc:'静谧梦幻紫色主页'},
- {code:'theme_island',name:'薄荷岛屿',icon:'🏝️',cost:60,desc:'清新薄荷绿色主页'},
- {code:'theme_blossom',name:'樱花微风',icon:'🌸',cost:60,desc:'柔和樱花粉主页'}
-];
-let selectedPetType='dolphin';
 const petMeta={dolphin:{emoji:'🐬',desc:'活泼友善的小海豚'},turtle:{emoji:'🐢',desc:'安静温柔的小海龟'},seal:{emoji:'🦭',desc:'软萌可爱的小海豹'}};
-function renderPet(pet){
- const emoji=pet?(petMeta[pet.pet_type]||petMeta.dolphin).emoji:'🐚';
- const ownPet=$('cottagePet');if(ownPet)ownPet.textContent=emoji;
- $('petAdoption').style.display=pet?'none':'block';$('petOwned').style.display=pet?'block':'none';
- if(!pet)return;
- const meta=petMeta[pet.pet_type]||petMeta.dolphin;
- $('petEmoji').textContent=meta.emoji;$('petName').textContent=pet.pet_name;$('petDescription').textContent=meta.desc+' · 正在陪伴你';
- $('petAffection').textContent=pet.affection+' / 100';$('petAffectionBar').style.width=pet.affection+'%';$('petXp').textContent=pet.pet_xp+' XP';
-}
-async function adoptOceanPet(){
- if(!requireLogin())return;
- const name=$('petNameInput').value.trim()||'小海星';
- const {data,error}=await db.rpc('adopt_ocean_pet',{p_pet_type:selectedPetType,p_pet_name:name});
- if(error){showError(error);return}
- notify('领养成功','你的海洋伙伴「'+data.pet_name+'」已经来到身边。');await loadGrowthCenter();
-}
-async function feedOceanPet(){
- if(!requireLogin())return;
- const {data,error}=await db.rpc('feed_ocean_pet');if(error){showError(error);return}
- const result=data?.[0];if(!result?.success)return;
- notify('喂养成功','伙伴亲密度提升了，成长经验 +5。');await loadGrowthCenter();
-}
-async function loadOceanDailyTasks(){
- const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
- const start=today+'T00:00:00+08:00',end=today+'T23:59:59.999+08:00';
- const [b,p,m,c]=await Promise.all([
-  db.from('bottles').select('id',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',start).lte('created_at',end),
-  db.from('community_posts').select('id',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',start).lte('created_at',end),
-  db.from('messages').select('id',{count:'exact',head:true}).eq('sender_id',user.id).eq('is_retracted',false).gte('created_at',start).lte('created_at',end),
-  db.from('ocean_task_claims').select('task_code').eq('user_id',user.id).eq('task_date',today)
- ]);
- for(const x of [b,p,m,c])if(x.error)throw x.error;
- const done=new Set((c.data||[]).map(x=>x.task_code));
- const tasks=[
-  {code:'send_bottle',icon:'🍾',title:'投递一只漂流瓶',desc:'把今天的心事交给海风',eligible:(b.count||0)>0},
-  {code:'post_moment',icon:'🌷',title:'分享一条动态',desc:'在动态广场记录生活',eligible:(p.count||0)>0},
-  {code:'send_message',icon:'💌',title:'发送一条消息',desc:'向朋友传递一句问候',eligible:(m.count||0)>0}
- ];
- const root=$('oceanDailyTasks');root.replaceChildren();
- tasks.forEach(t=>{
-  const row=document.createElement('div');row.className='ocean-task';
-  const icon=document.createElement('div');icon.className='ocean-task-icon';icon.textContent=t.icon;
-  const copy=document.createElement('div');copy.className='ocean-task-copy';const title=document.createElement('strong');title.textContent=t.title;const desc=document.createElement('small');desc.textContent=done.has(t.code)?'今日奖励已领取':t.eligible?'已完成 · 可领取 3 🐚 + 5 XP':'完成后可领取 3 🐚 + 5 XP';copy.append(title,desc);
-  const btn=document.createElement('button');btn.dataset.action='claimOceanTask';btn.dataset.task=t.code;btn.disabled=done.has(t.code)||!t.eligible;btn.textContent=done.has(t.code)?'已领取':t.eligible?'领取奖励':'去完成';
-  row.append(icon,copy,btn);root.append(row);
- });
-}
 const cottageDecorItems={coral_plant:{emoji:'🪸',name:'珊瑚盆栽'},shell_lamp:{emoji:'🐚',name:'贝壳灯'},starfish_rug:{emoji:'⭐',name:'海星地毯'},sea_window:{emoji:'🪟',name:'海景窗'},pearl_table:{emoji:'真珠小桌',name:'珍珠小桌'}};
 async function loadOceanCottage(ownerId,isOwn=false,targetPrefix=''){
  const [petRes,decorRes]=await Promise.all([
@@ -4701,76 +4557,6 @@ async function visitCottage(ownerId){
  const person=data?.[0];if(!person){notify('暂时无法访问','没有找到这位用户。');return}
  $('visitCottageTitle').textContent=(person.nickname||'海边朋友')+' 的海洋小屋';
  showPage('cottageVisit');await loadOceanCottage(ownerId,false,'visit');
-}
-async function loadGrowthCenter(){
- if(!requireLogin())return;
- const [petRes,walletRes,inventoryRes,checkinRes]=await Promise.all([
-  db.from('ocean_pets').select('*').eq('user_id',user.id).maybeSingle(),
-  db.from('ocean_wallets').select('shells,xp').eq('user_id',user.id).maybeSingle(),
-  db.from('ocean_inventory').select('item_code').eq('user_id',user.id),
-  db.from('ocean_checkins').select('checkin_date').eq('user_id',user.id).order('checkin_date',{ascending:false}).limit(35)
- ]);
- for(const x of [petRes,walletRes,inventoryRes,checkinRes])if(x.error)throw x.error;
- renderPet(petRes.data);await loadOceanCottage(user.id,true);await loadCottageFriends();await loadOceanDailyTasks();
- const wallet=walletRes.data||{shells:0,xp:0},owned=new Set((inventoryRes.data||[]).map(x=>x.item_code));
- const xp=wallet.xp||0,level=Math.floor(xp/100)+1,progress=xp%100;
- $('growthLevel').textContent='Lv.'+level;$('growthXp').textContent=xp;$('growthShells').textContent=wallet.shells||0;
- $('growthProgressBar').style.width=progress+'%';$('growthProgressText').textContent='距离下一级还差 '+(100-progress)+' 经验';
- const dates=(checkinRes.data||[]).map(x=>x.checkin_date);
- let streak=0;const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
- const [yy,mm,dd]=today.split('-').map(Number);let cursor=new Date(Date.UTC(yy,mm-1,dd));
- if(dates.includes(today)){}else cursor.setUTCDate(cursor.getUTCDate()-1);
- while(dates.includes(cursor.toISOString().slice(0,10))){streak++;cursor.setUTCDate(cursor.getUTCDate()-1)}
- $('growthStreak').textContent=streak?'已连续签到 '+streak+' 天，保持这份小小的坚持。':'今天还没有签到，领取你的第一份贝壳。';
- const checked=dates.includes(today),btn=$('growthCheckinButton');btn.disabled=checked;btn.textContent=checked?'今日已签到 ✓':'签到领取奖励';
- const shop=$('growthShop');shop.replaceChildren();
- oceanShopItems.forEach(item=>{
-  const card=document.createElement('div');card.className='growth-shop-item';
-  const art=document.createElement('div');art.className='growth-shop-art';art.textContent=item.icon;
-  const title=document.createElement('strong');title.textContent=item.name;
-  const desc=document.createElement('small');desc.textContent=item.desc+' · '+item.cost+' 🐚';
-  const buy=document.createElement('button');buy.dataset.action='buyOceanItem';buy.dataset.item=item.code;
-  buy.textContent=owned.has(item.code)?'使用装扮':(wallet.shells||0)>=item.cost?'兑换':'贝壳不足';buy.disabled=(wallet.shells||0)<item.cost&&!owned.has(item.code);if(owned.has(item.code))buy.dataset.action='useOceanItem';
-  card.append(art,title,desc,buy);shop.append(card);
- });
-}
-async function claimOceanTask(code){
- if(!requireLogin())return;
- const {data,error}=await db.rpc('claim_ocean_daily_task',{p_task_code:code});
- if(error){showError(error);return}
- if(!data?.[0]?.success){notify('奖励已领取','每项每日任务只能领取一次。');return}
- notify('任务奖励到账','获得 3 枚贝壳和 5 点经验。');await loadGrowthCenter();
-}
-async function claimDailyReward(){
- if(!requireLogin())return;
- const {data,error}=await db.rpc('claim_ocean_daily_reward');if(error){showError(error);return}
- const result=data?.[0];if(!result){notify('签到未完成','请稍后重试。');return}
- await loadGrowthCenter();
- notify(result.success?'签到成功':'今天已经签到过了',result.success?'获得 5 枚贝壳和 10 点经验，继续积累你的海洋旅程。':'每日奖励每天只能领取一次。');
-}
-async function useOceanItem(code){
- if(!requireLogin())return;
- const owned=await db.from('ocean_inventory').select('item_code').eq('user_id',user.id).eq('item_code',code).maybeSingle();
- if(owned.error){showError(owned.error);return}if(!owned.data){notify('尚未拥有','请先使用贝壳兑换这件装扮。');return}
- if(code.startsWith('theme_')){
-  const theme=code.replace('theme_','');
-  const {error}=await db.rpc('set_my_profile_theme',{p_theme:theme});
-  if(error){showError(error);return}
-  if(profile)profile.profile_theme=theme;
-  applyProfileTheme();
- }else{
-  const frameMap={frame_pearl:'pearl',frame_coral:'mint',frame_starlight:'starlight'};
-  localStorage.setItem('boyan-avatar-frame',frameMap[code]||'none');applyAvatarFrame();
- }
- notify('装扮已启用','这套装扮已应用到你的主页。');
-}
-async function buyOceanItem(code){
- if(!requireLogin())return;
- const item=oceanShopItems.find(x=>x.code===code);if(!item)return;
- if(!confirm('确定花费 '+item.cost+' 枚贝壳兑换「'+item.name+'」吗？'))return;
- const {data,error}=await db.rpc('buy_ocean_item',{p_item_code:code});if(error){showError(error);return}
- if(!data?.[0]?.success){notify('暂时无法兑换','你已经拥有这件装扮，或贝壳余额不足。');return}
- await loadGrowthCenter();notify('兑换成功','「'+item.name+'」已加入你的装扮库存。');
 }
 async function toggleFollow(targetId,isFollowing){
  if(!user){openAuth();return}
@@ -4855,7 +4641,7 @@ const languageMap={
  '首页':'home','发现':'discover','消息':'messages','我的':'profile','设置':'settings','返回':'back','投递漂流瓶':'write','收取漂流瓶':'pick','我的收藏':'favorites','海上来信':'mail','云朵岛会员':'member','退出登录':'logout','取消':'cancel','发送消息':'send','保存我的外观':'save'
 };
 
-const uiTranslations={"en":{"心事停泊，偶然被看见":"A quiet place for thoughts","投递漂流瓶":"Send a bottle","收取漂流瓶":"Pick up a bottle","每一段心事，都值得被听见":"Every story deserves to be heard","我的收藏":"My favorites","珍藏温暖话语":"Save warm words","海上来信":"Letters from the sea","查看回复消息":"View replies","遇见新故事":"Discover stories","看看陌生人的心情":"Read someone's thoughts","心动匹配":"Heart match","寻找频率相近的人":"Meet like-minded people","开始匹配":"Start matching","朋友来信":"Friends' messages","和认识的人保持联系":"Keep in touch","分享这片海":"Share the sea","邀请朋友一起加入":"Invite friends","给今天选一种心情":"Choose today's mood","轻轻点一下":"Tap to choose","想要温暖":"Need warmth","想说心事":"Have something to share","随便逛逛":"Just browsing","海上故事":"Stories at sea","探索更多":"Explore more","发现故事":"Discover stories","故事分类":"Story categories","选择一种心情":"Choose a mood","全部推荐":"Recommended","温暖":"Warm","心事":"Thoughts","正在漂流":"Drifting","刷新消息":"Refresh messages","搜索好友昵称或聊天内容":"Search names or messages","登录 / 注册":"Log in / Sign up","我的瓶子":"My bottles","收藏":"Favorites","编辑资料":"Edit profile","个性外观":"Appearance","海洋收藏馆":"Ocean collection","海洋成长中心":"Ocean growth","心情动态广场":"Community","互动通知":"Notifications","邀请好友":"Invite friends","云朵岛会员":"Membership","好友与好友申请":"Friends and requests","退出登录":"Log out","输入对方的好友 ID，发送好友申请。":"Enter a friend's ID to send a request.","搜索好友 ID":"Search friend ID","搜索":"Search","复制":"Copy","好友申请":"Friend requests","我的好友":"My friends","头像":"Avatar","昵称":"Nickname","个性签名":"Bio","选择性别":"Choose gender","女生":"Female","男生":"Male","选择性取向（选填）":"Orientation (optional)","暂不选择":"Prefer not to say","异性恋":"Straight","同性恋":"Gay / Lesbian","双性恋":"Bisexual","泛性恋":"Pansexual","无性恋":"Asexual","探索中":"Questioning","其他":"Other","不愿透露":"Prefer not to disclose","保存资料":"Save profile","漂流瓶详情":"Bottle details","给瓶子主人写信":"Write to the sender","欢迎回来":"Welcome back","没有账号？立即注册":"No account? Sign up","邮箱":"Email","密码":"Password","手机号":"Phone number","发送验证码":"Send code","设置昵称":"Set a nickname","好友邀请码（选填）":"Invite code (optional)","验证并登录":"Verify and log in","重新发送":"Resend","验证邮箱并完成注册":"Verify email and sign up","使用密码登录":"Sign in with password","忘记密码？通过邮箱重置":"Forgot password? Reset by email","复制邀请码":"Copy invite code","会员中心":"Membership Center","会员充值":"Membership plans","开通会员后可解锁多种特权":"Unlock exclusive privileges with VIP","永久VIP":"Lifetime VIP","3个月VIP":"3-month VIP","1个月VIP":"1-month VIP","限时优惠":"Limited-time offer","每日":"Daily","云朵币":"Cloud coins","放纸条次数增加":"More note drops","性别筛选":"Gender filter","城市筛选":"City filter","曝光增加":"More exposure","开通会员":"Subscribe","开通会员即同意":"By subscribing, you agree to","《会员服务协议》":"Membership Service Agreement","会员付费功能尚未开放，当前仅展示套餐方案。":"Membership payments are not available yet. Plans are for preview only.","会员服务协议":"Membership Service Agreement","会员权益":"Membership benefits","月度会员":"Monthly membership","季度会员":"Quarterly membership","年度会员":"Annual membership","海洋小屋":"Ocean home","海洋等级":"Ocean level","成长经验":"Experience","贝壳余额":"Shell balance","我的海洋小屋":"My ocean home","海洋伙伴":"Ocean companions","今日海洋任务":"Today's ocean tasks","每日签到":"Daily check-in","签到领取奖励":"Claim reward","贝壳装扮铺":"Shell shop","心情动态":"Community posts","发布动态":"Publish post","发现":"Discover","关注":"Following","海边来信":"Letters from the sea","真实用户分享":"Shared by members","海面主题":"Ocean themes","头像装扮":"Avatar frames","漂流瓶与聊天主题":"Bottle and chat themes","个人主页背景":"Profile background","保存我的外观":"Save appearance","海洋足迹":"Ocean journey","航海纪念章":"Ocean badges","账号 ID":"Account ID","性别":"Gender","未设置":"Not set","性取向":"Orientation","未公开":"Not shared","最近的动态":"Recent activity","暂时没有公开动态":"No public activity yet","编辑我的资料":"Edit my profile","举报用户":"Report user","拉黑用户":"Block user","遇见一位漂流者":"You met a fellow drifter","再找一位":"Find another","申请加好友":"Add friend","提交举报":"Submit report","取消":"Cancel","知道了":"Got it","写一封回信":"Write a reply","发送消息":"Send message","投递一只漂流瓶":"Send a bottle","心情分类":"Mood","投进大海":"Send into the sea","提示":"Notice","关于漂流瓶":"About Boyan Bottle","刷新云端数据":"Refresh cloud data","设置":"Settings","语言设置":"Language","选择你使用的界面语言":"Choose your display language","简体中文":"Simplified Chinese","繁體中文":"Traditional Chinese"},"zh-TW":{"投递漂流瓶":"投遞漂流瓶","每一段心事，都值得被听见":"每一段心事，都值得被聽見","珍藏温暖话语":"珍藏溫暖話語","海上来信":"海上來信","查看回复消息":"查看回覆訊息","遇见新故事":"遇見新故事","心动匹配":"心動配對","寻找频率相近的人":"尋找頻率相近的人","开始匹配":"開始配對","朋友来信":"朋友來信","和认识的人保持联系":"和認識的人保持聯繫","分享这片海":"分享這片海","邀请朋友一起加入":"邀請朋友一起加入","给今天选一种心情":"為今天選一種心情","轻轻点一下":"輕輕點一下","想要温暖":"想要溫暖","想说心事":"想說心事","随便逛逛":"隨意逛逛","海上故事":"海上故事","探索更多":"探索更多","发现故事":"發現故事","故事分类":"故事分類","选择一种心情":"選擇一種心情","全部推荐":"全部推薦","温暖":"溫暖","刷新消息":"重新整理訊息","搜索好友昵称或聊天内容":"搜尋好友暱稱或聊天內容","登录 / 注册":"登入 / 註冊","编辑资料":"編輯資料","个性外观":"個人外觀","海洋收藏馆":"海洋收藏館","海洋成长中心":"海洋成長中心","心情动态广场":"心情動態廣場","互动通知":"互動通知","邀请好友":"邀請好友","云朵岛会员":"云朵岛會員","好友与好友申请":"好友與好友申請","退出登录":"登出","输入对方的好友 ID，发送好友申请。":"輸入對方的好友 ID，傳送好友申請。","搜索好友 ID":"搜尋好友 ID","搜索":"搜尋","复制":"複製","好友申请":"好友申請","我的好友":"我的好友","头像":"頭像","昵称":"暱稱","个性签名":"個性簽名","选择性别":"選擇性別","仅可选择一次，提交后不可修改":"僅可選擇一次，提交後不可修改","女生":"女生","男生":"男生","选择性取向（选填）":"選擇性傾向（選填）","暂不选择":"暫不選擇","异性恋":"異性戀","同性恋":"同性戀","双性恋":"雙性戀","泛性恋":"泛性戀","无性恋":"無性戀","不愿透露":"不願透露","保存资料":"儲存資料","漂流瓶详情":"漂流瓶詳情","给瓶子主人写信":"寫信給瓶子主人","欢迎回来":"歡迎回來","没有账号？立即注册":"沒有帳號？立即註冊","邮箱":"電子郵件","密码":"密碼","手机号":"手機號碼","发送验证码":"傳送驗證碼","设置昵称":"設定暱稱","验证并登录":"驗證並登入","重新发送":"重新傳送","验证邮箱并完成注册":"驗證電子郵件並完成註冊","使用密码登录":"使用密碼登入","忘记密码？通过邮箱重置":"忘記密碼？透過電子郵件重設","会员权益":"會員權益","月度会员":"月度會員","季度会员":"季度會員","年度会员":"年度會員","海洋小屋":"海洋小屋","海洋等级":"海洋等級","成长经验":"成長經驗","贝壳余额":"貝殼餘額","我的海洋小屋":"我的海洋小屋","海洋伙伴":"海洋夥伴","今日海洋任务":"今日海洋任務","每日签到":"每日簽到","签到领取奖励":"簽到領取獎勵","贝壳装扮铺":"貝殼裝扮舖","心情动态":"心情動態","发布动态":"發布動態","发现":"發現","关注":"追蹤","海边来信":"海邊來信","真实用户分享":"真實使用者分享","海面主题":"海面主題","头像装扮":"頭像裝扮","漂流瓶与聊天主题":"漂流瓶與聊天主題","个人主页背景":"個人頁背景","保存我的外观":"儲存我的外觀","海洋足迹":"海洋足跡","航海纪念章":"航海紀念章","账号 ID":"帳號 ID","性别":"性別","未设置":"未設定","性取向":"性傾向","未公开":"未公開","最近的动态":"最近的動態","暂时没有公开动态":"暫時沒有公開動態","编辑我的资料":"編輯我的資料","举报用户":"檢舉使用者","拉黑用户":"封鎖使用者","再找一位":"再找一位","申请加好友":"申請加好友","提交举报":"提交檢舉","取消":"取消","写一封回信":"寫一封回信","发送消息":"傳送訊息","投递一只漂流瓶":"投遞一只漂流瓶","心情分类":"心情分類","投进大海":"投入大海","关于漂流瓶":"關於漂流瓶","刷新云端数据":"重新整理雲端資料","设置":"設定","语言设置":"語言設定","选择你使用的界面语言":"選擇你使用的介面語言","简体中文":"簡體中文","语言选择会自动保存，并在下次打开时继续使用。":"語言選擇會自動儲存，下次開啟時繼續使用。"}};
+const uiTranslations={"en":{"心事停泊，偶然被看见":"A quiet place for thoughts","投递漂流瓶":"Send a bottle","收取漂流瓶":"Pick up a bottle","每一段心事，都值得被听见":"Every story deserves to be heard","我的收藏":"My favorites","珍藏温暖话语":"Save warm words","海上来信":"Letters from the sea","查看回复消息":"View replies","遇见新故事":"Discover stories","看看陌生人的心情":"Read someone's thoughts","心动匹配":"Heart match","寻找频率相近的人":"Meet like-minded people","开始匹配":"Start matching","朋友来信":"Friends' messages","和认识的人保持联系":"Keep in touch","分享这片海":"Share the sea","邀请朋友一起加入":"Invite friends","给今天选一种心情":"Choose today's mood","轻轻点一下":"Tap to choose","想要温暖":"Need warmth","想说心事":"Have something to share","随便逛逛":"Just browsing","海上故事":"Stories at sea","探索更多":"Explore more","发现故事":"Discover stories","故事分类":"Story categories","选择一种心情":"Choose a mood","全部推荐":"Recommended","温暖":"Warm","心事":"Thoughts","正在漂流":"Drifting","刷新消息":"Refresh messages","搜索好友昵称或聊天内容":"Search names or messages","登录 / 注册":"Log in / Sign up","我的瓶子":"My bottles","收藏":"Favorites","编辑资料":"Edit profile","个性外观":"Appearance","海洋收藏馆":"Ocean collection","心情动态广场":"Community","互动通知":"Notifications","邀请好友":"Invite friends","云朵岛会员":"Membership","好友与好友申请":"Friends and requests","退出登录":"Log out","输入对方的好友 ID，发送好友申请。":"Enter a friend's ID to send a request.","搜索好友 ID":"Search friend ID","搜索":"Search","复制":"Copy","好友申请":"Friend requests","我的好友":"My friends","头像":"Avatar","昵称":"Nickname","个性签名":"Bio","选择性别":"Choose gender","女生":"Female","男生":"Male","选择性取向（选填）":"Orientation (optional)","暂不选择":"Prefer not to say","异性恋":"Straight","同性恋":"Gay / Lesbian","双性恋":"Bisexual","泛性恋":"Pansexual","无性恋":"Asexual","探索中":"Questioning","其他":"Other","不愿透露":"Prefer not to disclose","保存资料":"Save profile","漂流瓶详情":"Bottle details","给瓶子主人写信":"Write to the sender","欢迎回来":"Welcome back","没有账号？立即注册":"No account? Sign up","邮箱":"Email","密码":"Password","手机号":"Phone number","发送验证码":"Send code","设置昵称":"Set a nickname","好友邀请码（选填）":"Invite code (optional)","验证并登录":"Verify and log in","重新发送":"Resend","验证邮箱并完成注册":"Verify email and sign up","使用密码登录":"Sign in with password","忘记密码？通过邮箱重置":"Forgot password? Reset by email","复制邀请码":"Copy invite code","会员中心":"Membership Center","会员充值":"Membership plans","开通会员后可解锁多种特权":"Unlock exclusive privileges with VIP","永久VIP":"Lifetime VIP","3个月VIP":"3-month VIP","1个月VIP":"1-month VIP","限时优惠":"Limited-time offer","每日":"Daily","云朵币":"Cloud coins","放纸条次数增加":"More note drops","性别筛选":"Gender filter","城市筛选":"City filter","曝光增加":"More exposure","开通会员":"Subscribe","开通会员即同意":"By subscribing, you agree to","《会员服务协议》":"Membership Service Agreement","会员付费功能尚未开放，当前仅展示套餐方案。":"Membership payments are not available yet. Plans are for preview only.","会员服务协议":"Membership Service Agreement","会员权益":"Membership benefits","月度会员":"Monthly membership","季度会员":"Quarterly membership","年度会员":"Annual membership","海洋小屋":"Ocean home","海洋等级":"Ocean level","成长经验":"Experience","贝壳余额":"Shell balance","我的海洋小屋":"My ocean home","海洋伙伴":"Ocean companions","今日海洋任务":"Today's ocean tasks","每日签到":"Daily check-in","签到领取奖励":"Claim reward","贝壳装扮铺":"Shell shop","心情动态":"Community posts","发布动态":"Publish post","发现":"Discover","关注":"Following","海边来信":"Letters from the sea","真实用户分享":"Shared by members","海面主题":"Ocean themes","头像装扮":"Avatar frames","漂流瓶与聊天主题":"Bottle and chat themes","个人主页背景":"Profile background","保存我的外观":"Save appearance","海洋足迹":"Ocean journey","航海纪念章":"Ocean badges","账号 ID":"Account ID","性别":"Gender","未设置":"Not set","性取向":"Orientation","未公开":"Not shared","最近的动态":"Recent activity","暂时没有公开动态":"No public activity yet","编辑我的资料":"Edit my profile","举报用户":"Report user","拉黑用户":"Block user","遇见一位漂流者":"You met a fellow drifter","再找一位":"Find another","申请加好友":"Add friend","提交举报":"Submit report","取消":"Cancel","知道了":"Got it","写一封回信":"Write a reply","发送消息":"Send message","投递一只漂流瓶":"Send a bottle","心情分类":"Mood","投进大海":"Send into the sea","提示":"Notice","关于漂流瓶":"About Boyan Bottle","刷新云端数据":"Refresh cloud data","设置":"Settings","语言设置":"Language","选择你使用的界面语言":"Choose your display language","简体中文":"Simplified Chinese","繁體中文":"Traditional Chinese"},"zh-TW":{"投递漂流瓶":"投遞漂流瓶","每一段心事，都值得被听见":"每一段心事，都值得被聽見","珍藏温暖话语":"珍藏溫暖話語","海上来信":"海上來信","查看回复消息":"查看回覆訊息","遇见新故事":"遇見新故事","心动匹配":"心動配對","寻找频率相近的人":"尋找頻率相近的人","开始匹配":"開始配對","朋友来信":"朋友來信","和认识的人保持联系":"和認識的人保持聯繫","分享这片海":"分享這片海","邀请朋友一起加入":"邀請朋友一起加入","给今天选一种心情":"為今天選一種心情","轻轻点一下":"輕輕點一下","想要温暖":"想要溫暖","想说心事":"想說心事","随便逛逛":"隨意逛逛","海上故事":"海上故事","探索更多":"探索更多","发现故事":"發現故事","故事分类":"故事分類","选择一种心情":"選擇一種心情","全部推荐":"全部推薦","温暖":"溫暖","刷新消息":"重新整理訊息","搜索好友昵称或聊天内容":"搜尋好友暱稱或聊天內容","登录 / 注册":"登入 / 註冊","编辑资料":"編輯資料","个性外观":"個人外觀","海洋收藏馆":"海洋收藏館","心情动态广场":"心情動態廣場","互动通知":"互動通知","邀请好友":"邀請好友","云朵岛会员":"云朵岛會員","好友与好友申请":"好友與好友申請","退出登录":"登出","输入对方的好友 ID，发送好友申请。":"輸入對方的好友 ID，傳送好友申請。","搜索好友 ID":"搜尋好友 ID","搜索":"搜尋","复制":"複製","好友申请":"好友申請","我的好友":"我的好友","头像":"頭像","昵称":"暱稱","个性签名":"個性簽名","选择性别":"選擇性別","仅可选择一次，提交后不可修改":"僅可選擇一次，提交後不可修改","女生":"女生","男生":"男生","选择性取向（选填）":"選擇性傾向（選填）","暂不选择":"暫不選擇","异性恋":"異性戀","同性恋":"同性戀","双性恋":"雙性戀","泛性恋":"泛性戀","无性恋":"無性戀","不愿透露":"不願透露","保存资料":"儲存資料","漂流瓶详情":"漂流瓶詳情","给瓶子主人写信":"寫信給瓶子主人","欢迎回来":"歡迎回來","没有账号？立即注册":"沒有帳號？立即註冊","邮箱":"電子郵件","密码":"密碼","手机号":"手機號碼","发送验证码":"傳送驗證碼","设置昵称":"設定暱稱","验证并登录":"驗證並登入","重新发送":"重新傳送","验证邮箱并完成注册":"驗證電子郵件並完成註冊","使用密码登录":"使用密碼登入","忘记密码？通过邮箱重置":"忘記密碼？透過電子郵件重設","会员权益":"會員權益","月度会员":"月度會員","季度会员":"季度會員","年度会员":"年度會員","海洋小屋":"海洋小屋","海洋等级":"海洋等級","成长经验":"成長經驗","贝壳余额":"貝殼餘額","我的海洋小屋":"我的海洋小屋","海洋伙伴":"海洋夥伴","今日海洋任务":"今日海洋任務","每日签到":"每日簽到","签到领取奖励":"簽到領取獎勵","贝壳装扮铺":"貝殼裝扮舖","心情动态":"心情動態","发布动态":"發布動態","发现":"發現","关注":"追蹤","海边来信":"海邊來信","真实用户分享":"真實使用者分享","海面主题":"海面主題","头像装扮":"頭像裝扮","漂流瓶与聊天主题":"漂流瓶與聊天主題","个人主页背景":"個人頁背景","保存我的外观":"儲存我的外觀","海洋足迹":"海洋足跡","航海纪念章":"航海紀念章","账号 ID":"帳號 ID","性别":"性別","未设置":"未設定","性取向":"性傾向","未公开":"未公開","最近的动态":"最近的動態","暂时没有公开动态":"暫時沒有公開動態","编辑我的资料":"編輯我的資料","举报用户":"檢舉使用者","拉黑用户":"封鎖使用者","再找一位":"再找一位","申请加好友":"申請加好友","提交举报":"提交檢舉","取消":"取消","写一封回信":"寫一封回信","发送消息":"傳送訊息","投递一只漂流瓶":"投遞一只漂流瓶","心情分类":"心情分類","投进大海":"投入大海","关于漂流瓶":"關於漂流瓶","刷新云端数据":"重新整理雲端資料","设置":"設定","语言设置":"語言設定","选择你使用的界面语言":"選擇你使用的介面語言","简体中文":"簡體中文","语言选择会自动保存，并在下次打开时继续使用。":"語言選擇會自動儲存，下次開啟時繼續使用。"}};
 function translateDocument(lang){
  const dict=uiTranslations[lang]||{};
  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
