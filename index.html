@@ -4223,7 +4223,7 @@ async function publishCommunity(){
  const {error}=await db.from('community_posts').insert({user_id:user.id,content,mood:$('communityMood').value,image_url});
  if(error){showError(error);return}
  $('communityContent').value='';$('communityImageInput').value='';$('communityImageName').textContent='支持 JPG、PNG、WEBP，最大 5MB';$('communityCount').textContent='0 / 500';
- await loadCommunity();await loadMyNotes();if(currentPageId==='writeNote'){if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();showPage('profile',{replace:true});}notify('发布成功','笔记已发布，并已显示在「我的笔记」中。');
+ try{await loadCommunity()}catch(refreshError){console.error('community feed refresh failed after publish:',refreshError)}await loadMyNotes();if(currentPageId==='writeNote'){if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();showPage('profile',{replace:true});}notify('发布成功','笔记已发布，正在「我的笔记」中显示。');
 }
 const oceanShopItems=[
  {code:'frame_pearl',name:'珍珠光环',icon:'🫧',cost:30,desc:'清透珍珠头像框'},
