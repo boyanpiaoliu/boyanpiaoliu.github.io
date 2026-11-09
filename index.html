@@ -3103,7 +3103,7 @@ return false;
 // 用户资料
 async function loadProfile(){
 if(!user){profile=null;return}
-const columns='id,nickname,friend_code,avatar_url,created_at,gender,bubble_color,signature,profile_theme';
+const columns='id,nickname,friend_code,avatar_url,created_at,gender,bubble_color,signature,profile_theme,location';
 let {data,error}=await db.from('profiles').select(columns).eq('id',user.id).maybeSingle();
 if(error)throw error;
 if(!data){
