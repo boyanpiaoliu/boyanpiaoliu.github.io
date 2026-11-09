@@ -3164,7 +3164,7 @@ const av=$('avatar');if(av){av.replaceChildren();if(user&&profile?.avatar_url){c
 $('authButton').textContent=user?'已登录':'登录 / 注册';
 const primaryAction=$('profilePrimaryAction');if(primaryAction){primaryAction.textContent=user?'开通会员':'登录 / 注册';primaryAction.dataset.action=user?'membership':'auth';}
 $('logoutRow').style.display=user?'flex':'none';
-const locationLabel=$('profileIp');if(locationLabel)locationLabel.textContent=user?'所在地 · '+(profile?.location||'未设置'):'所在地 · 未设置';
+const locationLabel=$('profileIp');if(locationLabel)locationLabel.textContent=user?'IP归属地 · '+(profile?.location||'未设置'):'IP归属地 · 未设置';
 }
 
 // 加载数据
