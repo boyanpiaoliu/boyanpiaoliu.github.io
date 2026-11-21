@@ -3121,7 +3121,7 @@ async function loadProfile(){
  if(!user){profile=null;profileLoadError=null;return}
  const currentUser=user;
  const coreColumns='id,nickname,friend_code,avatar_url,created_at';
- const fullColumns=coreColumns+',gender,bubble_color,signature,profile_theme,location';
+ const fullColumns=coreColumns+',gender,bubble_color,signature,profile_theme';
  let result=await db.from('profiles').select(fullColumns).eq('id',currentUser.id).maybeSingle();
  // 若旧版 PostgREST schema cache 对新增字段未刷新，退回核心字段查询
  if(result.error){
