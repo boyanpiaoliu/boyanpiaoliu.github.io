@@ -3625,7 +3625,19 @@ async function startHeartMatch(){
   $('heartMatchName').textContent=person.nickname||'漂流者';
   $('heartMatchId').textContent='好友 ID：'+(person.friend_code||'');
   $('heartMatchSignature').textContent=person.signature||'也许你们会有共同话题';
-  $('heartMatchAdd').onclick=async()=>{const {error:e}=await db.from('friend_requests').insert({sender_id:user.id,receiver_id:person.id,status:'pending'});if(e){showError(e);return}$('heartMatchModal').style.display='none';notify('申请已发送','好友申请已送达，等待对方确认。')};
+  $('heartMatchAdd').onclick=async()=>{
+  const button=$('heartMatchAdd');button.disabled=true;
+  try{
+   const {data,error:requestError}=await db.rpc('send_friend_request',{p_receiver_id:person.id});
+   if(requestError)throw requestError;
+   const result=Array.isArray(data)?data[0]:data;
+   $('heartMatchModal').style.display='none';
+   if(result?.request_status==='accepted')notify('好友添加成功','你们已经成为好友，可以开始聊天。');
+   else notify('申请已发送','好友申请状态已同步。');
+   await refreshFriendRequestCount();
+  }catch(e){showError(e)}
+  finally{button.disabled=false}
+ };
   $('heartMatchModal').style.display='flex';
  }catch(e){showError(e)}
 }
@@ -3738,8 +3750,18 @@ async function searchFriend(){
 async function sendFriendRequest(receiver,button){
  button.disabled=true;
  try{
-  const {error}=await db.from('friend_requests').insert({sender_id:user.id,receiver_id:receiver,status:'pending'});if(error)throw error;
-  button.textContent='申请已发送';notify('申请已发送','好友申请已送达，等待对方确认。');
+  const {data,error}=await db.rpc('send_friend_request',{p_receiver_id:receiver});
+  if(error)throw error;
+  const result=Array.isArray(data)?data[0]:data;
+  if(result?.request_status==='accepted'){
+   button.textContent='已是好友';
+   notify('好友添加成功','你们已经成为好友，可以开始聊天。');
+   await loadFriends().catch(e=>console.warn('好友列表刷新失败：',e));
+  }else{
+   button.textContent='申请已发送';
+   notify(result?.success?'申请已发送':'申请已存在','好友申请状态已同步。');
+  }
+  await refreshFriendRequestCount();
  }catch(e){button.disabled=false;showError(e)}
 }
 async function respondFriendRequest(id,status){
@@ -3914,7 +3936,22 @@ async function pickBottle(inline=false){
    else notify('海面暂时很安静','目前没有新的公开漂流瓶。你可以稍后再来，或去「发现」看看大家分享的故事。');
    return;
   }
-  const bottle=eligible[Math.floor(Math.random()*eligible.length)];
+
+  let bottle=eligible[Math.floor(Math.random()*eligible.length)];
+  if(!bottle.is_demo){
+   const {data,error}=await db.rpc('pickup_bottle',{p_bottle_id:bottle.id});
+   if(error){
+    await loadBottles().catch(refreshError=>console.warn('刷新漂流瓶列表失败：',refreshError));
+    notify('这只云朵刚刚被捡走','海上的云朵变化很快，已为你更新列表，请再试一次。');
+    return;
+   }
+   const claimed=Array.isArray(data)?data[0]:data;
+   if(!claimed?.id)throw new Error('捡取结果暂时无法确认，请刷新后重试。');
+   bottle=claimed;
+   const index=bottles.findIndex(item=>item.id===bottle.id);
+   if(index>=0)bottles[index]=bottle;
+  }
+
   seen.add(String(bottle.id));
   try{localStorage.setItem(seenBottleKey,JSON.stringify([...seen].slice(-300)))}catch(_){}
   openDetail(bottle);
@@ -4519,7 +4556,7 @@ async function loadCommunity(){
   const commentArea=document.createElement('div');commentArea.className='community-comment-area';
   const commentList=document.createElement('div');commentList.className='community-comment-list';
   (commentMap[post.id]||[]).slice(-4).forEach(cm=>{const line=document.createElement('div');line.className='community-comment';const nm=document.createElement('strong');nm.textContent=(cm.profiles?.nickname||'海边的朋友')+'：';const txt=document.createElement('span');txt.textContent=cm.content;line.append(nm,txt);commentList.append(line)});
-  const compose=document.createElement('div');compose.className='community-comment-compose';const input=document.createElement('input');input.maxLength=500;input.placeholder='留下一句友善的回应';const send=document.createElement('button');send.textContent='评论';send.addEventListener('click',()=>submitCommunityComment(post.id,input));compose.append(input,send);commentArea.append(commentList,compose);
+  const compose=document.createElement('div');compose.className='community-comment-compose';const input=document.createElement('input');input.maxLength=300;input.placeholder='留下一句友善的回应（最多300字）';const send=document.createElement('button');send.textContent='评论';send.addEventListener('click',()=>submitCommunityComment(post.id,input));compose.append(input,send);commentArea.append(commentList,compose);
   card.append(actions,commentArea);feed.append(card);
  });
 }
@@ -4756,7 +4793,7 @@ async function submitCommunityComment(postId,input){
  if(!user){openAuth();return}
  const content=input.value.trim();
  if(!content){notify('评论不能为空','写下一句回应再发送。');return}
- if(content.length>500){notify('评论过长','评论最多500个字符。');return}
+ if(content.length>300){notify('评论过长','评论最多300个字符。');return}
  const lockKey='comment:'+user.id+':'+postId+':'+content;
  if(inFlightSubmissions.has(lockKey))return;
  inFlightSubmissions.add(lockKey);
