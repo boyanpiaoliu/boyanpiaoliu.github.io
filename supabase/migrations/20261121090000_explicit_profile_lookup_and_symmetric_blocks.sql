@@ -245,3 +245,46 @@ revoke all on function public.get_chat_profiles(uuid[]) from public,anon;
 grant execute on function public.get_chat_profiles(uuid[]) to authenticated;
 revoke all on function public.view_friend_profile(uuid) from public,anon;
 grant execute on function public.view_friend_profile(uuid) to authenticated;
+
+
+-- Wrap auth.uid() in scalar SELECTs so RLS evaluates it once per statement.
+drop policy if exists "查看漂流瓶" on public.bottles;
+create policy "查看漂流瓶" on public.bottles
+for select to authenticated
+using (
+  user_id=(select auth.uid())
+  or picked_up_by=(select auth.uid())
+  or (
+    is_public=true and status='floating'
+    and not exists(select 1 from public.user_blocks b
+      where (b.blocker_id=(select auth.uid()) and b.blocked_id=bottles.user_id)
+         or (b.blocker_id=bottles.user_id and b.blocked_id=(select auth.uid())))
+  )
+);
+
+drop policy if exists "查看自己的消息" on public.messages;
+create policy "查看自己的消息" on public.messages
+for select to authenticated
+using (
+  (sender_id=(select auth.uid()) or receiver_id=(select auth.uid()))
+  and not exists(select 1 from public.user_blocks b
+    where (b.blocker_id=(select auth.uid()) and b.blocked_id=
+      case when sender_id=(select auth.uid()) then receiver_id else sender_id end)
+       or (b.blocked_id=(select auth.uid()) and b.blocker_id=
+      case when sender_id=(select auth.uid()) then receiver_id else sender_id end))
+);
+
+drop policy if exists "Users can view blocks involving themselves" on public.user_blocks;
+create policy "Users can view blocks involving themselves" on public.user_blocks
+for select to authenticated
+using(blocker_id=(select auth.uid()) or blocked_id=(select auth.uid()));
+
+drop policy if exists "Users can create their own blocks" on public.user_blocks;
+create policy "Users can create their own blocks" on public.user_blocks
+for insert to authenticated
+with check(blocker_id=(select auth.uid()) and blocked_id<>(select auth.uid()));
+
+drop policy if exists "Users can remove their own blocks" on public.user_blocks;
+create policy "Users can remove their own blocks" on public.user_blocks
+for delete to authenticated
+using(blocker_id=(select auth.uid()));
