@@ -3189,7 +3189,8 @@ function renderOceanWallet(){
  }
 }
 async function loadOceanWallet(){
- if(!user){
+ const requestUserId=user?.id||null;
+ if(!requestUserId){
   oceanWalletState={shells:0,xp:0,todayEarned:0,claimed:false};
   renderOceanWallet();
   return;
@@ -3199,13 +3200,14 @@ async function loadOceanWallet(){
  }).formatToParts(new Date()).reduce((out,part)=>{out[part.type]=part.value;return out},{});
  const today=dateParts.year+'-'+dateParts.month+'-'+dateParts.day;
  const [walletRes,checkinRes,tasksRes]=await Promise.all([
-  db.from('ocean_wallets').select('shells,xp').eq('user_id',user.id).maybeSingle(),
-  db.from('ocean_checkins').select('reward_shells').eq('user_id',user.id).eq('checkin_date',today).maybeSingle(),
-  db.from('ocean_task_claims').select('reward_shells').eq('user_id',user.id).eq('task_date',today)
+  db.from('ocean_wallets').select('shells,xp').eq('user_id',requestUserId).maybeSingle(),
+  db.from('ocean_checkins').select('reward_shells').eq('user_id',requestUserId).eq('checkin_date',today).maybeSingle(),
+  db.from('ocean_task_claims').select('reward_shells').eq('user_id',requestUserId).eq('task_date',today)
  ]);
  if(walletRes.error)throw walletRes.error;
  if(checkinRes.error)throw checkinRes.error;
  if(tasksRes.error)throw tasksRes.error;
+ if(user?.id!==requestUserId)return;
  const taskEarned=(tasksRes.data||[]).reduce((sum,row)=>sum+Number(row.reward_shells||0),0);
  oceanWalletState={
   shells:Number(walletRes.data?.shells||0),
