@@ -3176,6 +3176,7 @@ async function showUserProfile(id){
 }
 let oceanWalletState={shells:0,xp:0,todayEarned:0,claimed:false};
 function renderOceanWallet(){
+ if(!user)oceanWalletState={shells:0,xp:0,todayEarned:0,claimed:false};
  const total=$('permanentCoins'),daily=$('dailyCoins');
  if(total)total.textContent=String(oceanWalletState.shells)+'　⊕';
  if(daily)daily.textContent=String(oceanWalletState.todayEarned)+'/20';
@@ -3193,9 +3194,10 @@ async function loadOceanWallet(){
   renderOceanWallet();
   return;
  }
- const today=new Intl.DateTimeFormat('en-CA',{
+ const dateParts=new Intl.DateTimeFormat('en-US',{
   timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'
- }).format(new Date());
+ }).formatToParts(new Date()).reduce((out,part)=>{out[part.type]=part.value;return out},{});
+ const today=dateParts.year+'-'+dateParts.month+'-'+dateParts.day;
  const [walletRes,checkinRes,tasksRes]=await Promise.all([
   db.from('ocean_wallets').select('shells,xp').eq('user_id',user.id).maybeSingle(),
   db.from('ocean_checkins').select('reward_shells').eq('user_id',user.id).eq('checkin_date',today).maybeSingle(),
