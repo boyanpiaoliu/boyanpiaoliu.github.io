@@ -3258,37 +3258,46 @@ const locationLabel=$('profileIp');if(locationLabel)locationLabel.textContent=us
 
 // 加载数据
 async function loadBottles(){
-if(user){
- const {data:blocks,error:blockError}=await db.from('user_blocks').select('blocker_id,blocked_id').or('blocker_id.eq.'+user.id+',blocked_id.eq.'+user.id);
+ const requestUserId=user?.id||null;
+ if(!requestUserId){blockedUserIds=[];bottles=[];return}
+ const {data:blocks,error:blockError}=await db.from('user_blocks').select('blocker_id,blocked_id').or('blocker_id.eq.'+requestUserId+',blocked_id.eq.'+requestUserId);
  if(blockError)throw blockError;
- blockedUserIds=(blocks||[]).map(x=>x.blocker_id===user.id?x.blocked_id:x.blocker_id);
-}else blockedUserIds=[];
-const {data,error}=await db.from('bottles')
-.select('id,user_id,content,created_at,is_public,mood,status,picked_up_by,picked_up_at')
-.order('created_at',{ascending:false}).limit(100);
-if(error)throw error;
-bottles=(data||[]).filter(b=>!blockedUserIds.includes(b.user_id));
+ if(user?.id!==requestUserId)return;
+ const blocked=(blocks||[]).map(x=>x.blocker_id===requestUserId?x.blocked_id:x.blocker_id);
+ const {data,error}=await db.from('bottles')
+ .select('id,user_id,content,created_at,is_public,mood,status,picked_up_by,picked_up_at')
+ .order('created_at',{ascending:false}).limit(100);
+ if(error)throw error;
+ if(user?.id!==requestUserId)return;
+ blockedUserIds=blocked;
+ bottles=(data||[]).filter(b=>!blocked.includes(b.user_id));
 }
 async function loadFavorites(){
-if(!user){favorites=[];return}
-const {data,error}=await db.from('favorites')
-.select('id,user_id,bottle_id,created_at').eq('user_id',user.id);
-if(error)throw error;
-favorites=data||[];
+ const requestUserId=user?.id||null;
+ if(!requestUserId){favorites=[];return}
+ const {data,error}=await db.from('favorites')
+ .select('id,user_id,bottle_id,created_at').eq('user_id',requestUserId);
+ if(error)throw error;
+ if(user?.id!==requestUserId)return;
+ favorites=data||[];
 }
 async function loadMessages(){
-if(!user){messages=[];return}
-const {data,error}=await db.from('messages')
-.select('*').or('sender_id.eq.'+user.id+',receiver_id.eq.'+user.id)
-.order('created_at',{ascending:false}).limit(100);
-if(error)throw error;
-messages=(data||[]).filter(m=>!blockedUserIds.includes(m.sender_id)&&!blockedUserIds.includes(m.receiver_id));
+ const requestUserId=user?.id||null;
+ if(!requestUserId){messages=[];return}
+ const {data,error}=await db.from('messages')
+ .select('*').or('sender_id.eq.'+requestUserId+',receiver_id.eq.'+requestUserId)
+ .order('created_at',{ascending:false}).limit(100);
+ if(error)throw error;
+ if(user?.id!==requestUserId)return;
+ messages=(data||[]).filter(m=>!blockedUserIds.includes(m.sender_id)&&!blockedUserIds.includes(m.receiver_id));
 }
 async function refreshAll(silent=false){
+ const requestUserId=user?.id||null;
  const failures=[];
  try{await loadBottles()}catch(e){failures.push(e)}
  const results=await Promise.allSettled([loadFavorites(),loadMessages()]);
  results.forEach(result=>{if(result.status==='rejected')failures.push(result.reason)});
+ if((user?.id||null)!==requestUserId)return false;
  try{await renderAll()}catch(renderError){failures.push(renderError)}
  if(failures.length){
   if(silent)console.warn('部分云端数据暂时无法同步：',failures);
