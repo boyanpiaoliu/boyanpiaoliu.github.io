@@ -1141,7 +1141,7 @@ main{padding:0 0 94px!important}
 .two-page-profile-identity small{font-size:13px;color:#555}
 .two-page-vip{border:0;border-radius:30px;background:#ac8ed5;color:white;padding:12px 18px;font-size:16px;white-space:nowrap}
 .two-page-coins{display:flex;justify-content:space-around;align-items:center;margin-top:42px;text-align:center}
-.two-page-coins div{display:flex;flex-direction:column;gap:7px}.two-page-coins strong{font-size:21px}.two-page-coins span{font-size:14px;color:#888}.two-page-coins i{height:35px;border-left:2px solid #222}
+.two-page-coins div{display:flex;flex-direction:column;gap:7px}.two-page-coins strong{font-size:21px}.two-page-coins span{font-size:14px;color:#888}.two-page-coins i{height:35px;border-left:2px solid #222}.two-page-coins .daily-coin-claim{display:flex;flex-direction:column;align-items:center;gap:7px;padding:0;border:0;background:transparent;color:inherit;cursor:pointer}.two-page-coins .daily-coin-claim strong{font-size:21px;color:#7047aa}.two-page-coins .daily-coin-claim span{font-size:12px;color:#88799b}.two-page-coins .daily-coin-claim:active{transform:scale(.97)}.two-page-coins .daily-coin-claim:disabled{opacity:.65}
 .two-page-notes{padding:20px 22px}.two-page-notes h2{font-size:21px;margin:0}
 .notes-empty{height:390px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;color:#999}
 .notes-art{font-size:100px;color:#ddd;font-weight:200;line-height:1}
@@ -2547,7 +2547,7 @@ img{max-width:100%;height:auto}
 <div class="two-page-profile-identity"><div class="profile-name-line"><h2 id="nickname">云朵岛</h2><span id="vipBadge" class="vip-badge" style="display:none">VIP</span></div><p class="sub profile-id" id="userId">尚未登录</p><small id="profileIp">IP · 未知</small></div>
 <button class="two-page-vip" id="profilePrimaryAction" type="button" data-action="membership">开通会员</button>
 </div>
-<div class="two-page-coins"><div><strong id="permanentCoins">0　⊕</strong><span>永久云朵币</span></div><i></i><div><strong id="dailyCoins">0　⊕</strong><span>今日云朵币</span></div></div>
+<div class="two-page-coins"><div><strong id="permanentCoins">0　⊕</strong><span>永久云朵币</span></div><i></i><button type="button" class="daily-coin-claim" data-action="claimDailyCoins" title="点击领取今日免费云朵币"><strong id="dailyCoins">0/20</strong><span>今日免费额度 · 点击领取</span></button></div>
 </div>
 <div class="two-page-notes"><h2>我的笔记</h2><div id="myNotesList" class="my-notes-list"><div class="notes-empty"><div class="notes-art" aria-hidden="true"><svg viewBox="0 0 64 48" role="img"><path d="M17 39h31a11 11 0 0 0 1-22 17 17 0 0 0-32-3A13 13 0 0 0 17 39Z"/></svg></div><span>～ 空空如也 ～</span></div></div></div>
 <button class="two-page-add" type="button" onclick="openWriteNotePage()"><b>＋</b><span>发布</span></button>
@@ -3174,8 +3174,73 @@ async function showUserProfile(id){
   $('profileViewModal').style.display='flex';
  }catch(e){showError(e)}
 }
+let oceanWalletState={shells:0,xp:0,todayEarned:0,claimed:false};
+function renderOceanWallet(){
+ const total=$('permanentCoins'),daily=$('dailyCoins');
+ if(total)total.textContent=String(oceanWalletState.shells)+'　⊕';
+ if(daily)daily.textContent=String(oceanWalletState.todayEarned)+'/20';
+ const button=document.querySelector('.daily-coin-claim');
+ if(button){
+  button.disabled=!!oceanWalletState.claimed;
+  button.title=oceanWalletState.claimed?'今日20个免费云朵币额度已领取':'点击领取今日剩余免费云朵币';
+  const label=button.querySelector('span');
+  if(label)label.textContent=oceanWalletState.claimed?'今日额度已领取':'今日免费额度 · 点击领取';
+ }
+}
+async function loadOceanWallet(){
+ if(!user){
+  oceanWalletState={shells:0,xp:0,todayEarned:0,claimed:false};
+  renderOceanWallet();
+  return;
+ }
+ const today=new Intl.DateTimeFormat('en-CA',{
+  timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'
+ }).format(new Date());
+ const [walletRes,checkinRes,tasksRes]=await Promise.all([
+  db.from('ocean_wallets').select('shells,xp').eq('user_id',user.id).maybeSingle(),
+  db.from('ocean_checkins').select('reward_shells').eq('user_id',user.id).eq('checkin_date',today).maybeSingle(),
+  db.from('ocean_task_claims').select('reward_shells').eq('user_id',user.id).eq('task_date',today)
+ ]);
+ if(walletRes.error)throw walletRes.error;
+ if(checkinRes.error)throw checkinRes.error;
+ if(tasksRes.error)throw tasksRes.error;
+ const taskEarned=(tasksRes.data||[]).reduce((sum,row)=>sum+Number(row.reward_shells||0),0);
+ oceanWalletState={
+  shells:Number(walletRes.data?.shells||0),
+  xp:Number(walletRes.data?.xp||0),
+  todayEarned:Math.min(20,taskEarned+Number(checkinRes.data?.reward_shells||0)),
+  claimed:!!checkinRes.data
+ };
+ renderOceanWallet();
+}
+async function claimDailyCoins(){
+ if(!requireLogin())return;
+ if(oceanWalletState.claimed){
+  notify('今日已领取','每天北京时间零点重置，可再次领取20个免费额度。');
+  return;
+ }
+ const button=document.querySelector('.daily-coin-claim');
+ if(button)button.disabled=true;
+ try{
+  const {data,error}=await db.rpc('claim_ocean_daily_reward');
+  if(error)throw error;
+  const result=Array.isArray(data)?data[0]:data;
+  await loadOceanWallet();
+  if(result?.success){
+   notify('领取成功','已领取 '+Number(result.shells||0)+' 个云朵币，今日免费额度最多20个。');
+  }else{
+   notify('今日已领取','今日免费额度已经领取，明天再来。');
+  }
+ }catch(error){
+  showError(error);
+  await loadOceanWallet().catch(console.warn);
+ }finally{
+  if(button&&!oceanWalletState.claimed)button.disabled=false;
+ }
+}
 function syncProfile(){
  applyProfileTheme();
+ renderOceanWallet();
 $('nickname').textContent=user?(profile?.nickname||'资料同步中…'):'云朵岛';
 const vipUntil=profile?.membership_until?new Date(profile.membership_until):null;
 const isVip=!!(user&&vipUntil&&!Number.isNaN(vipUntil.getTime())&&vipUntil.getTime()>Date.now());
@@ -4132,6 +4197,7 @@ async function initSession(){
   if(user){
    stage='读取个人资料';
    try{await loadProfile()}catch(profileError){profile=null;profileLoadError=String(profileError?.message||profileError);console.error('用户资料暂时无法同步：',profileError);syncProfile();}
+   try{await loadOceanWallet()}catch(walletError){console.warn('云朵币钱包暂时无法同步：',walletError)}
    stage='同步邀请信息';
    const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');
    if(invite){try{const {data:reward,error:referralError}=await db.rpc('claim_invite_code',{p_code:invite});if(referralError)throw referralError;if(reward===3)await loadProfile()}catch(e){console.info('Referral claim skipped:',e.message)}}
@@ -4317,7 +4383,8 @@ case'backHome':showPage('home');break;
 case'backDetail':showPage('discover');break;
 case'settings':showPage('settings');break;
 case'about':notify('关于云朵岛','让心事随海风漂流，让陌生故事温柔相遇。');break;
-case'refresh':await refreshAll();notify('刷新完成','云端数据已重新加载。');break;
+case'refresh':await refreshAll();await loadOceanWallet();notify('刷新完成','云端数据已重新加载。');break;
+case'claimDailyCoins':await claimDailyCoins();break;
 case'refreshMessages':await loadMessages();renderMessages();break;
 case'sendMessage':if(activeBottle)openMessage(activeBottle.user_id);break;
 case'submitMessage':await submitMessage();break;
@@ -4342,7 +4409,8 @@ if(db)db.auth.onAuthStateChange((event,session)=>{
    try{
     if(user){
      try{await loadProfile()}catch(e){profile=null;console.warn('登录后资料同步失败：',e)}
-    }else profile=null;
+     try{await loadOceanWallet()}catch(e){console.warn('登录后钱包同步失败：',e)}
+    }else{profile=null;await loadOceanWallet()}
     syncProfile();
     await refreshAll(true);
     await Promise.allSettled([refreshFriendRequestCount(),refreshCommunityNoticeBadge()]);
