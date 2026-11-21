@@ -3612,7 +3612,7 @@ async function loadFriends(){
  if(!requests?.length){reqBox.innerHTML='<div class="empty">暂时没有新的好友申请。</div>'}
  for(const req of requests||[]){
   const {data:people,error}=await db.rpc('search_profile_by_uuid',{p_user_id:req.sender_id});if(error)throw error;
-  const person=people?.[0];const row=document.createElement('div');row.className='friend-request-row';
+  const person=people?.[0];const row=document.createElement('div');row.className='friend-request-row';row.dataset.requestId=req.id;
   const av=document.createElement('div');av.className='friend-avatar';if(person?.avatar_url){const im=document.createElement('img');im.src=person.avatar_url;im.alt='头像';im.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';av.append(im)}else av.textContent=(person?.nickname||'漂').slice(0,1);
   const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person?.nickname||'漂流者';const id=document.createElement('span');id.textContent='ID：'+(person?.friend_code||'');info.append(name,id);
   const accept=document.createElement('button');accept.className='friend-action accept';accept.textContent='同意';accept.addEventListener('click',()=>respondFriendRequest(req.id,'accepted'));
@@ -3784,7 +3784,7 @@ async function respondFriendRequest(id,status){
  const key='friend-response:'+user.id+':'+id;
  if(inFlightSubmissions.has(key))return;
  inFlightSubmissions.add(key);
- const row=document.querySelector('.friend-request-row');
+ const row=[...document.querySelectorAll('.friend-request-row')].find(node=>node.dataset.requestId===id);
  const buttons=row?[...row.querySelectorAll('button')]:[];
  buttons.forEach(button=>button.disabled=true);
  try{
