@@ -4,7 +4,7 @@
 
 ## 项目入口
 
-- 正式网站：https://boyanpiaoliu.github.io/
+- 正式网站：以当前已配置的云朵岛访问域名为准（部署域名暂未迁移）
 - 前端：HTML、CSS、JavaScript
 - 后端：Supabase（Auth、PostgreSQL、Storage、Realtime）
 - 数据库迁移目录：supabase/
