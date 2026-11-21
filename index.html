@@ -4359,7 +4359,7 @@ async function setupRealtime(){
  if(realtimeChannel){try{await db.removeChannel(realtimeChannel)}catch(e){console.warn('旧实时连接关闭失败：',e)}realtimeChannel=null}
  if(!user)return;
  const currentUserId=user.id;
- realtimeChannel=db.channel('boyan-live-'+currentUserId)
+ realtimeChannel=db.channel('cloud-island-live-'+currentUserId)
   .on('postgres_changes',{event:'*',schema:'public',table:'messages'},async payload=>{
    if(!user||user.id!==currentUserId)return;
    const row=payload.new||payload.old||{};
