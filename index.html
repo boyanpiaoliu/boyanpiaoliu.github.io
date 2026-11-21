@@ -4134,7 +4134,7 @@ async function initSession(){
    try{await loadProfile()}catch(profileError){profile=null;profileLoadError=String(profileError?.message||profileError);console.error('用户资料暂时无法同步：',profileError);syncProfile();}
    stage='同步邀请信息';
    const invite=user.user_metadata?.referral_code||new URLSearchParams(location.search).get('invite');
-   if(invite){try{await db.rpc('claim_invite_code',{p_code:invite})}catch(e){console.info('Referral claim skipped:',e.message)}}
+   if(invite){try{const {data:reward,error:referralError}=await db.rpc('claim_invite_code',{p_code:invite});if(referralError)throw referralError;if(reward===3)await loadProfile()}catch(e){console.info('Referral claim skipped:',e.message)}}
   }else profile=null;
   stage='同步漂流瓶和消息';
   syncProfile();
