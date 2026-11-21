@@ -134,3 +134,114 @@ using (
       )
   )
 );
+
+
+-- Prevent read receipts, chat profile lookups, and flash opening after a block.
+create or replace function public.mark_conversation_read(p_peer uuid)
+returns void language plpgsql security definer
+set search_path=pg_catalog,public
+as $function$
+begin
+  if auth.uid() is null then raise exception '请先登录'; end if;
+  if p_peer is null or p_peer=auth.uid() then return; end if;
+  if exists(select 1 from public.user_blocks b
+    where (b.blocker_id=auth.uid() and b.blocked_id=p_peer)
+       or (b.blocker_id=p_peer and b.blocked_id=auth.uid())) then return; end if;
+  update public.messages set is_read=true
+  where sender_id=p_peer and receiver_id=auth.uid() and is_read=false;
+end;
+$function$;
+
+create or replace function public.mark_message_read(p_message_id uuid)
+returns boolean language plpgsql security definer
+set search_path=''
+as $function$
+declare v_count integer;
+begin
+  if auth.uid() is null then raise exception '请先登录'; end if;
+  update public.messages m set is_read=true
+  where m.id=p_message_id and m.receiver_id=auth.uid()
+    and not exists(select 1 from public.user_blocks b
+      where (b.blocker_id=auth.uid() and b.blocked_id=m.sender_id)
+         or (b.blocker_id=m.sender_id and b.blocked_id=auth.uid()));
+  get diagnostics v_count=row_count;
+  return v_count>0;
+end;
+$function$;
+
+create or replace function public.open_flash_message(p_message_id uuid)
+returns boolean language plpgsql security definer
+set search_path=pg_catalog,public
+as $function$
+declare changed integer;
+begin
+  if auth.uid() is null then raise exception '请先登录'; end if;
+  update public.messages m set flash_opened_at=now()
+  where m.id=p_message_id and m.receiver_id=auth.uid()
+    and m.message_type='flash_image' and m.flash_opened_at is null
+    and not exists(select 1 from public.user_blocks b
+      where (b.blocker_id=auth.uid() and b.blocked_id=m.sender_id)
+         or (b.blocker_id=m.sender_id and b.blocked_id=auth.uid()));
+  get diagnostics changed=row_count;
+  return changed=1;
+end;
+$function$;
+
+create or replace function public.get_chat_profiles(p_peer_ids uuid[])
+returns table(id uuid,nickname text,friend_code text,avatar_url text,gender text)
+language sql stable security definer
+set search_path=pg_catalog,public
+as $function$
+  select p.id,coalesce(nullif(p.nickname,''),'用户')::text,p.friend_code,p.avatar_url,p.gender
+  from public.profiles p
+  where p.id=any(coalesce(p_peer_ids,'{}'::uuid[]))
+    and exists(select 1 from public.messages m
+      where (m.sender_id=auth.uid() and m.receiver_id=p.id)
+         or (m.receiver_id=auth.uid() and m.sender_id=p.id))
+    and not exists(select 1 from public.user_blocks b
+      where (b.blocker_id=auth.uid() and b.blocked_id=p.id)
+         or (b.blocker_id=p.id and b.blocked_id=auth.uid()));
+$function$;
+
+create or replace function public.view_friend_profile(p_id uuid)
+returns table(
+ id uuid,nickname text,friend_code text,avatar_url text,gender text,
+ bubble_color text,signature text,recent_activity text,
+ recent_activity_at timestamptz,sexual_orientation text,
+ sexual_orientation_visible boolean
+)
+language sql stable security definer
+set search_path=pg_catalog,public
+as $function$
+  select p.id,coalesce(p.nickname,'漂流者')::text,p.friend_code,p.avatar_url,p.gender,p.bubble_color,
+         coalesce(p.signature,''),b.content,b.created_at,
+         case when p.id=auth.uid() or p.sexual_orientation_visible then p.sexual_orientation else null end,
+         case when p.id=auth.uid() then p.sexual_orientation_visible else false end
+  from public.profiles p
+  left join lateral(select bt.content,bt.created_at from public.bottles bt
+    where bt.user_id=p.id and bt.is_public=true
+    order by bt.created_at desc limit 1) b on true
+  where p.id=p_id and (
+    p.id=auth.uid() or (
+      exists(select 1 from public.friend_requests fr
+        where fr.status='accepted'
+          and ((fr.sender_id=auth.uid() and fr.receiver_id=p.id)
+            or (fr.receiver_id=auth.uid() and fr.sender_id=p.id)))
+      and not exists(select 1 from public.user_blocks ub
+        where (ub.blocker_id=auth.uid() and ub.blocked_id=p.id)
+           or (ub.blocker_id=p.id and ub.blocked_id=auth.uid()))
+    )
+  )
+  limit 1;
+$function$;
+
+revoke all on function public.mark_conversation_read(uuid) from public,anon;
+grant execute on function public.mark_conversation_read(uuid) to authenticated;
+revoke all on function public.mark_message_read(uuid) from public,anon;
+grant execute on function public.mark_message_read(uuid) to authenticated;
+revoke all on function public.open_flash_message(uuid) from public,anon;
+grant execute on function public.open_flash_message(uuid) to authenticated;
+revoke all on function public.get_chat_profiles(uuid[]) from public,anon;
+grant execute on function public.get_chat_profiles(uuid[]) to authenticated;
+revoke all on function public.view_friend_profile(uuid) from public,anon;
+grant execute on function public.view_friend_profile(uuid) to authenticated;
