@@ -3780,10 +3780,21 @@ async function sendFriendRequest(receiver,button){
  }catch(e){button.disabled=false;showError(e)}
 }
 async function respondFriendRequest(id,status){
+ if(!requireLogin())return;
+ const key='friend-response:'+user.id+':'+id;
+ if(inFlightSubmissions.has(key))return;
+ inFlightSubmissions.add(key);
+ const row=document.querySelector('.friend-request-row');
+ const buttons=row?[...row.querySelectorAll('button')]:[];
+ buttons.forEach(button=>button.disabled=true);
  try{
-  const {error}=await db.from('friend_requests').update({status}).eq('id',id).eq('receiver_id',user.id);if(error)throw error;
-  await loadFriends();if(status==='accepted')notify('好友添加成功','你们已经是好友了，现在可以互相发送消息。');else notify('已拒绝申请','该好友申请已拒绝。');
- }catch(e){showError(e)}
+  const {error}=await db.from('friend_requests').update({status}).eq('id',id).eq('receiver_id',user.id).eq('status','pending');
+  if(error)throw error;
+  await loadFriends();
+  if(status==='accepted')notify('好友添加成功','你们已经是好友了，现在可以互相发送消息。');
+  else notify('已拒绝申请','该好友申请已拒绝。');
+ }catch(e){showError(e);buttons.forEach(button=>button.disabled=false)}
+ finally{inFlightSubmissions.delete(key)}
 }
 async function copyFriendId(){
  if(!user)return;
@@ -4730,9 +4741,16 @@ async function loadOceanCottage(ownerId,isOwn=false,targetPrefix=''){
 async function decorateCottage(code){
  if(!requireLogin())return;
  const item=cottageDecorItems[code];if(!item)return;
- const {error}=await db.from('ocean_cottage_decor').insert({user_id:user.id,item_code:code,position:Object.keys(cottageDecorItems).indexOf(code)+1});
- if(error){if(error.code==='23505')notify('已经摆放','这件装饰已经在你的小屋里了。');else showError(error);return}
- await loadOceanCottage(user.id,true);notify('布置完成','你的海洋小屋又多了一件装饰。');
+ const key='cottage-decor:'+user.id+':'+code;
+ if(inFlightSubmissions.has(key))return;
+ inFlightSubmissions.add(key);
+ try{
+  const {error}=await db.from('ocean_cottage_decor').insert({user_id:user.id,item_code:code,position:Object.keys(cottageDecorItems).indexOf(code)+1});
+  if(error){if(error.code==='23505')notify('已经摆放','这件装饰已经在你的小屋里了。');else throw error;return}
+  await loadOceanCottage(user.id,true);
+  notify('布置完成','你的海洋小屋又多了一件装饰。');
+ }catch(e){showError(e)}
+ finally{inFlightSubmissions.delete(key)}
 }
 async function loadCottageFriends(){
  const root=$('cottageFriends');root.replaceChildren();
@@ -4763,12 +4781,18 @@ async function visitCottage(ownerId){
 async function toggleFollow(targetId,isFollowing){
  if(!user){openAuth();return}
  if(targetId===user.id)return;
- const result=isFollowing
-  ?await db.from('follows').delete().eq('follower_id',user.id).eq('following_id',targetId)
-  :await db.from('follows').insert({follower_id:user.id,following_id:targetId});
- if(result.error){showError(result.error);return}
- await loadCommunity();
- notify(isFollowing?'已取消关注':'关注成功',isFollowing?'你将不再优先看到此人的动态。':'对方发布新动态时，可以在关注列表中看到。');
+ const key='follow:'+user.id+':'+targetId;
+ if(inFlightSubmissions.has(key))return;
+ inFlightSubmissions.add(key);
+ try{
+  const result=isFollowing
+   ?await db.from('follows').delete().eq('follower_id',user.id).eq('following_id',targetId)
+   :await db.from('follows').insert({follower_id:user.id,following_id:targetId});
+  if(result.error)throw result.error;
+  await loadCommunity();
+  notify(isFollowing?'已取消关注':'关注成功',isFollowing?'你将不再优先看到此人的动态。':'对方发布新动态时，可以在关注列表中看到。');
+ }catch(e){showError(e)}
+ finally{inFlightSubmissions.delete(key)}
 }
 async function refreshCommunityNoticeBadge(){
  if(!user){$('communityNoticeBadge').style.display='none';return}
@@ -4824,8 +4848,17 @@ async function submitCommunityComment(postId,input){
 }
 async function toggleCommunityLike(postId,isLiked){
  if(!user){openAuth();return}
- const result=isLiked?await db.from('community_likes').delete().eq('post_id',postId).eq('user_id',user.id):await db.from('community_likes').insert({post_id:postId,user_id:user.id});
- if(result.error){showError(result.error);return}await loadCommunity();
+ const key='community-like:'+user.id+':'+postId;
+ if(inFlightSubmissions.has(key))return;
+ inFlightSubmissions.add(key);
+ try{
+  const result=isLiked
+   ?await db.from('community_likes').delete().eq('post_id',postId).eq('user_id',user.id)
+   :await db.from('community_likes').insert({post_id:postId,user_id:user.id});
+  if(result.error)throw result.error;
+  await loadCommunity();
+ }catch(e){showError(e)}
+ finally{inFlightSubmissions.delete(key)}
 }
 async function deleteCommunityPost(postId){
  if(!confirm('确定删除这条动态吗？'))return;
