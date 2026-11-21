@@ -4416,6 +4416,7 @@ case'copyFriendId':await copyFriendId();break;
 case'saveProfile':await saveProfile();break;
 case'logout':await logout();break;
 case'backProfile':if(pageHistory[pageHistory.length-1]==='profile')pageHistory.pop();showPage('profile',{replace:true});break;
+case'backGrowth':goBackPage();break;
 case'goBackPage':goBackPage();break;
 case'scrollTop':window.scrollTo({top:0,behavior:'smooth'});break;
 case'backHome':showPage('home');break;
