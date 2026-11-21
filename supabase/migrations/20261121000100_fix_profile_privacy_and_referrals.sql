@@ -111,3 +111,30 @@ $function$;
 
 revoke all on function public.get_my_private_profile() from public, anon, authenticated;
 grant execute on function public.get_my_private_profile() to authenticated;
+
+
+-- Flash media: sender retains access; recipient can generate a signed URL
+-- only after opening, and only during the same 60-second window as the URL.
+drop policy if exists "Conversation participants read message media" on storage.objects;
+create policy "Conversation participants read message media"
+on storage.objects
+for select
+to authenticated
+using (
+  bucket_id = 'message-media'
+  and exists (
+    select 1
+    from public.messages m
+    where m.media_path = objects.name
+      and (m.sender_id = auth.uid() or m.receiver_id = auth.uid())
+      and (
+        m.message_type <> 'flash_image'
+        or m.sender_id = auth.uid()
+        or (
+          m.receiver_id = auth.uid()
+          and m.flash_opened_at is not null
+          and m.flash_opened_at >= now() - interval '60 seconds'
+        )
+      )
+  )
+);
