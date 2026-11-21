@@ -3258,7 +3258,11 @@ const locationLabel=$('profileIp');if(locationLabel)locationLabel.textContent=us
 
 // 加载数据
 async function loadBottles(){
-if(user){const {data:blocks,error:blockError}=await db.from('user_blocks').select('blocked_id').eq('blocker_id',user.id);if(blockError)throw blockError;blockedUserIds=(blocks||[]).map(x=>x.blocked_id)}else blockedUserIds=[];
+if(user){
+ const {data:blocks,error:blockError}=await db.from('user_blocks').select('blocker_id,blocked_id').or('blocker_id.eq.'+user.id+',blocked_id.eq.'+user.id);
+ if(blockError)throw blockError;
+ blockedUserIds=(blocks||[]).map(x=>x.blocker_id===user.id?x.blocked_id:x.blocker_id);
+}else blockedUserIds=[];
 const {data,error}=await db.from('bottles')
 .select('id,user_id,content,created_at,is_public,mood,status,picked_up_by,picked_up_at')
 .order('created_at',{ascending:false}).limit(100);
