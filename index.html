@@ -3596,7 +3596,7 @@ async function loadFriends(){
  const reqBox=$('friendRequests');reqBox.replaceChildren();
  if(!requests?.length){reqBox.innerHTML='<div class="empty">暂时没有新的好友申请。</div>'}
  for(const req of requests||[]){
-  const {data:people,error}=await db.rpc('search_profile_by_id',{p_id:req.sender_id});if(error)throw error;
+  const {data:people,error}=await db.rpc('search_profile_by_uuid',{p_user_id:req.sender_id});if(error)throw error;
   const person=people?.[0];const row=document.createElement('div');row.className='friend-request-row';
   const av=document.createElement('div');av.className='friend-avatar';if(person?.avatar_url){const im=document.createElement('img');im.src=person.avatar_url;im.alt='头像';im.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';av.append(im)}else av.textContent=(person?.nickname||'漂').slice(0,1);
   const info=document.createElement('div');info.className='friend-info';const name=document.createElement('strong');name.textContent=person?.nickname||'漂流者';const id=document.createElement('span');id.textContent='ID：'+(person?.friend_code||'');info.append(name,id);
@@ -3733,7 +3733,7 @@ async function searchFriend(){
  if(raw===profile?.friend_code){notify('这是你自己的 ID','搜索其他用户的数字好友 ID。');return}
  if(!/^[0-9]{6,8}$/.test(raw)){notify('ID 格式不正确','请输入 6 至 8 位数字好友 ID。');return}
  try{
-  const {data,error}=await db.rpc('search_profile_by_id',{p_id:raw});if(error)throw error;
+  const {data,error}=await db.rpc('search_profile_by_friend_code',{p_friend_code:raw});if(error)throw error;
   const person=data?.[0];if(!person){box.innerHTML='<div class="empty">没有找到这个 ID 对应的用户。</div>';return}
   friendSearchResult=person;
   const {data:existing,error:e}=await db.from('friend_requests').select('id,sender_id,receiver_id,status').or('and(sender_id.eq.'+user.id+',receiver_id.eq.'+person.id+'),and(sender_id.eq.'+person.id+',receiver_id.eq.'+user.id+')').limit(1);
@@ -4726,7 +4726,7 @@ async function loadCottageFriends(){
  if(!rows?.length){root.innerHTML='<div class="empty">关注一些朋友，就能来他们的小屋串门。</div>';return}
  for(const row of rows){
   const [personRes,petRes]=await Promise.all([
-   db.rpc('search_profile_by_id',{p_id:row.following_id}),
+   db.rpc('search_profile_by_uuid',{p_user_id:row.following_id}),
    db.from('ocean_pets').select('pet_type').eq('user_id',row.following_id).maybeSingle()
   ]);
   if(personRes.error)continue;
@@ -4739,7 +4739,7 @@ async function loadCottageFriends(){
 }
 async function visitCottage(ownerId){
  if(!requireLogin()||!ownerId||ownerId===user.id)return;
- const {data,error}=await db.rpc('search_profile_by_id',{p_id:ownerId});
+ const {data,error}=await db.rpc('search_profile_by_uuid',{p_user_id:ownerId});
  if(error){showError(error);return}
  const person=data?.[0];if(!person){notify('暂时无法访问','没有找到这位用户。');return}
  $('visitCottageTitle').textContent=(person.nickname||'海边朋友')+' 的海洋小屋';
