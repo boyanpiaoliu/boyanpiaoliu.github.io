@@ -3906,7 +3906,7 @@ async function forgotPassword(){
 async function completePasswordRecovery(){
  const next=prompt('请输入新密码（至少6位）');
  if(next===null)return;
- if(next.length<6){notify('密码长度不足','新密码至少需要6位，请重新通过邮件链接进入修改。');return}
+ if(next.length<8){notify('密码长度不足','新密码至少需要8位，请重新通过邮件链接进入修改。');return}
  const confirmNext=prompt('请再次输入新密码');
  if(confirmNext!==next){notify('两次密码不一致','请重新通过邮箱中的重置链接设置密码。');return}
  try{
