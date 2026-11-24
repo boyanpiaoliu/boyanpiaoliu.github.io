@@ -7,6 +7,11 @@
 <meta name="theme-color" content="#c8b0f0">
 <meta name="description" content="云朵岛：漂流瓶、好友私信、社区分享与海洋收藏。把心事交给大海，在云朵岛遇见温柔。">
 <meta name="application-name" content="云朵岛">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="云朵岛">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="云朵岛">
 <meta property="og:title" content="云朵岛 - 把心事交给大海">
@@ -5048,6 +5053,18 @@ window.addEventListener('error',event=>{
  console.error('[页面运行异常]',event.error||event.message);
  // 资源和后台脚本异常记录到控制台；用户主动操作的错误仍由对应 catch 显示。
 });
+
+// PWA：iPhone 可通过 Safari「分享」-「添加到主屏幕」安装。
+if('serviceWorker' in navigator && location.protocol === 'https:'){
+ window.addEventListener('load',()=>{
+  navigator.serviceWorker.register('/service-worker.js',{scope:'/'})
+   .then(registration=>{
+    // 检查新版本；不强制刷新正在进行的会话。
+    registration.update().catch(()=>{});
+   })
+   .catch(error=>console.warn('云朵岛离线应用组件暂不可用：',error));
+ });
+}
 
 // 启动
 (async()=>{
