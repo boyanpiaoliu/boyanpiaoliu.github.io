@@ -1,0 +1,21 @@
+{
+  "id": "/",
+  "name": "云朵岛",
+  "short_name": "云朵岛",
+  "description": "把心事交给大海，在云朵岛遇见温柔。",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#f8f5fb",
+  "theme_color": "#c8b0f0",
+  "icons": [
+    {
+      "src": "/cloud-island-icon.jpg",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
