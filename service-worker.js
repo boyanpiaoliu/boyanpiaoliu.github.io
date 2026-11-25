@@ -1,5 +1,5 @@
-const CACHE_NAME = 'cloud-island-pwa-v1';
-const APP_SHELL = ['/', '/manifest.webmanifest', '/cloud-island-icon.jpg'];
+const CACHE_NAME = 'cloud-island-pwa-v2';
+const APP_SHELL = ['/', '/manifest.webmanifest', '/cloud-island-icon.svg', '/cloud-island-icon.jpg'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -27,7 +27,6 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Keep the app shell fresh when online; use the last successful shell offline.
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -49,8 +48,8 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Cache only the app icon. Never cache API, account, chat, or private user data.
-  if (url.pathname === '/cloud-island-icon.jpg') {
+  // Cache only static app icons. Never cache API, account, chat, or private data.
+  if (url.pathname === '/cloud-island-icon.svg' || url.pathname === '/cloud-island-icon.jpg') {
     event.respondWith(
       caches.match(request).then(cached => cached || fetch(request).then(response => {
         if (response && response.ok) {
