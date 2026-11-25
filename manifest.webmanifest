@@ -7,11 +7,20 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "portrait",
   "background_color": "#f8f5fb",
   "theme_color": "#c8b0f0",
   "icons": [
+    {
+      "src": "/cloud-island-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/cloud-island-icon.svg",
       "sizes": "any",
