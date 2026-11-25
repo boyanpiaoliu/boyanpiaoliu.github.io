@@ -1,5 +1,5 @@
-const CACHE_NAME = 'cloud-island-pwa-v2';
-const APP_SHELL = ['/', '/manifest.webmanifest', '/cloud-island-icon.svg', '/cloud-island-icon.jpg'];
+const CACHE_NAME = 'cloud-island-pwa-v3';
+const APP_SHELL = ['/', '/manifest.webmanifest', '/cloud-island-icon.svg', '/cloud-island-icon.jpg', '/cloud-island-touch-icon.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -49,7 +49,7 @@ self.addEventListener('fetch', event => {
   }
 
   // Cache only static app icons. Never cache API, account, chat, or private data.
-  if (url.pathname === '/cloud-island-icon.svg' || url.pathname === '/cloud-island-icon.jpg') {
+  if (url.pathname === '/cloud-island-icon.svg' || url.pathname === '/cloud-island-icon.jpg' || url.pathname === '/cloud-island-touch-icon.png') {
     event.respondWith(
       caches.match(request).then(cached => cached || fetch(request).then(response => {
         if (response && response.ok) {
