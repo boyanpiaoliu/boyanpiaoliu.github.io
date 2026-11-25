@@ -13,6 +13,12 @@
   "theme_color": "#c8b0f0",
   "icons": [
     {
+      "src": "/cloud-island-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
       "src": "/cloud-island-icon.jpg",
       "type": "image/jpeg",
       "purpose": "any"
