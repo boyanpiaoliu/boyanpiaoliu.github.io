@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cloud-island-pwa-v3';
+const CACHE_NAME = 'cloud-island-pwa-v4';
 const APP_SHELL = ['/', '/manifest.webmanifest', '/cloud-island-icon.svg', '/cloud-island-icon.jpg', '/cloud-island-touch-icon.png'];
 
 self.addEventListener('install', event => {
