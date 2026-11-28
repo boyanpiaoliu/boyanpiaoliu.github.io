@@ -2421,14 +2421,34 @@ img{max-width:100%;height:auto}
 }
 @media(hover:hover) and (pointer:fine){button:not(:disabled):hover{filter:brightness(.985)}}
 
+/* 云朵岛启动画面：减少 PWA 首屏加载时的空白感 */
+#cloudIslandLaunch{
+ position:fixed;inset:0;z-index:100000;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:14px;padding:24px;
+ background:linear-gradient(155deg,#fbf9fd 0%,#f0eaf8 58%,#e5d9f2 100%);
+ opacity:1;visibility:visible;
+ transition:opacity .28s ease,visibility .28s ease;
+}
+#cloudIslandLaunch.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+#cloudIslandLaunch img{width:104px;height:104px;object-fit:contain;filter:drop-shadow(0 9px 18px rgba(91,66,128,.14))}
+#cloudIslandLaunch strong{font-size:23px;letter-spacing:2px;color:#57436f;font-weight:750}
+#cloudIslandLaunch span{font-size:12px;letter-spacing:1px;color:#9787aa}
+#cloudIslandLaunch .launch-indicator{width:34px;height:3px;border-radius:9px;background:rgba(117,91,153,.16);overflow:hidden;margin-top:8px}
+#cloudIslandLaunch .launch-indicator:after{content:"";display:block;width:45%;height:100%;border-radius:9px;background:#9d83c3;animation:cloudLaunchProgress 1.15s ease-in-out infinite alternate}
+@keyframes cloudLaunchProgress{from{transform:translateX(-10%)}to{transform:translateX(145%)}}
+@media(prefers-reduced-motion:reduce){#cloudIslandLaunch{transition:none}#cloudIslandLaunch .launch-indicator:after{animation:none;width:100%}}
+
 </style>
 </head>
 
 <body>
-
-
-
-
+<div id="cloudIslandLaunch" role="status" aria-live="polite" aria-label="云朵岛正在启动">
+ <img src="/cloud-island-icon.svg" alt="">
+ <strong>云朵岛</strong>
+ <span>把心事交给大海</span>
+ <i class="launch-indicator" aria-hidden="true"></i>
+</div>
 <main>
 
 <section class="page" id="home">
@@ -5066,6 +5086,15 @@ if('serviceWorker' in navigator && location.protocol === 'https:'){
  });
 }
 
+// 启动画面在会话初始化完成后淡出；网络异常时保留页面可见性。
+function hideCloudIslandLaunch(){
+ const launch=document.getElementById('cloudIslandLaunch');
+ if(!launch||launch.classList.contains('is-hidden'))return;
+ launch.classList.add('is-hidden');
+ window.setTimeout(()=>launch.remove(),350);
+}
+window.setTimeout(hideCloudIslandLaunch,12000);
+
 // 启动
 (async()=>{
 try{
@@ -5073,8 +5102,10 @@ const savedLanguage=localStorage.getItem('boyan-language')||'zh-CN';
 applyLanguage(savedLanguage);
 document.getElementById('languageSelect')?.addEventListener('change',e=>setLanguage(e.target.value));
 await initSession();
+hideCloudIslandLaunch();
 }catch(e){
  console.error('页面启动时的后台初始化失败：',e);
+ hideCloudIslandLaunch();
  showError(e);
 }
 })();
